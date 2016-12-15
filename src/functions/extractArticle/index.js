@@ -9,7 +9,7 @@ export async function handler(event, context, callback) {
     const { Key } = event
     const s3 = new S3()
 
-    console.log(`Get '${Key}' from '${s3.Bucket}'`)
+    console.log(`Get '${Key}' from '${s3.bucket}'`)
     const data = await s3.getObject({ Key })
 
     console.log('parsing and extracting data from article')

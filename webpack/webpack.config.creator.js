@@ -3,10 +3,7 @@ const baseConfig = require('./webpack.config.base')
 const settings = require('../settings')
 
 
-function createWebpackConfig(
-  entry,
-  bundleDirName
-) {
+function createWebpackConfig(entry, bundleDirName) {
   return Object.assign({}, baseConfig, {
     entry: [
       'babel-polyfill',

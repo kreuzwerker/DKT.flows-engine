@@ -22,8 +22,6 @@ class S3 {
 
 
   putObject(params) {
-    if (!this.outputBucket) return Promise.reject('[S3] Undefined Output Bucket')
-
     return this.s3.putObject(Object.assign({}, params, {
       Bucket: this.bucket
     })).promise()

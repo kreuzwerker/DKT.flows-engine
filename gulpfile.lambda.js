@@ -60,8 +60,7 @@ const tasks = (lambda) => {
 
     lambda.deploy({
       FunctionName: lambdaFunc,
-      ZipFile: path.join(__dirname, 'dist', `${lambdaFunc}.zip`),
-      Role: 'arn:aws:iam::855433257886:role/lambda_basic_execution'
+      ZipFile: path.join(__dirname, 'dist', `${lambdaFunc}.zip`)
     })
   })
 }

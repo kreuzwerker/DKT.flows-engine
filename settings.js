@@ -8,7 +8,7 @@ module.exports = {
     },
     lambda: {
       apiVersion: '2015-03-31',
-      arn: 'arn:aws:iam::855433257886:role/lambda_basic_execution',
+      arn: 'arn:aws:iam::855433257886:role/lambda_s3_exec_role',
       handler: 'index.handler',
       runtime: 'nodejs4.3',
       timeout: 5

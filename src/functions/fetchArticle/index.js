@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-import uuid from 'uuid'
 import S3 from '../../utils/s3'
 
 
@@ -10,6 +9,7 @@ export async function handler(event, context, callback) {
   try {
     const { url } = event
     const { awsRequestId } = context
+
     const s3 = new S3()
 
     console.log(`Try to fetch data from ${url}`)

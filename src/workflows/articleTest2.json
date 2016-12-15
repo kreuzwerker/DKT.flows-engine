@@ -1,0 +1,16 @@
+{
+  "Comment": "A Article fetch-/extract-example",
+  "StartAt": "FetchArticle",
+  "States": {
+    "FetchArticle": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Next": "ExtractArticle"
+    },
+    "ExtractArticle": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticle",
+      "End": true
+    }
+  }
+}

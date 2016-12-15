@@ -1,0 +1,43 @@
+{
+  "name": "dkt.lambdas",
+  "version": "0.0.1",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/node-modules/' ."
+  },
+  "author": "Johannes Dirr <johannes.dirr@kreuzwerker.de>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.7.11",
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.8",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "bluebird": "^3.4.6",
+    "csv": "^1.1.0",
+    "del": "^2.2.2",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
+    "json-loader": "^0.5.4",
+    "lodash": "^4.17.2",
+    "mocha": "^3.2.0",
+    "node-fetch": "^1.6.3",
+    "should": "^11.1.1",
+    "unfluff": "^1.1.0",
+    "uuid": "^3.0.1",
+    "webpack": "^1.14.0",
+    "yargs": "^6.5.0"
+  }
+}

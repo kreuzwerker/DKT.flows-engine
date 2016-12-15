@@ -1,0 +1,6 @@
+{
+  "S3": {
+    "inputBucket": "dkt-stepfunctions-test",
+    "OutputBucket": "dkt-stepfunctions-test"
+  }
+}

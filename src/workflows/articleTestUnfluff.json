@@ -1,15 +1,15 @@
 {
-  "Comment": "A Article fetch-/extract-example",
+  "Comment": "A Article fetch-/extract test with node-unfluff",
   "StartAt": "FetchArticle",
   "States": {
     "FetchArticle": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
-      "Next": "ExtractArticle"
+      "Next": "ExtractArticleUnfluff"
     },
-    "ExtractArticle": {
+    "ExtractArticleUnfluff": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticle",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleUnfluff",
       "End": true
     }
   }

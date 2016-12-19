@@ -1,0 +1,16 @@
+{
+  "Comment": "A Article fetch-/extract test with node-readability",
+  "StartAt": "FetchArticle",
+  "States": {
+    "FetchArticle": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Next": "ExtractArticleReadability"
+    },
+    "ExtractArticleReadability": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleReadability",
+      "End": true
+    }
+  }
+}

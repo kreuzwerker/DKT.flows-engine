@@ -35,7 +35,7 @@
     "mocha": "^3.2.0",
     "node-fetch": "^1.6.3",
     "should": "^11.1.1",
-    "unfluff": "^1.1.0",
+    "unfluff": "https://github.com/johipsum/node-unfluff/tarball/frontend-support",
     "uuid": "^3.0.1",
     "webpack": "^1.14.0",
     "yargs": "^6.5.0"

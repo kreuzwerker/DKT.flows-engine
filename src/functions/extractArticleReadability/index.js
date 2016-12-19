@@ -23,7 +23,7 @@ export async function handler(event, context, callback) {
     const data = await S3.getObject({ Key })
 
     console.log('parsing and extracting data from article')
-    const result = await readPromise(JSON.parse(data.Body).article, { output: 'json' })
+    const result = await readPromise(JSON.parse(data.Body).article, { output: 'text' })
     const article = {
       title: result.article.title,
       content: result.article.content

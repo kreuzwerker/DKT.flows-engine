@@ -15,7 +15,7 @@ module.exports = {
     },
     s3: {
       apiVersion: '2006-03-01',
-      bucket: 'dkt-stepfunctions-test'
+      bucket: 'dkt.flow-engine.test'
     },
     stepFunctions: {
       apiVersion: '2016-11-23',

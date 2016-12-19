@@ -33,13 +33,11 @@ gulp.task('clean', done => del(['./dist'], done))
  * ---- AWS Lambda -------------------------------------------------------------
  * ---- see gulpfile.lambda.js for lambda specific tasks -----------------------
  */
-const lambda = new Lambda()
-require('./gulpfile.lambda')(lambda)
+require('./gulpfile.lambda')(Lambda)
 
 
 /*
  * ---- AWS StepFunctions ------------------------------------------------------
  * ---- see gulpfile.stepfunctions.js for stepfunction specific tasks ----------
  */
-const stepFunctions = new StepFunctions()
-require('./gulpfile.stepfunctions')(stepFunctions)
+require('./gulpfile.stepfunctions')(StepFunctions)

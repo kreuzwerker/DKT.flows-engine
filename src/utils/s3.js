@@ -6,27 +6,24 @@ import AWS from 'aws-sdk'
 import settings from '../../settings'
 
 
-class S3 {
-  constructor(opts = {}) {
-    this._apiVersion = opts.apiVersion || settings.aws.s3.apiVersion
-    this.bucket = opts.bucket || settings.aws.s3.bucket
-    this.s3 = new AWS.S3({ apiVersion: this._apiVersion })
-  }
+function S3() {
+  const { apiVersion, bucket } = settings.aws.s3
+  const s3 = new AWS.S3({ apiVersion })
 
 
-  getObject(params) {
-    return this.s3.getObject(Object.assign({}, params, {
-      Bucket: this.bucket
-    })).promise()
-  }
+  const getObject = params => s3.getObject(Object.assign({}, params, {
+    Bucket: bucket
+  })).promise()
 
 
-  putObject(params) {
-    return this.s3.putObject(Object.assign({}, params, {
-      Bucket: this.bucket
-    })).promise()
-  }
+
+  const putObject = params => s3.putObject(Object.assign({}, params, {
+    Bucket: bucket
+  })).promise()
+
+
+  return { bucket, getObject, putObject }
 }
 
 
-export default S3
+export default S3()

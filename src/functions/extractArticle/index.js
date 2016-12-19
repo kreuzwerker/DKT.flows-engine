@@ -1,16 +1,16 @@
 import extractor from 'unfluff'
 import S3 from '../../utils/s3'
 
+
 /*
  * Fetch an Article from given URL
  */
 export async function handler(event, context, callback) {
   try {
     const { Key } = event
-    const s3 = new S3()
 
-    console.log(`Get '${Key}' from '${s3.bucket}'`)
-    const data = await s3.getObject({ Key })
+    console.log(`Get '${Key}' from '${S3.bucket}'`)
+    const data = await S3.getObject({ Key })
 
     console.log('parsing and extracting data from article')
     const article = extractor(JSON.parse(data.Body).article)

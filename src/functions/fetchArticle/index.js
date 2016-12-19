@@ -10,8 +10,6 @@ export async function handler(event, context, callback) {
     const { url } = event
     const { awsRequestId } = context
 
-    const s3 = new S3()
-
     console.log(`Try to fetch data from ${url}`)
     const result = await fetch(url)
 
@@ -25,8 +23,8 @@ export async function handler(event, context, callback) {
 
     const fileName = `fetchArticle/${awsRequestId}.json`
 
-    console.log(`Put '${fileName}' to '${s3.bucket}' Bucket`)
-    const s3Response = await s3.putObject({
+    console.log(`Put '${fileName}' to '${S3.bucket}' Bucket`)
+    const s3Response = await S3.putObject({
       Key: fileName,
       Body: JSON.stringify({ article: articleHTML })
     })

@@ -1,6 +1,5 @@
 import extractor from 'unfluff'
 import S3 from '../../utils/s3'
-import settings from '../../../settings'
 
 
 /*
@@ -17,7 +16,7 @@ export async function handler(event, context, callback) {
     console.log('parsing and extracting data from article')
     const article = extractor(JSON.parse(data.Body).article)
 
-    const fileName = `extractArticle/out/${awsRequestId}.json`
+    const fileName = `extractArticleUnfluff/out/${awsRequestId}.json`
 
     console.log(`put extracted article '${fileName}' to '${S3.bucket}'`)
     const s3Response = await S3.putObject({

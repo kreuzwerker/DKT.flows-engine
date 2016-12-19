@@ -1,5 +1,7 @@
 import fetch from 'node-fetch'
 import S3 from '../../utils/s3'
+import STS from '../../utils/sts'
+import settings from '../../../settings'
 
 
 /*
@@ -21,7 +23,7 @@ export async function handler(event, context, callback) {
     let articleHTML = await result.text()
     articleHTML = articleHTML.replace(/(\r\n|\n|\r|\t)/gm, '')
 
-    const fileName = `fetchArticle/${awsRequestId}.json`
+    const fileName = `fetchArticle/out/${awsRequestId}.json`
 
     console.log(`Put '${fileName}' to '${S3.bucket}' Bucket`)
     const s3Response = await S3.putObject({

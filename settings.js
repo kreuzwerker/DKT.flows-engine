@@ -11,7 +11,7 @@ module.exports = {
       arn: 'arn:aws:iam::855433257886:role/lambda_s3_exec_role',
       handler: 'index.handler',
       runtime: 'nodejs4.3',
-      timeout: 5
+      timeout: 10
     },
     s3: {
       apiVersion: '2006-03-01',

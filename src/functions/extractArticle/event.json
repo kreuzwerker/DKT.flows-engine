@@ -1,4 +1,1 @@
-{
-  "Key": "fetchArticle/fetchArticleTest.json",
-  "Bucket": "dkt-stepfunctions-test"
-}
+"{\"ETag\":\"\\\"f593771ef0d71c3163ee6ae28d1122c6\\\"\",\"Key\":\"fetchArticle/out/fetchArticleTest.json\"}"

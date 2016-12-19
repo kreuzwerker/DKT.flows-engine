@@ -13,22 +13,12 @@ describe('ExtractArticle ƛ handler', async function () {
     let article
 
     before(async function () {
-      article = await ExtractArticle(event)
+      article = await ExtractArticle(event, { awsRequestId: 'extractArticleTest' })
     })
 
-    it('should have a title', function () {
-      article.should.have.keys('title')
-      article.title.should.be.an.instanceof(String)
-    })
-
-    it('should have a date', function () {
-      article.should.have.keys('date')
-      article.date.should.be.an.instanceof(String)
-    })
-
-    it('should have a text', function () {
-      article.should.have.keys('text')
-      article.text.should.be.an.instanceof(String)
+    it('should return stringified JSON', function () {
+      article.should.be.an.instanceof(String)
+      should.doesNotThrow(() => JSON.parse(article))
     })
   })
 })

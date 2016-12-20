@@ -30,7 +30,7 @@ const tasks = (lambda) => {
   })
 
 
-  gulp.task('lambda:bundle', ['lambda:build'], () => {
+  gulp.task('lambda:bundle', ['lambda:build'], (done) => {
     const lambdaFunc = argv.function
 
     if (!lambdaFunc) {
@@ -44,10 +44,11 @@ const tasks = (lambda) => {
     gulp.src(`./dist/${lambdaFunc}/index.js`)
       .pipe(zip(`${lambdaFunc}.zip`))
       .pipe(gulp.dest('./dist'))
+      .on('end', () => done())
   })
 
 
-  gulp.task('lambda:deploy', ['lambda:bundle'], () => {
+  gulp.task('lambda:deploy', ['lambda:bundle'], (done) => {
     const lambdaFunc = argv.function
 
     if (!lambdaFunc) {
@@ -58,10 +59,8 @@ const tasks = (lambda) => {
       throw new Error(`[Lambda:deploy] ${lambdaFunc} does not exist.`)
     }
 
-    lambda.deploy({
-      FunctionName: lambdaFunc,
-      ZipFile: path.join(__dirname, 'dist', `${lambdaFunc}.zip`)
-    })
+    lambda.deploy(lambdaFunc, path.join(__dirname, 'dist'))
+      .then(() => done())
   })
 }
 

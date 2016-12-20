@@ -15,7 +15,7 @@ const tasks = (stepFunctions) => {
       throw new Error(`[Steps:Deploy] ${workflow} does not exist.`)
     }
 
-    stepFunctions.createStateMachine(workflow)
+    stepFunctions.deploy(workflow)
   })
 
 

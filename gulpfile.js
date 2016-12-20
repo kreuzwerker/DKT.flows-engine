@@ -13,10 +13,16 @@ const StepFunctions = require('./lib/aws/stepFunctions')
  */
 gulp.task('test', () => {
   const lambdaFunc = argv.function
+  const workflows = argv.workflows
+
   let tests = './src/**/test.js'
 
   if (lambdaFunc) {
     tests = path.join(__dirname, 'src', 'functions', lambdaFunc, 'test.js')
+  }
+
+  if (workflows) {
+    tests = path.join(__dirname, 'src', 'workflows', 'test.js')
   }
 
   gulp.src(tests).pipe(mocha({

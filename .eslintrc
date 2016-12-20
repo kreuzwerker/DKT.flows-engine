@@ -75,6 +75,7 @@
     "describe": true,
     "it": true,
     "before": true,
+    "beforeEach": true,
     "expect": true
   }
 }

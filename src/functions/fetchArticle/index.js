@@ -1,8 +1,7 @@
 import fetch from 'node-fetch'
 import Logger from '../../utils/logger'
 import S3 from '../../utils/s3'
-import STS from '../../utils/sts'
-import settings from '../../../settings'
+
 
 /*
  * Fetch an Article from given URL

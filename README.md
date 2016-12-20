@@ -12,7 +12,7 @@ You can install node via [NVM](https://github.com/creationix/nvm), [Homebrew](ht
 
 When you have to change the node version from time to time (e.g. for different projects) then you can run `$ nvm use` when entering the project directory. This will select the node version defined within the `.nvmrc` file. Or you add [this code snipped (link)](https://github.com/creationix/nvm#zsh) to your `.zshrc`.
 
-#### AWS
+#### [AWS](https://aws.amazon.com/documentation/)
 
 If you want to interact with AWS (deploying, ... etc.) then you have to define a [named Profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles) `[DKT]` within your `~/.aws/credentials` file.
 

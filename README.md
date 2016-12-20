@@ -16,25 +16,28 @@ We're using [ESLint](http://eslint.org/) with a slightly modified version of the
 
 #### Build
 
-    $ gulp lambda:build  # builds all lambda function
+    $ gulp lambda:build  # builds all lambda functions
     $ gulp lambda:build --function <functionName>  # builds one function
 
 
 #### Bundle
 
-    $ gulp lambda:bundle --function <functionName>
+    $ gulp lambda:bundle  # build and bundle all lambda functions
+    $ gulp lambda:bundle --function <functionName>  # build and bundle one function
 
 
 #### Deployment
 
-    $ gulp lambda:deploy --function <functionName>  # this will build, bundle, and deploy the lambda function
+    $ gulp lambda:deploy  # build, bundle and deploy all lambda functions
+    $ gulp lambda:deploy --function <functionName>  # build, bundle and deploy the one lambda function
 
 
 #### Tests
 
 Run tests with
 
-    $ gulp test --function <functionName>
+    $ gulp test --functions  # test all lambda functions
+    $ gulp test --function <functionName>  # test one lambda function
 
 
 ### StepFunctions
@@ -42,3 +45,7 @@ Run tests with
 #### Deployment
 
     $ gulp steps:deploy --workflow <workflowNameWithoutPrefix>
+
+#### tests
+
+    $ gulp test --workflows  # test all workflows

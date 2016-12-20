@@ -33,34 +33,48 @@ const tasks = (lambda) => {
   gulp.task('lambda:bundle', ['lambda:build'], (done) => {
     const lambdaFunc = argv.function
 
-    if (!lambdaFunc) {
-      throw new Error('[Lambda:Bundle] requires function name - run task with \'--function <functionName>\'')
-    }
+    if (lambdaFunc) {
+      if (!fsUtil.functionExists(lambdaFunc)) {
+        throw new Error(`[Lambda:bundle] ${lambdaFunc} does not exist.`)
+      }
 
-    if (!fsUtil.functionExists(lambdaFunc)) {
-      throw new Error(`[Lambda:Build] ${lambdaFunc} does not exist.`)
-    }
+      gulp.src(`./dist/${lambdaFunc}/index.js`)
+        .pipe(zip(`${lambdaFunc}.zip`))
+        .pipe(gulp.dest('./dist'))
+        .on('end', () => done())
+    } else {
+      const allFunctions = fsUtil.getAllFunctions()
 
-    gulp.src(`./dist/${lambdaFunc}/index.js`)
-      .pipe(zip(`${lambdaFunc}.zip`))
-      .pipe(gulp.dest('./dist'))
-      .on('end', () => done())
+      const promisedTask = func => new Promise((resolve, reject) => {
+        gulp.src(`./dist/${func}/index.js`)
+          .pipe(zip(`${func}.zip`))
+          .pipe(gulp.dest('./dist'))
+          .on('end', () => resolve())
+          .on('error', error => reject(error))
+      })
+
+      Promise.all(allFunctions.map(func => promisedTask(func)))
+        .then(() => done())
+        .catch((err) => {
+          throw new Error('[Lambda:bundle]', err)
+        })
+    }
   })
 
 
   gulp.task('lambda:deploy', ['lambda:bundle'], (done) => {
     const lambdaFunc = argv.function
+    const zipFileBase = path.join(__dirname, 'dist')
 
-    if (!lambdaFunc) {
-      throw new Error('[Lambda:Deploy] requires function name - run task with \'--function <functionName>\'')
+    if (lambdaFunc) {
+      if (!fsUtil.functionExists(lambdaFunc)) {
+        throw new Error(`[Lambda:deploy] ${lambdaFunc} does not exist.`)
+      }
+
+      lambda.deploy(lambdaFunc, zipFileBase).then(() => done())
+    } else {
+      lambda.deployAll(zipFileBase).then(() => done())
     }
-
-    if (!fsUtil.functionExists(lambdaFunc)) {
-      throw new Error(`[Lambda:deploy] ${lambdaFunc} does not exist.`)
-    }
-
-    lambda.deploy(lambdaFunc, path.join(__dirname, 'dist'))
-      .then(() => done())
   })
 }
 

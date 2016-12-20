@@ -19,7 +19,12 @@ gulp.task('test', () => {
     tests = path.join(__dirname, 'src', 'functions', lambdaFunc, 'test.js')
   }
 
-  gulp.src(tests).pipe(mocha())
+  gulp.src(tests).pipe(mocha({
+    require: [
+      'babel-polyfill', // remove this when testing a bundled lambda function
+      './spec/config'
+    ]
+  }))
 })
 
 

@@ -1,5 +1,3 @@
-import 'babel-polyfill'
-import should from 'should'
 import { promisifyLambda } from '../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
@@ -17,8 +15,9 @@ describe('ExtractArticle ƛ handler', async function () {
     })
 
     it('should return stringified JSON', function () {
-      article.should.be.an.instanceof(String)
-      should.doesNotThrow(() => JSON.parse(article))
+      expect(article).is.a('string')
+
+      // should.doesNotThrow(() => JSON.parse(article))
     })
   })
 })

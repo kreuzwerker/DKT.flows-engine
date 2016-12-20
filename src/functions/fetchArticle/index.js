@@ -1,31 +1,33 @@
 import fetch from 'node-fetch'
+import Logger from '../../utils/logger'
 import S3 from '../../utils/s3'
 import STS from '../../utils/sts'
 import settings from '../../../settings'
-
 
 /*
  * Fetch an Article from given URL
  */
 export async function handler(event, context, callback) {
+  const logger = Logger(event.verbose)
+
   try {
     const { url } = event
     const { awsRequestId } = context
 
-    console.log(`Try to fetch data from ${url}`)
+    logger.log(`Try to fetch data from ${url}`)
     const result = await fetch(url)
 
     if (!result.ok) {
       throw new Error(`Failed fetching ${url} - ${result.status} ${result.statusText}`)
     }
 
-    console.log('Extract HTML')
+    logger.log('Extract HTML')
     let articleHTML = await result.text()
     articleHTML = articleHTML.replace(/(\r\n|\n|\r|\t)/gm, '')
 
     const fileName = `fetchArticle/out/${awsRequestId}.json`
 
-    console.log(`Put '${fileName}' to '${S3.bucket}' Bucket`)
+    logger.log(`Put '${fileName}' to '${S3.bucket}' Bucket`)
     const s3Response = await S3.putObject({
       Key: fileName,
       Body: JSON.stringify({ article: articleHTML })
@@ -36,7 +38,7 @@ export async function handler(event, context, callback) {
     })
 
 
-    console.log('Fetch Article succeeded')
+    logger.log('Fetch Article succeeded')
     callback(null, JSON.stringify(succeedResponse))
   } catch (err) {
     callback(err)

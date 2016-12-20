@@ -6,7 +6,7 @@ import event from './event.json'
 const ExtractArticle = promisifyLambda(handler)
 
 
-describe('ExtractArticle ƛ handler', async function () {
+describe('ƛ ExtractArticleReadability', async function () {
   describe('extracted Article', function () {
     let article
 

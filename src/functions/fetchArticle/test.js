@@ -6,7 +6,7 @@ import event from './event.json'
 const FetchArticle = promisifyLambda(handler)
 
 
-describe('FetchArticle ƛ handler', async function () {
+describe('ƛ FetchArticle', async function () {
   let article
 
   before(async function () {

@@ -14,6 +14,9 @@ We're using [ESLint](http://eslint.org/) with a slightly modified version of the
 
 ### Lambda
 
+Check the [Getting Started Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) first!
+You'll find all Lambda functions within `src/functons`.
+
 #### Build
 
     $ gulp lambda:build  # builds all lambda functions
@@ -26,26 +29,49 @@ We're using [ESLint](http://eslint.org/) with a slightly modified version of the
     $ gulp lambda:bundle --function <functionName>  # build and bundle one function
 
 
-#### Deployment
+### StepFunctions
+
+Check the [Getting Started Guide](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) first!
+Stepfunctions flows are defined within `src/workflows`.
+
+## Testing
+
+We're using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for testing.  
+**Each Lambda function and each Workflow has to be tested.**
+
+Run all tests with
+
+    $ gulp test
+
+
+#### Lambdas
+
+Each lambda should have a `test.js` file within its directory (`src/functions/<functionName>/test.js`).
+Run the tests for a single lambda function with
+
+    $ gulp test --function <functionName>
+
+To Run all Lambda functions tests you can use
+
+    $ gulp test --functions
+
+
+#### StepFunctions
+
+StepFunctions tests are defined within the workflows `test.js` file (`src/workflows/tests.js`). *We will change this in the future.*  
+Run the workflows tests with
+
+    $ gulp test --workflows
+
+
+## Deployment
+
+#### Lambdas
 
     $ gulp lambda:deploy  # build, bundle and deploy all lambda functions
     $ gulp lambda:deploy --function <functionName>  # build, bundle and deploy the one lambda function
 
 
-#### Tests
-
-Run tests with
-
-    $ gulp test --functions  # test all lambda functions
-    $ gulp test --function <functionName>  # test one lambda function
-
-
-### StepFunctions
-
-#### Deployment
+#### StepFunctions
 
     $ gulp steps:deploy --workflow <workflowNameWithoutPrefix>
-
-#### tests
-
-    $ gulp test --workflows  # test all workflows

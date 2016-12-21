@@ -16,7 +16,7 @@ gulp.task('test', () => {
   const functions = argv.functions
   const workflows = argv.workflows
 
-  let tests = './src/**/test.js'
+  let tests = './src/**/*test.js'
 
   if (lambdaFunc) {
     tests = path.join(__dirname, 'src', 'functions', lambdaFunc, 'test.js')

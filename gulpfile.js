@@ -36,6 +36,8 @@ gulp.task('test', () => {
       './spec/config'
     ]
   }))
+  .once('error', () => process.exit(1))
+  .once('end', () => process.exit())
 })
 
 

@@ -4,6 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
+    "test": "gulp test",
     "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/node-modules/' ."
   },
   "author": "Johannes Dirr <johannes.dirr@kreuzwerker.de>",

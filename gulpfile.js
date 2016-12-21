@@ -4,8 +4,6 @@ const del = require('del')
 const gulp = require('gulp')
 const mocha = require('gulp-mocha')
 const path = require('path')
-const Lambda = require('./lib/aws/lambda')
-const StepFunctions = require('./lib/aws/stepFunctions')
 
 
 /*
@@ -51,11 +49,11 @@ gulp.task('clean', done => del(['./dist'], done))
  * ---- AWS Lambda -------------------------------------------------------------
  * ---- see gulpfile.lambda.js for lambda specific tasks -----------------------
  */
-require('./gulpfile.lambda')(Lambda)
+require('./lib/gulpfile.lambda')
 
 
 /*
  * ---- AWS StepFunctions ------------------------------------------------------
  * ---- see gulpfile.stepfunctions.js for stepfunction specific tasks ----------
  */
-require('./gulpfile.stepfunctions')(StepFunctions)
+require('./lib/gulpfile.stepfunctions')

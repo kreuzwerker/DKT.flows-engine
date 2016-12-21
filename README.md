@@ -1,4 +1,4 @@
-# DKT.flows-engine
+# DKT.flows-engine [![Build Status](https://travis-ci.com/kreuzwerker/DKT.flows-engine.svg?token=A7dqxPp7AVbquUcvwYvx&branch=master)](https://travis-ci.com/kreuzwerker/DKT.flows-engine)
 
 ## Requirements
 

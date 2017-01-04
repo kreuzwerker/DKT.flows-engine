@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+
+program._name = 'cli/dkt stepfunctions'
+program
+  .command('deploy', 'deploy Step Functions')
+  .parse(process.argv)

@@ -8,7 +8,7 @@ const settings = require('../settings')
 /*
  * ---- deploy description -----------------------------------------------------
  */
-program._name = 'dkt lambda deploy'
+program._name = 'cli/dkt lambda deploy'
 program
   .description('Deploy Functions zip to AWS Lambda')
   .option('-f, --function <name>', 'only one function')

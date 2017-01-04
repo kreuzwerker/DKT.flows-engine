@@ -5,9 +5,9 @@ const fsUtil = require('../lib/fsUtil')
 const settings = require('../settings')
 
 /*
- * ---- bundle description -----------------------------------------------------
+ * ---- build description ------------------------------------------------------
  */
-program._name = 'dkt lambda bundle'
+program._name = 'cli/dkt lambda build'
 program
   .description('Build Functions')
   .option('-f, --function <name>', 'only one function')
@@ -23,7 +23,7 @@ const lambdaFunc = program.function
 
 if (lambdaFunc) {
   /*
-   * ---- bundle a single lambda function --------------------------------------
+   * ---- build a single lambda function ---------------------------------------
    */
   logger.log('START', 'Build Lambda', `'${lambdaFunc}'`)
 
@@ -36,7 +36,7 @@ if (lambdaFunc) {
     .catch(err => logger.error(`Building ${lambdaFunc} failed.`, err))
 } else {
   /*
-   * ---- bundle all lambda functions ------------------------------------------
+   * ---- build all lambda functions -------------------------------------------
    */
 
   logger.log('START', 'Build Lambdas')

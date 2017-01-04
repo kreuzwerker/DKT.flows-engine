@@ -6,7 +6,7 @@ const settings = require('../settings')
 /*
  * ---- bundle description -----------------------------------------------------
  */
-program._name = 'dkt lambda bundle'
+program._name = 'cli/dkt lambda bundle'
 program
   .description('Bundle Functions to zip files')
   .option('-f, --function <name>', 'only one function')

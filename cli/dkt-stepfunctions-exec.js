@@ -9,8 +9,8 @@ const fsUtil = require('../lib/fsUtil')
 program._name = 'cli/dkt stepfunctions exec'
 program
   .description('Exec Workflow')
-  .option('-w, --workflow <name>', 'only one workflow')
-  .option('-d, --data <jsonString>', 'json payload')
+  .option('-w, --workflow <name>', 'only one workflow - required!')
+  .option('-d, --data <jsonString>', 'json payload - required!')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 

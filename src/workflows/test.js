@@ -40,12 +40,6 @@ describe('Workflows', function () {
           expect(state).to.have.ownProperty('Type')
           expect(state.Type).is.a('string')
         })
-
-        it(`'${key}' has 'Resource' property`, function () {
-          const state = states[key]
-          expect(state).to.have.ownProperty('Resource')
-          expect(state.Type).is.a('string')
-        })
       })
     })
   })

@@ -5,11 +5,46 @@
     "FetchArticle": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
-      "Next": "ExtractArticleUnfluff"
+      "Next": "ExtractArticle"
     },
-    "ExtractArticleUnfluff": {
-      "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleUnfluff",
+    "ExtractArticle": {
+      "Type": "Parallel",
+      "Next": "MergeJSONs",
+      "Branches": [
+        {
+          "StartAt": "ExtractArticleTitle",
+          "States": {
+            "ExtractArticleTitle": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleTitle",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "ExtractArticleDate",
+          "States": {
+            "ExtractArticleDate": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleDate",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "ExtractArticleText",
+          "States": {
+            "ExtractArticleText": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleText",
+              "End": true
+            }
+          }
+        }
+      ]
+    },
+    "MergeJSONs": {
+      "Type": "Pass",
       "End": true
     }
   }

@@ -1,9 +1,6 @@
 const program = require('commander')
-const path = require('path')
-const fs = require('fs')
-const yazl = require('yazl')
 const Logger = require('./logger')
-const fsUtil = require('../lib/fsUtil')
+const Lambda = require('../lib/aws/lambda')
 const settings = require('../settings')
 
 /*
@@ -23,18 +20,21 @@ const logger = Logger(program._name, program.verbose)
 const inputDir = program.input || settings.fs.dist.base
 const outputDir = program.output || settings.fs.dist.base
 const lambdaFunc = program.function
-const defaultHandler = settings.fs.functions.handler
 
 if (lambdaFunc) {
   /*
    * ---- bundle a single lambda function --------------------------------------
    */
   logger.log('Bundle Lambda', `'${lambdaFunc}'`)
+  Lambda.bundle(lambdaFunc, inputDir, outputDir)
+    .then(() => logger.success(`Bundled Lambda '${lambdaFunc}'.`))
+    .catch(err => logger.error(`Bundling Lambda '${lambdaFunc}' failed.`, err))
 } else {
   /*
    * ---- bundle all lambda functions ------------------------------------------
    */
-
   logger.log('Bundle Lambdas')
-  logger.log('TODO')
+  Lambda.bundleAll(inputDir, outputDir)
+    .then(() => logger.success('Bundled all Lambda Functions'))
+    .catch(err => logger.error('Bundling Lambdas failed.', err))
 }

@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+require('babel-polyfill')
+require('babel-register') // remove this when testing a bundled lambda function
+require('../spec/config')
+const program = require('commander')
+const Mocha = require('mocha')
+const Path = require('path')
+const fsUtil = require('../lib/fsUtil')
+const settings = require('../settings.js')
+
+
+/*
+ * ---- test description -------------------------------------------------------
+ */
+program._name = 'cli/dkt test'
+program
+  .command('all', 'test everything')
+  .command('functions', 'test Lambda Functions')
+  .command('workflows', 'test Step Functions')
+  .parse(process.argv)

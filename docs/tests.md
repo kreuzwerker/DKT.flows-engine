@@ -6,7 +6,13 @@ We're using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for tes
 Run all tests with
 
 ``` shell
-$ gulp test
+Usage: cli/dkt test all [options]
+
+Test everything
+
+Options:
+
+  -h, --help  output usage information
 ```
 
 #### Lambdas
@@ -15,14 +21,18 @@ Each lambda should have a `test.js` file within its directory (`src/functions/<f
 Run the tests for a single lambda function with
 
 ```shell
-$ gulp test --function <functionName>
+Usage: cli/dkt test functions [options]
+
+Test Functions
+
+Options:
+
+  -h, --help             output usage information
+  -f, --function <name>  only one function
 ```
 
-To Run all Lambda functions tests you can use
+e.g. `cli/dkt test functions -f fetchArticle`
 
-```shell
-$ gulp test --functions
-```
 
 #### StepFunctions
 
@@ -30,5 +40,11 @@ StepFunctions tests are defined within the workflows `test.js` file (`src/workfl
 Run the workflows tests with
 
 ```shell
-$ gulp test --workflows
+Usage: cli/dkt test workflows [options]
+
+Test Workflows
+
+Options:
+
+  -h, --help  output usage information
 ```

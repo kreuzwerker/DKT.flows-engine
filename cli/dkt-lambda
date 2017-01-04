@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+
+program._name = 'cli/dkt lambda'
+program
+  .command('deploy', 'deploy Lambda functions')
+  .command('build', 'build lambda functions')
+  .command('bundle', 'bundle lambda functions')
+  .parse(process.argv)

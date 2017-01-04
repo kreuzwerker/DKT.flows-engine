@@ -3,12 +3,32 @@
 #### Lambdas
 
 ```shell
-$ gulp lambda:deploy  # build, bundle and deploy all lambda functions
-$ gulp lambda:deploy --function <functionName>  # build, bundle and deploy the one lambda function
+Usage: cli/dkt lambda deploy [options]
+
+Deploy Functions zip to AWS Lambda
+
+Options:
+
+  -h, --help             output usage information
+  -f, --function <name>  only one function
+  -F, --file             path to directory with the zip file - default: <path/to/repository>/dist/
+  -v, --verbose          verbose output
 ```
+
+e.g. `$ cli/dkt lambda deploy -v -f fetchArticle`
 
 #### StepFunctions
 
 ```shell
-$ gulp steps:deploy --workflow <workflowNameWithoutPrefix>
+Usage: cli/dkt stepfunctions deploy [options]
+
+Deploy Workflows
+
+Options:
+
+  -h, --help             output usage information
+  -w, --workflow <name>  only one workflow
+  -v, --verbose          verbose output
 ```
+
+e.g. `$ cli/dkt stepfunctions deploy -v -w articleTest`

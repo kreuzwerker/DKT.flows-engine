@@ -3,14 +3,14 @@ const baseConfig = require('./webpack.config.base')
 const settings = require('../settings')
 
 
-function createWebpackConfig(entry, bundleDirName) {
+function createWebpackConfig(entry, bundleDirName, outputDir = settings.fs.dist.base) {
   return Object.assign({}, baseConfig, {
     entry: [
       'babel-polyfill',
       entry
     ],
     output: {
-      path: path.join(settings.fs.dist.base, bundleDirName),
+      path: path.join(outputDir, bundleDirName),
       filename: 'index.js',
       libraryTarget: 'commonjs2'
     }

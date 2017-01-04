@@ -18,16 +18,37 @@ You'll find all Lambda functions within `src/functons`.
 #### Build
 
 ```shell
-$ gulp lambda:build  # builds all lambda functions
-$ gulp lambda:build --function <functionName>  # builds one function
+Usage: cli/dkt lambda build [options]
+
+Build Functions
+
+Options:
+
+  -h, --help             output usage information
+  -f, --function <name>  only one function
+  -o, --output <path>    path to output directory - default: <path/to/repository>/dist/
+  -v, --verbose          verbose output
 ```
+
+e.g. `$ cli/dkt lambda build -v -f fetchArticle`
 
 #### Bundle
 
 ```shell
-$ gulp lambda:bundle  # build and bundle all lambda functions
-$ gulp lambda:bundle --function <functionName>  # build and bundle one function
+Usage: cli/dkt lambda bundle [options]
+
+Bundle Functions to zip files
+
+Options:
+
+  -h, --help             output usage information
+  -f, --function <name>  only one function
+  -i, --input <path>     path to directory with functions - default: <path/to/repository>/dist/
+  -o, --output <path>    path to output directory - default: <path/to/repository>/dist/
+  -v, --verbose          verbose output
 ```
+
+e.g. `$ cli/dkt lambda bundle -v -f fetchArticle`
 
 
 ### StepFunctions

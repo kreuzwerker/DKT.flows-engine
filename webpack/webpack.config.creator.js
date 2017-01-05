@@ -9,6 +9,9 @@ function createWebpackConfig(entry, bundleDirName, outputDir = settings.fs.dist.
       'babel-polyfill',
       entry
     ],
+    externals: {
+      'aws-sdk': 'aws-sdk'
+    },
     output: {
       path: path.join(outputDir, bundleDirName),
       filename: 'index.js',

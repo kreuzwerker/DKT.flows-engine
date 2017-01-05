@@ -1,5 +1,6 @@
 import read from 'read-art'
 import Promise from 'bluebird'
+import _isString from 'lodash/isString'
 import Logger from '../../utils/logger'
 import S3 from '../../utils/s3'
 
@@ -13,13 +14,13 @@ const readPromise = url => new Promise((resolve, reject) => {
 
 
 /*
- * Extract article
+ * Extract article text with 'readability'
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
 
   try {
-    const { Key } = JSON.parse(event)
+    const { Key } = _isString(event) ? JSON.parse(event) : event
     const { awsRequestId } = context
 
     logger.log(`Get '${Key}' from '${S3.bucket}'`)

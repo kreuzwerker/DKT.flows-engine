@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import _isString from 'lodash/isString'
 import Logger from '../../utils/logger'
 import S3 from '../../utils/s3'
 
@@ -10,7 +11,7 @@ export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
 
   try {
-    const { url } = event
+    const { url } = _isString(event) ? JSON.parse(event) : event
     const { awsRequestId } = context
 
     logger.log(`Try to fetch data from ${url}`)

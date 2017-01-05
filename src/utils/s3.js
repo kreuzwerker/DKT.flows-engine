@@ -1,28 +1,24 @@
 /*
  * S3 Utitlity which can be used in lambda functions
  */
-
 import AWS from 'aws-sdk'
 import settings from '../../settings'
 
 
 function S3() {
   const { apiVersion, bucket } = settings.aws.s3
+
   const s3 = new AWS.S3({ apiVersion })
 
+  function merge(params) {
+    return Object.assign({}, { Bucket: bucket }, params)
+  }
 
-  const getObject = params => s3.getObject(Object.assign({}, params, {
-    Bucket: bucket
-  })).promise()
-
-
-
-  const putObject = params => s3.putObject(Object.assign({}, params, {
-    Bucket: bucket
-  })).promise()
-
-
-  return { bucket, getObject, putObject }
+  return {
+    bucket,
+    getObject: params => s3.getObject(merge(params)).promise(),
+    putObject: params => s3.putObject(merge(params)).promise()
+  }
 }
 
 

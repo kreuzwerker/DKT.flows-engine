@@ -26,8 +26,8 @@ module.exports = {
     project: {
       base: Path.resolve(__dirname)
     },
-    functions: {
-      base: Path.resolve(__dirname, 'src', 'functions'),
+    lambdas: {
+      base: Path.resolve(__dirname, 'src', 'lambdas'),
       handler: 'index.js'
     },
     workflows: {

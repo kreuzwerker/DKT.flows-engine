@@ -18,7 +18,7 @@ program
 
 
 const lambdaFunc = program.function
-const testBase = settings.fs.functions.base
+const testBase = settings.fs.lambdas.base
 const mocha = new Mocha({})
 
 let tests = []

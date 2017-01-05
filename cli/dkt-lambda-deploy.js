@@ -28,7 +28,7 @@ if (lambdaFunc) {
    */
   logger.log('Deploy Lambda', `'${lambdaFunc}'`)
 
-  if (!fsUtil.functionExists(lambdaFunc)) {
+  if (!fsUtil.lambdaExists(lambdaFunc)) {
     return logger.error(`${lambdaFunc} does not exist.`)
   }
 

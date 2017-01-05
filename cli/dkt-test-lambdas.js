@@ -1,5 +1,5 @@
-require('babel-polyfill')
-require('babel-register') // remove this when testing a bundled lambda function
+require('babel-polyfill') // remove this when testing a bundled lambda function
+require('babel-register')
 require('../spec/config')
 const program = require('commander')
 const Mocha = require('mocha')
@@ -10,9 +10,9 @@ const settings = require('../settings.js')
 /*
  * ---- deploy description -----------------------------------------------------
  */
-program._name = 'cli/dkt test functions'
+program._name = 'cli/dkt test lambdas'
 program
-  .description('Test Functions')
+  .description('Test Lambdas')
   .option('-f, --function <name>', 'only one function')
   .parse(process.argv)
 

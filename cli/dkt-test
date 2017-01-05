@@ -15,6 +15,6 @@ const settings = require('../settings.js')
 program._name = 'cli/dkt test'
 program
   .command('all', 'test everything')
-  .command('functions', 'test Lambda Functions')
+  .command('lambdas', 'test Lambda Functions')
   .command('workflows', 'test Step Functions')
   .parse(process.argv)

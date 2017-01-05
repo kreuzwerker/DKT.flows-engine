@@ -17,13 +17,13 @@ Options:
 
 #### Lambdas
 
-Each lambda should have a `test.js` file within its directory (`src/functions/<functionName>/test.js`).
+Each lambda should have a `test.js` file within its directory (`src/lambdas/<functionName>/test.js`).
 Run the tests for a single lambda function with
 
 ```shell
-Usage: cli/dkt test functions [options]
+Usage: cli/dkt test lambdas [options]
 
-Test Functions
+Test Lambdas
 
 Options:
 
@@ -31,7 +31,7 @@ Options:
   -f, --function <name>  only one function
 ```
 
-e.g. `cli/dkt test functions -f fetchArticle`
+e.g. `cli/dkt test lambdas -f fetchArticle`
 
 
 #### StepFunctions

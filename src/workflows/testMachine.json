@@ -1,0 +1,20 @@
+{
+  "Comment": "An test Machine to test the StartWorkflowExecution Lambda - * DO NOT REMOVE! *",
+  "StartAt": "wait_using_seconds",
+  "States": {
+    "wait_using_seconds": {
+      "Type": "Wait",
+      "Seconds": 2,
+      "Next": "wait_using_seconds_2"
+    },
+    "wait_using_seconds_2": {
+      "Type": "Wait",
+      "Seconds": 2,
+      "Next": "end"
+    },
+    "end": {
+      "Type": "Pass",
+      "End": true
+    }
+  }
+}

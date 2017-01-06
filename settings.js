@@ -36,5 +36,9 @@ module.exports = {
     dist: {
       base: Path.resolve(__dirname, 'dist')
     }
+  },
+  tests: {
+    timeout: 5000,
+    includeStack: true
   }
 }

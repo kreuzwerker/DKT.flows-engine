@@ -1,6 +1,7 @@
 import { promisifyLambda } from '../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
+import settings from '../../../settings'
 
 
 const FetchArticle = promisifyLambda(handler)
@@ -10,6 +11,7 @@ describe('ƛ FetchArticle', async function () {
   let article
 
   before(async function () {
+    this.timeout(settings.tests.timout)
     article = await FetchArticle(event, { awsRequestId: 'fetchArticleTest' })
   })
 

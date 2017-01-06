@@ -1,6 +1,7 @@
 const chai = require('chai')
+const settigns = require('../settings')
 
-chai.config.includeStack = true
+chai.config.includeStack = settigns.tests.includeStack
 
 global.expect = chai.expect
 global.AssertionError = chai.AssertionError

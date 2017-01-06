@@ -2,6 +2,7 @@ import { promisifyLambda } from '../../../lib/promisifier'
 import S3 from '../../utils/s3'
 import { handler } from './index'
 import event from './event.json'
+import settings from '../../../settings'
 
 
 const ExtractArticle = promisifyLambda(handler)
@@ -11,6 +12,7 @@ describe('ƛ ExtractArticleTitle', async function () {
   let titleJSON
 
   before(async function () {
+    this.timeout(settings.tests.timeout)
     titleJSON = await ExtractArticle(event, { awsRequestId: 'extractArticleTitle' })
   })
 

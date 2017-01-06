@@ -1,6 +1,7 @@
 import { promisifyLambda } from '../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
+import settings from '../../../settings'
 
 
 const StartWorkflowExecution = promisifyLambda(handler)
@@ -8,6 +9,7 @@ const StartWorkflowExecution = promisifyLambda(handler)
 
 describe('ƛ StartWorkflowExecution', async function () {
   it(`starts the workflow ${event.workflow}`, function () {
+    this.timeout(settings.tests.timout)
     expect(async () => {
       await StartWorkflowExecution(event, { awsRequestId: 'startWorkflowExecutionTest' })
     }).to.not.throw('good function')
@@ -18,6 +20,7 @@ describe('ƛ StartWorkflowExecution', async function () {
     let result
 
     before(async function () {
+      this.timeout(settings.tests.timout)
       result = await StartWorkflowExecution(event, { awsRequestId: 'startWorkflowExecutionTest' })
     })
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "./cli/dkt",
   "scripts": {
-    "test": "gulp test",
+    "test": "cli/dkt test all",
     "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/node-modules/' ."
   },
   "author": "Johannes Dirr <johannes.dirr@kreuzwerker.de>",

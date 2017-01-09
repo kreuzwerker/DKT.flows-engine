@@ -11,6 +11,7 @@ export async function handler(event, context, callback) {
   const logger = Logger(verbose)
 
   try {
+    logger.log(`start ${workflow} execution`)
     const data = await StepFunctions.startExecution(workflow)
     callback(null, JSON.stringify(data))
   } catch (err) {

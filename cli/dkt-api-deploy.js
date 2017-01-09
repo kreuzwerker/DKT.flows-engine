@@ -26,3 +26,6 @@ if (!stage) {
  */
 logger.log('START', 'Deploy ApiGateway')
 
+ApiGateway.deploy(stage)
+  .then(() => logger.success('Deployed Api'))
+  .catch(err => logger.error('Deploying Api failed.', err))

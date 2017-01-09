@@ -48,3 +48,19 @@ Options:
 
   -h, --help  output usage information
 ```
+
+
+#### Api Gateway
+
+Like StepFunctions, Api tests are defined within the workflows `test.js` file (`src/api/tests.js`). *We will change this in the future.*  
+Run the workflows tests with
+
+```shell
+Usage: cli/dkt test api [options]
+
+Test Api paths
+
+Options:
+
+  -h, --help  output usage information
+```

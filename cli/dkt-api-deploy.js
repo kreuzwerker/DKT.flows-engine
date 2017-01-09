@@ -9,7 +9,7 @@ const ApiGateway = require('../lib/aws/apiGateway')
 program._name = 'cli/dkt api deploy'
 program
   .description('Update ApiGateway')
-  .option('-s, --stage <name>', 'stage to deploy')
+  .option('-s, --stage <name>', 'stage to deploy - required!')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 

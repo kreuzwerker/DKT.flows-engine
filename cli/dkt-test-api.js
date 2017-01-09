@@ -9,7 +9,7 @@ const settings = require('../settings.js')
 /*
  * ---- test description -------------------------------------------------------
  */
-program._name = 'cli/dkt test workflows'
+program._name = 'cli/dkt test api'
 program
   .description('Test Api paths')
   .parse(process.argv)

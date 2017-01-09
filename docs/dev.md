@@ -55,3 +55,9 @@ e.g. `$ cli/dkt lambda bundle -v -f fetchArticle`
 
 Check the [Getting Started Guide](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) first!
 Stepfunctions flows are defined within `src/workflows`.
+
+
+### ApiGateway
+
+Check the [Getting Started Guide](https://aws.amazon.com/api-gateway/getting-started/) first!
+ApiGateway paths are defined within `src/api`.

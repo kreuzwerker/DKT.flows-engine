@@ -36,6 +36,7 @@ Commands:
 
   lambda [command]         build, bundle, deploy functions
   stepfunctions [command]  deploy, start step functions
+  api [command]            deploy/update api gateway
   test [command]           run tests
   help [cmd]               display help for [cmd]
 

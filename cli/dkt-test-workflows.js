@@ -7,7 +7,7 @@ const fsUtil = require('../lib/fsUtil')
 const settings = require('../settings.js')
 
 /*
- * ---- deploy description -----------------------------------------------------
+ * ---- test description -------------------------------------------------------
  */
 program._name = 'cli/dkt test workflows'
 program
@@ -19,7 +19,7 @@ const mocha = new Mocha({})
 
 
 /*
- * ---- test all workflows -------------------------------------------------
+ * ---- test all workflows -----------------------------------------------------
  */
 const tests = fsUtil.fromDir(testBase, 'test.js')
 tests.map(test => mocha.addFile(test))

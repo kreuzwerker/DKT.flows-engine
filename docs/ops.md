@@ -32,3 +32,20 @@ Options:
 ```
 
 e.g. `$ cli/dkt stepfunctions deploy -v -w articleTest`
+
+
+#### ApiGateway
+
+```shell
+Usage: cli/dkt api deploy [options]
+
+Update ApiGateway
+
+Options:
+
+  -h, --help          output usage information
+  -s, --stage <name>  stage to deploy - required!
+  -v, --verbose       verbose output
+```
+
+e.g. `$ cli/dkt api deploy -v -s test`

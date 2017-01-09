@@ -1,7 +1,7 @@
 # DKT.flows-engine Development
 
 Lambdas can be written in ES6 including async functions. We Transform and bundle the Lambda Function with [webpack](https://webpack.github.io/) and [babel](https://babeljs.io/) using the [latest preset](https://babeljs.io/docs/plugins/preset-latest/). See the `.babelrc` file for details.  
-Tools and Scripts written to handle the lambda functions (such as the deployment scripts etc.) should be written for Node 6.9.2.  
+Tools and Scripts written to handle the lambda functions (such as the deployment scripts etc.) should be written for Node 6.9.4.  
 Check the [compat-table](https://kangax.github.io/compat-table/es6/) for more details about which ES6/ES7 features are supported or not.
 
 #### Styleguide

@@ -44,7 +44,8 @@
       ]
     },
     "MergeJSONs": {
-      "Type": "Pass",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:mergeJSONs",
       "End": true
     }
   }

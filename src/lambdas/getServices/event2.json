@@ -1,0 +1,3 @@
+{
+  "query": "{ service(FunctionName: \"fetchArticle\") { FunctionArn Runtime Description LastModified } }"
+}

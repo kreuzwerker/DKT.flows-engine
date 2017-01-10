@@ -11,6 +11,7 @@ export async function handler(event, context, callback) {
   try {
     const logger = Logger(event.verbose)
     const { query } = _isString(event) ? JSON.parse(event) : event
+
     // GraphQL Schema
     const schema = buildSchema(`
       type Service {
@@ -23,6 +24,7 @@ export async function handler(event, context, callback) {
 
       type Query {
         services: [Service]!
+        service(FunctionName: String): Service
       }
     `)
 

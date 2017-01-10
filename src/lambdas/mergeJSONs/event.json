@@ -1,0 +1,5 @@
+[
+  "{\"ETag\":\"\\\"8b8fb71cd39e71f5bee5783789eb4514\\\"\",\"Key\":\"extractArticleTitle/out/extractArticleTitle.json\"}",
+  "{\"ETag\":\"\\\"da9c8342a7304c3a5ece0e0708ea916e\\\"\",\"Key\":\"extractArticleDate/out/extractArticleDate.json\"}",
+  "{\"ETag\":\"\\\"560b7758810978a6373b54781adf1ef4\\\"\",\"Key\":\"extractArticleText/out/extractArticleText.json\"}"
+]

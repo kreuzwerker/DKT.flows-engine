@@ -1,4 +1,3 @@
 {
-  "query": "{ services }",
-  "verbose": true
+  "query": "{ services { FunctionName FunctionArn Runtime Description LastModified } }"
 }

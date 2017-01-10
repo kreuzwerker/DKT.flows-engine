@@ -7,8 +7,29 @@ const getServices = promisifyLambda(handler)
 
 
 describe('ƛ GetServices', function () {
-  it('runs', async function () {
-    const res = await getServices(event, { awsRequestId: 'getServicesTest' })
-    console.log(res)
+  it('does not throw an error', function () {
+    expect(async () => {
+      await getServices(event, { awsRequestId: 'getServicesTest' })
+    }).to.not.throw(Error)
+  })
+
+  describe('returns', function () {
+    let result
+
+    before(async function () {
+      result = await getServices(event, { awsRequestId: 'getServicesTest' })
+    })
+
+    it('a list of Lambda Functions with all required parameters', function () {
+      const json = JSON.parse(result)
+      expect(json.data.services).to.be.instanceof(Array)
+      json.data.services.forEach(service => expect(service).has.keys([
+        'FunctionName',
+        'FunctionArn',
+        'Runtime',
+        'Description',
+        'LastModified'
+      ]))
+    })
   })
 })

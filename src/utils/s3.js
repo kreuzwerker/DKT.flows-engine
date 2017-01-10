@@ -7,7 +7,6 @@ import settings from '../../settings'
 
 function S3() {
   const { apiVersion, bucket } = settings.aws.s3
-
   const s3 = new AWS.S3({ apiVersion })
 
   function merge(params) {

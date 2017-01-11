@@ -10,7 +10,8 @@ function Lambda() {
   const lambda = new AWS.Lambda({ apiVersion })
 
   return {
-    listFunctions: params => lambda.listFunctions(params).promise()
+    listFunctions: params => lambda.listFunctions(params).promise(),
+    getFunction: params => lambda.getFunction(params).promise()
   }
 }
 

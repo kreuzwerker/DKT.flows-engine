@@ -16,7 +16,8 @@ function S3() {
   return {
     bucket,
     getObject: params => s3.getObject(merge(params)).promise(),
-    putObject: params => s3.putObject(merge(params)).promise()
+    putObject: params => s3.putObject(merge(params)).promise(),
+    listObjects: params => s3.listObjects(merge(params)).promise()
   }
 }
 

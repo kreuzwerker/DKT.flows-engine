@@ -12,7 +12,6 @@ export async function handler(event, context, callback) {
     const { query } = _isString(event) ? JSON.parse(event) : event
     logger.log('Query:', query)
     const response = await graphql(Schema, query)
-
     callback(null, JSON.stringify(response))
   } catch (err) {
     callback(err)

@@ -7,11 +7,29 @@ import {
 import * as Resolvers from './resolvers'
 
 
+const S3Content = new GraphQLObjectType({
+  name: 'S3Content',
+  fields: () => ({
+    Key: { type: GraphQLString },
+    LastModified: { type: GraphQLString },
+    Size: { type: GraphQLString }
+  })
+})
+
+
 const S3Type = new GraphQLObjectType({
   name: 'S3',
   fields: () => ({
     Bucket: { type: GraphQLString },
-    Prefix: { type: GraphQLString }
+    Prefix: { type: GraphQLString },
+    Contents: {
+      type: new GraphQLList(S3Content),
+      args: {
+        Bucket: { type: GraphQLString },
+        Prefix: { type: GraphQLString }
+      },
+      resolve: Resolvers.s3Content
+    }
   })
 })
 

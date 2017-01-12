@@ -7,7 +7,6 @@ import settings from '../../settings'
 
 function S3() {
   const { apiVersion, bucket } = settings.aws.s3
-
   const s3 = new AWS.S3({ apiVersion })
 
   function merge(params) {
@@ -17,7 +16,8 @@ function S3() {
   return {
     bucket,
     getObject: params => s3.getObject(merge(params)).promise(),
-    putObject: params => s3.putObject(merge(params)).promise()
+    putObject: params => s3.putObject(merge(params)).promise(),
+    listObjects: params => s3.listObjects(merge(params)).promise()
   }
 }
 

@@ -1,0 +1,3 @@
+{
+  "query": "{ services { FunctionName FunctionArn Runtime Description LastModified } }"
+}

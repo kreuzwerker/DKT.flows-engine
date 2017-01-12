@@ -1,11 +1,12 @@
 const Path = require('path')
 
 
-const account = 855433257886
+const ACCOUNT = 855433257886
 
 
 module.exports = {
-  aws: { account,
+  aws: {
+    account: ACCOUNT,
     credentials: {
       profile: 'DKT'
     },
@@ -19,7 +20,7 @@ module.exports = {
     },
     lambda: {
       apiVersion: '2015-03-31',
-      arn: `arn:aws:iam::${account}:role/lambda_s3_exec_role`,
+      arn: `arn:aws:iam::${ACCOUNT}:role/lambda_s3_exec_role`,
       region: 'eu-west-1',
       handler: 'index.handler',
       runtime: 'nodejs4.3',
@@ -31,7 +32,7 @@ module.exports = {
     },
     stepFunctions: {
       apiVersion: '2016-11-23',
-      arn: `arn:aws:iam::${account}:role/service-role/StatesExecutionRole-eu-west-1`
+      arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`
     }
   },
   fs: {

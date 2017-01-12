@@ -4,7 +4,7 @@ import S3 from '../../utils/s3'
 
 
 /*
- * Query resolvers
+ * Root resolvers
  */
 export const Query = {
   services: async () => {
@@ -20,17 +20,16 @@ export const Query = {
 
 
 /*
- * field resolvers
+ * Field resolvers
  */
-export function s3({ FunctionName }) {
-  return ({
+export const s3 = {
+  info: ({ FunctionName }) => ({
     Bucket: settings.aws.s3.bucket,
     Prefix: `${FunctionName}/out/`
-  })
-}
+  }),
 
-
-export async function s3Content({ Bucket, Prefix }) {
-  const result = await S3.listObjects({ Bucket, Prefix })
-  return result.Contents
+  content: async ({ Bucket, Prefix }) => {
+    const result = await S3.listObjects({ Bucket, Prefix })
+    return result.Contents
+  }
 }

@@ -28,7 +28,7 @@ const S3Type = new GraphQLObjectType({
         Bucket: { type: GraphQLString },
         Prefix: { type: GraphQLString }
       },
-      resolve: Resolvers.s3Content
+      resolve: Resolvers.s3.content
     }
   })
 })
@@ -47,7 +47,7 @@ const ServiceType = new GraphQLObjectType({
       args: {
         FunctionName: { type: GraphQLString }
       },
-      resolve: Resolvers.s3
+      resolve: Resolvers.s3.info
     }
   })
 })

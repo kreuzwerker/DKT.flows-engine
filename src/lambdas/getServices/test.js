@@ -1,7 +1,7 @@
 import { promisifyLambda } from '../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
-import event2 from './event2.json' // TODO 
+import event2 from './event2.json' // TODO
 
 
 const getServices = promisifyLambda(handler)
@@ -10,7 +10,7 @@ const getServices = promisifyLambda(handler)
 describe('ƛ GetServices', function () {
   it('does not throw an error', function () {
     expect(async () => {
-      await getServices(event, { awsRequestId: 'getServicesTest' })
+      getServices(event2, { awsRequestId: 'getServicesTest' })
     }).to.not.throw(Error)
   })
 

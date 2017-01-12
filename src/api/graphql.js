@@ -1,12 +1,12 @@
 const settings = require('../../settings')
 
 const { account, apiGateway, lambda } = settings.aws
-const lambdaFunction = 'startWorkflowExecution'
+const lambdaFunction = 'getServices'
 
 
 module.exports = {
-  '/flow': {
-    'put': {
+  '/graphql': {
+    'post': {
       'produces': [
         'application/json'
       ],

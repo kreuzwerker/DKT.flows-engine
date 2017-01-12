@@ -5,7 +5,8 @@ const ACCOUNT = 855433257886
 
 
 module.exports = {
-  aws: { ACCOUNT,
+  aws: {
+    account: ACCOUNT,
     credentials: {
       profile: 'DKT'
     },

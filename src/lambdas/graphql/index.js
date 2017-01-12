@@ -4,7 +4,7 @@ import Logger from '../../utils/logger'
 import Schema from './schema'
 
 /*
- * get available services (lambdas) using graphql
+ * graphql service
  */
 export async function handler(event, context, callback) {
   try {

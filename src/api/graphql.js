@@ -1,7 +1,7 @@
 const settings = require('../../settings')
 
 const { account, apiGateway, lambda } = settings.aws
-const lambdaFunction = 'getServices'
+const lambdaFunction = 'graphql'
 
 
 module.exports = {

@@ -4,13 +4,13 @@ import event from './event.json'
 import event2 from './event2.json' // TODO
 
 
-const getServices = promisifyLambda(handler)
+const graphQL = promisifyLambda(handler)
 
 
-describe('ƛ GetServices', function () {
+describe('ƛ GraphQL', function () {
   it('does not throw an error', function () {
     expect(async () => {
-      getServices(event2, { awsRequestId: 'getServicesTest' })
+      graphQL(event2, { awsRequestId: 'getServicesTest' })
     }).to.not.throw(Error)
   })
 
@@ -18,7 +18,7 @@ describe('ƛ GetServices', function () {
     let result
 
     before(async function () {
-      result = await getServices(event, { awsRequestId: 'getServicesTest' })
+      result = await graphQL(event, { awsRequestId: 'getServicesTest' })
     })
 
     it('a list of Lambda Functions with all required parameters', function () {

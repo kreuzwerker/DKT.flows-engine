@@ -1,0 +1,16 @@
+{
+  "Comment": "NLP request test",
+  "StartAt": "FetchArticle",
+  "States": {
+    "FetchArticle": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Next": "NlpRequest"
+    },
+    "NlpRequest": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:nlpRequest",
+      "End": true
+    }
+  }
+}

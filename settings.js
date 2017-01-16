@@ -11,19 +11,23 @@ module.exports = {
       profile: 'DKT'
     },
     cloudFormation: {
-      apiVersion: '2010-05-15'
+      apiVersion: '2010-05-15',
+      stackName: 'DKT-flow-engine',
+      policy: `arn:aws:iam::${ACCOUNT}:policy/flow-engine-lambda-exec-role`,
+      capabilities: 'CAPABILITY_IAM',
+      region: 'eu-west-1'
     },
     apiGateway: {
       restApiId: 'mbrnjwzz5a',
       host: 'mbrnjwzz5a.execute-api.eu-west-1.amazonaws.com',
       apiVersion: '2015-07-09',
-      title: 'DKT.flow-engine',
+      title: 'DKT-flow-engine',
       mode: 'overwrite', // overwrite || merge
       region: 'eu-west-1'
     },
     lambda: {
       apiVersion: '2015-03-31',
-      arn: `arn:aws:iam::${ACCOUNT}:role/flow-engine-lambda-exec-role`,
+      arn: `arn:aws:iam::${ACCOUNT}:role/lambda_s3_exec_role`,
       region: 'eu-west-1',
       handler: 'index.handler',
       runtime: 'nodejs4.3',

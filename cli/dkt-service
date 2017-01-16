@@ -2,7 +2,7 @@
 
 const program = require('commander')
 
-program._name = 'cli/dkt api'
+program._name = 'cli/dkt service'
 program
-  .command('deploy', 'deploy Api Gateway')
+  .command('deploy', 'deploy service')
   .parse(process.argv)

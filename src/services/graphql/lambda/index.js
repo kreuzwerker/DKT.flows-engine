@@ -1,6 +1,6 @@
 import { graphql } from 'graphql'
 import _isString from 'lodash/isString'
-import Logger from '../../utils/logger'
+import Logger from '../../../utils/logger'
 import Schema from './schema'
 
 /*

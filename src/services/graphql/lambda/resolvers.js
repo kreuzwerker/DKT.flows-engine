@@ -1,6 +1,6 @@
-import Lambda from '../../utils/lambda'
-import settings from '../../../settings'
-import S3 from '../../utils/s3'
+import Lambda from '../../../utils/lambda'
+import settings from '../../../../settings'
+import S3 from '../../../utils/s3'
 
 
 /*

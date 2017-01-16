@@ -1,9 +1,8 @@
 const path = require('path')
 const baseConfig = require('./webpack.config.base')
-const settings = require('../settings')
 
 
-function createWebpackConfig(entry, bundleDirName, outputDir = settings.fs.dist.base) {
+function createWebpackConfig(entry, bundleDirName, outputDir) {
   return Object.assign({}, baseConfig, {
     entry: [
       'babel-polyfill',

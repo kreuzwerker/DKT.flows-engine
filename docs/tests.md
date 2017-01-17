@@ -15,23 +15,23 @@ Options:
   -h, --help  output usage information
 ```
 
-#### Lambdas
+#### resources
 
 Each lambda should have a `test.js` file within its directory (`src/lambdas/<functionName>/test.js`).
 Run the tests for a single lambda function with
 
 ```shell
-Usage: cli/dkt test lambdas [options]
+Usage: cli/dkt test resources [options]
 
-Test Lambdas
+Test Resources
 
 Options:
 
   -h, --help             output usage information
-  -f, --function <name>  only one function
+  -r, --resource <name>  only one resource
 ```
 
-e.g. `cli/dkt test lambdas -f fetchArticle`
+e.g. `cli/dkt test resources -r fetchArticle`
 
 
 #### StepFunctions
@@ -43,22 +43,6 @@ Run the workflows tests with
 Usage: cli/dkt test workflows [options]
 
 Test Workflows
-
-Options:
-
-  -h, --help  output usage information
-```
-
-
-#### Api Gateway
-
-Like StepFunctions, Api tests are defined within the workflows `test.js` file (`src/api/tests.js`). *We will change this in the future.*  
-Run the workflows tests with
-
-```shell
-Usage: cli/dkt test api [options]
-
-Test Api paths
 
 Options:
 

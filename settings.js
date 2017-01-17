@@ -10,11 +10,18 @@ module.exports = {
     credentials: {
       profile: 'DKT'
     },
+    cloudFormation: {
+      apiVersion: '2010-05-15',
+      stackName: 'DKT-flow-engine',
+      policy: `arn:aws:iam::${ACCOUNT}:policy/flow-engine-lambda-exec-role`,
+      capabilities: 'CAPABILITY_IAM',
+      region: 'eu-west-1'
+    },
     apiGateway: {
       restApiId: 'mbrnjwzz5a',
       host: 'mbrnjwzz5a.execute-api.eu-west-1.amazonaws.com',
       apiVersion: '2015-07-09',
-      title: 'DKT.flow-engine',
+      title: 'DKT-flow-engine',
       mode: 'overwrite', // overwrite || merge
       region: 'eu-west-1'
     },
@@ -51,6 +58,9 @@ module.exports = {
     },
     dist: {
       base: Path.resolve(__dirname, 'dist')
+    },
+    resources: {
+      base: Path.resolve(__dirname, 'src', 'resources')
     }
   },
   tests: {

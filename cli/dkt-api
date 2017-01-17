@@ -1,8 +1,0 @@
-#!/usr/bin/env node
-
-const program = require('commander')
-
-program._name = 'cli/dkt api'
-program
-  .command('deploy', 'deploy Api Gateway')
-  .parse(process.argv)

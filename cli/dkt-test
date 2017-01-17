@@ -3,10 +3,6 @@ require('babel-polyfill')
 require('babel-register') // remove this when testing a bundled lambda function
 require('../spec/config')
 const program = require('commander')
-const Mocha = require('mocha')
-const Path = require('path')
-const fsUtil = require('../lib/fsUtil')
-const settings = require('../settings.js')
 
 
 /*
@@ -15,7 +11,6 @@ const settings = require('../settings.js')
 program._name = 'cli/dkt test'
 program
   .command('all', 'test everything')
-  .command('api', 'test ApiGateway path definitions')
-  .command('lambdas', 'test Lambda Functions')
+  .command('services', 'test Services')
   .command('workflows', 'test Step Function definitions')
   .parse(process.argv)

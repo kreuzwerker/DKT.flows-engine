@@ -12,19 +12,19 @@ const settings = require('../settings.js')
  */
 program._name = 'cli/dkt test lambdas'
 program
-  .description('Test Lambdas')
-  .option('-f, --function <name>', 'only one function')
+  .description('Test Services')
+  .option('-s, --service <name>', 'only one service')
   .parse(process.argv)
 
 
-const lambdaFunc = program.function
-const testBase = settings.fs.lambdas.base
+const lambdaFn = program.service
+const testBase = settings.fs.services.base
 const mocha = new Mocha({})
 
 let tests = []
 
-if (lambdaFunc) {
-  tests = fsUtil.fromDir(testBase, `${lambdaFunc}/test.js`)
+if (lambdaFn) {
+  tests = fsUtil.fromDir(testBase, `${lambdaFn}/test.js`)
 } else {
   tests = fsUtil.fromDir(testBase, 'test.js')
 }

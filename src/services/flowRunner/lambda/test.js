@@ -1,7 +1,7 @@
-import { promisifyLambda } from '../../../lib/promisifier'
+import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
-import settings from '../../../settings'
+import settings from '../../../../settings'
 
 
 const StartWorkflowExecution = promisifyLambda(handler)

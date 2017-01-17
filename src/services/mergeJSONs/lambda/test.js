@@ -1,9 +1,9 @@
 import _isString from 'lodash/isString'
-import { promisifyLambda } from '../../../lib/promisifier'
+import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
-import settings from '../../../settings'
-import S3 from '../../utils/s3'
+import settings from '../../../../settings'
+import S3 from '../../../utils/s3'
 
 
 const MergeJSONs = promisifyLambda(handler)

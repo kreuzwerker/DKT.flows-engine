@@ -1,4 +1,4 @@
-import { promisifyLambda } from '../../../lib/promisifier'
+import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
 import event2 from './event2.json' // TODO

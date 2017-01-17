@@ -25,17 +25,12 @@ const execPromise = command => new Promise((resolve, reject) => {
 program._name = 'cli/dkt service deploy'
 program
   .description('Update Service')
-  .option('-s, --service <name>', 'service to deploy - required!')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 
 
 const logger = Logger(program._name, program.verbose)
-const service = program.service
 
-if (!service) {
-  return logger.error('Missing required service parameter')
-}
 
 /*
  * ---- tasks ------------------------------------------------------------------
@@ -43,50 +38,64 @@ if (!service) {
 logger.log('START', 'Deploy Service')
 
 
-const lambdaName = `${service}-${uuidV1()}`
-const s3Key = `services/${service}/${lambdaName}.zip`
-const stackName = settings.aws.cloudFormation.stackName
-const capabilities = settings.aws.cloudFormation.capabilities
-const region = settings.aws.cloudFormation.region
-const serviceTmplPath = path.join(settings.fs.dist.base, `${service}-template.json`)
-
-
-function bundleLambda(fn, base) {
-  logger.log(`Bundle Lambda ${fn}`)
-  return Lambda.bundle(fn, base)
+function bundleLambdas(services, targetBase) {
+  return Promise.all(services.map((serviceFn) => {
+    logger.log(`Bundle Lambda ${serviceFn}`)
+    return Lambda.bundle(serviceFn, targetBase)
+  }))
 }
 
 
-function putLambdaToS3(fn, key, zip) {
-  logger.log(`Put Lambda ${fn} to S3`)
-  return S3.putObject({ Key: key, Body: fs.createReadStream(zip) })
+function putLambdaBundlesToS3(bundles) {
+  return Promise.all(bundles.map(({ fnName, bundlePath }) => {
+    const lambdaName = `${fnName}-${uuidV1()}`
+    const s3Key = `services/${fnName}/${lambdaName}.zip`
+
+    logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
+    return S3.putObject({
+      Key: s3Key,
+      Body: fs.createReadStream(bundlePath)
+    }).then(() => ({
+      service: fnName,
+      key: s3Key
+    }))
+  }))
 }
 
 
-function createCloudFormationTmpl(svcName, tmplPath, key) {
-  logger.log(`Create CloudFormation definition ${svcName}-template.json`)
+function createCloudFormationTmpl(deployedBundles) {
+  logger.log('Create CloudFormation definition dkt-flow-engine-template.json')
+  const serviceTmplPath = path.join(settings.fs.dist.base, 'dkt-flow-engine-template.json')
   const baseTmpl = require('../src/services/serviceBaseTemplate.json') // eslint-disable-line
-  const resource = require(fsUtil.getServiceTemplatePath(svcName)) // eslint-disable-line
-  const cloudFormationTmpl = Object.assign({}, baseTmpl, {
-    Resources: resource({ key })
+  let cloudFormationTmpl = Object.assign({}, baseTmpl, { Resources: {} })
+
+  deployedBundles.forEach(({ service, key }) => {
+    const resource = require(fsUtil.getServiceTemplatePath(service)) // eslint-disable-line
+    const updatedResource = Object.assign({}, cloudFormationTmpl.Resources, resource({ key }))
+    cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
+      Resources: updatedResource
+    })
   })
 
-  fs.writeFileSync(tmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
-  return Promise.resolve()
+  fs.writeFileSync(serviceTmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
+  return Promise.resolve(serviceTmplPath)
 }
 
 
-function deployCloudFormationTmpl(svcName, tmplPath) {
-  logger.log(`Deploy ${svcName}-template.json`)
+function deployCloudFormationTmpl(tmplPath) {
+  logger.log('Deploy dkt-flow-engine-template.json')
+  const stackName = settings.aws.cloudFormation.stackName
+  const capabilities = settings.aws.cloudFormation.capabilities
+  const region = settings.aws.cloudFormation.region
   return execPromise(`aws cloudformation deploy --template-file ${tmplPath} --stack-name ${stackName} --capabilities ${capabilities} --region ${region}`)
 }
 
 
-logger.log(`Build Lambda ${service}`)
-return Lambda.build(service)
-  .then(() => bundleLambda(service, settings.fs.dist.base))
-  .then(zip => putLambdaToS3(service, s3Key, zip))
-  .then(() => createCloudFormationTmpl(service, serviceTmplPath, s3Key))
-  .then(() => deployCloudFormationTmpl(service, serviceTmplPath))
-  .then(res => logger.log(res))
-  .catch(err => console.error(err))
+logger.log('Build Lambdas')
+const services = fsUtil.getAllServices()
+return Promise.all(services.map(serviceFn => Lambda.build(serviceFn)))
+  .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.base))
+  .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles))
+  .then(deployedBundles => createCloudFormationTmpl(deployedBundles))
+  .then(serviceTmplPath => deployCloudFormationTmpl(serviceTmplPath))
+  .catch(err => console.log(err))

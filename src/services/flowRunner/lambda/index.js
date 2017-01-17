@@ -1,6 +1,6 @@
 import _isString from 'lodash/isString'
-import Logger from '../../utils/logger'
-import StepFunctions from '../../utils/stepFunctions'
+import Logger from '../../../utils/logger'
+import StepFunctions from '../../../utils/stepFunctions'
 
 
 /*

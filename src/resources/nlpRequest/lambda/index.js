@@ -1,16 +1,15 @@
 import fetch from 'node-fetch'
 import _isString from 'lodash/isString'
-import Logger from '../../utils/logger'
-import S3 from '../../utils/s3'
+import Logger from '../../../utils/logger'
+import S3 from '../../../utils/s3'
 
-
-const NLP_URL = 'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'
 
 /*
  * Fetch an Article from given URL
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
+  const { NLP_URL } = process.env
 
   try {
     const { Key } = _isString(event) ? JSON.parse(event) : event

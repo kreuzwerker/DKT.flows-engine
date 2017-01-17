@@ -1,8 +1,8 @@
 import read from 'read-art'
 import Promise from 'bluebird'
 import _isString from 'lodash/isString'
-import Logger from '../../utils/logger'
-import S3 from '../../utils/s3'
+import Logger from '../../../utils/logger'
+import S3 from '../../../utils/s3'
 
 
 const readPromise = url => new Promise((resolve, reject) => {

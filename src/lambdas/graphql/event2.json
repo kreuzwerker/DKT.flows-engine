@@ -1,3 +1,0 @@
-{
-  "query": "{ service(FunctionName: \"fetchArticle\") { FunctionArn Runtime Description LastModified Output { Bucket Prefix Contents { Key } } } }"
-}

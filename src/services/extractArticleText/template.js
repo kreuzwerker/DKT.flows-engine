@@ -1,7 +1,8 @@
 const settings = require('../../../settings')
 
+
 module.exports = ({ key }) => ({
-  GraphQL: {
+  ExtractArticleText: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
@@ -10,16 +11,7 @@ module.exports = ({ key }) => ({
       Policies: settings.aws.cloudFormation.policy,
       Environment: {
         Variables: {
-          S3_BUCKET: settings.aws.s3.bucket
-        }
-      },
-      Events: {
-        ApiResource: {
-          Type: 'Api',
-          Properties: {
-            Path: '/graphql',
-            Method: 'post'
-          }
+          S3_BUCKET: 'dkt.flow-engine.test'
         }
       }
     }

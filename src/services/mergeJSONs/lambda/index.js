@@ -1,6 +1,6 @@
 import _isString from 'lodash/isString'
-import S3 from '../../utils/s3'
-import Logger from '../../utils/logger'
+import S3 from '../../../utils/s3'
+import Logger from '../../../utils/logger'
 
 
 const getObjects = keys => Promise.all(keys.map((Key) => {

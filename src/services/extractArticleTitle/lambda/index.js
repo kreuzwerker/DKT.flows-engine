@@ -1,7 +1,7 @@
 import extractor from 'unfluff'
 import _isString from 'lodash/isString'
-import Logger from '../../utils/logger'
-import S3 from '../../utils/s3'
+import Logger from '../../../utils/logger'
+import S3 from '../../../utils/s3'
 
 /*
  * Extract article Title

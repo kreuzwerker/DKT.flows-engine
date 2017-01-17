@@ -1,10 +1,6 @@
 const settings = require('../../../settings')
 
-/**
- * AWS Service Application Model Template
- * @param  {object} args   - service specific arguments
- * @return {Object}        - AWS SAM Template
- */
+
 module.exports = ({ key }) => ({
   FlowRunner: {
     Type: 'AWS::Serverless::Function',

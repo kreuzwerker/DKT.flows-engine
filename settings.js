@@ -59,8 +59,8 @@ module.exports = {
     dist: {
       base: Path.resolve(__dirname, 'dist')
     },
-    services: {
-      base: Path.resolve(__dirname, 'src', 'services')
+    resources: {
+      base: Path.resolve(__dirname, 'src', 'resources')
     }
   },
   tests: {

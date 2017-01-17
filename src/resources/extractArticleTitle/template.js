@@ -9,10 +9,11 @@ module.exports = ({ key }) => ({
   ExtractArticleTitle: {
     Type: 'AWS::Serverless::Function',
     Properties: {
-      Handler: 'index.handler',
-      Runtime: 'nodejs4.3',
+      Handler: settings.aws.lambda.handler,
+      Runtime: settings.aws.lambda.runtime,
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
+      Timeout: settings.aws.lambda.timeout,
       Environment: {
         Variables: {
           S3_BUCKET: 'dkt.flow-engine.test'

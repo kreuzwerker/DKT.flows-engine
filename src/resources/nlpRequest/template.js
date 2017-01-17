@@ -6,7 +6,7 @@ const settings = require('../../../settings')
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  ExtractArticleReadability: {
+  NLPRequest: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: settings.aws.lambda.handler,
@@ -16,7 +16,8 @@ module.exports = ({ key }) => ({
       Timeout: settings.aws.lambda.timeout,
       Environment: {
         Variables: {
-          S3_BUCKET: 'dkt.flow-engine.test'
+          S3_BUCKET: settings.aws.s3.bucket,
+          NLP_URL: 'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'
         }
       }
     }

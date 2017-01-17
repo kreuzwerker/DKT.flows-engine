@@ -31,7 +31,7 @@ module.exports = {
       region: 'eu-west-1',
       handler: 'index.handler',
       runtime: 'nodejs4.3',
-      timeout: 10
+      timeout: 20
     },
     s3: {
       apiVersion: '2006-03-01',

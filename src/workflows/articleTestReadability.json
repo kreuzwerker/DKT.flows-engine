@@ -4,12 +4,12 @@
   "States": {
     "FetchArticle": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-FetchArticle-O6L6037W1IGT",
       "Next": "ExtractArticleReadability"
     },
     "ExtractArticleReadability": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleReadability",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-ExtractArticleReadability-RDTA5TZ1NQ8Y",
       "End": true
     }
   }

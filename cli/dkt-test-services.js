@@ -16,7 +16,6 @@ program
   .option('-s, --service <name>', 'only one service')
   .parse(process.argv)
 
-
 const lambdaFn = program.service
 const testBase = settings.fs.services.base
 const mocha = new Mocha({})

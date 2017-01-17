@@ -16,9 +16,9 @@ program
   .description('Test everything')
   .parse(process.argv)
 
-
 const testBase = Path.join(settings.fs.project.base, 'src')
 const mocha = new Mocha({})
+
 
 /*
  * ---- test everything --------------------------------------------------------

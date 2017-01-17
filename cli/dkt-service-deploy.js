@@ -19,16 +19,12 @@ program
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 
-
 const logger = Logger(program._name, program.verbose)
 
 
 /*
- * ---- tasks ------------------------------------------------------------------
+ * ---- task helpers -----------------------------------------------------------
  */
-logger.log('START', 'Deploy Service')
-
-
 function bundleLambdas(services, targetBase) {
   return Promise.all(services.map((serviceFn) => {
     logger.log(`Bundle Lambda ${serviceFn}`)
@@ -79,8 +75,14 @@ function deployCloudFormationTmpl(tmplPath) {
 }
 
 
+/*
+ * ---- task -------------------------------------------------------------------
+ */
+logger.log('START', 'Deploy Service')
 logger.log('Build Lambdas')
+
 const services = fsUtil.getAllServices()
+
 return Promise.all(services.map(serviceFn => Lambda.build(serviceFn)))
   .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.base))
   .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles))

@@ -13,9 +13,9 @@ program
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 
-
 const logger = Logger(program._name, program.verbose)
 const workflow = program.workflow
+
 
 if (workflow) {
   /*

@@ -4,12 +4,12 @@
   "States": {
     "FetchArticle": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-FetchArticle-O6L6037W1IGT",
       "Next": "NlpRequest"
     },
     "NlpRequest": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:nlpRequest",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-NLPRequest-TIOSXI5336JW",
       "End": true
     }
   }

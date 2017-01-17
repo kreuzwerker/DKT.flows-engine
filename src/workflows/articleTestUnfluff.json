@@ -4,7 +4,7 @@
   "States": {
     "FetchArticle": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:fetchArticle",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-FetchArticle-O6L6037W1IGT",
       "Next": "ExtractArticle"
     },
     "ExtractArticle": {
@@ -16,7 +16,7 @@
           "States": {
             "ExtractArticleTitle": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleTitle",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-ExtractArticleTitle-VUEJXLQJE9RZ",
               "End": true
             }
           }
@@ -26,7 +26,7 @@
           "States": {
             "ExtractArticleDate": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleDate",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-ExtractArticleDate-16T9HP1QJDC2D",
               "End": true
             }
           }
@@ -36,7 +36,7 @@
           "States": {
             "ExtractArticleText": {
               "Type": "Task",
-              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:extractArticleText",
+              "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-ExtractArticleText-CD79T6KBYL1L",
               "End": true
             }
           }
@@ -45,7 +45,7 @@
     },
     "MergeJSONs": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:mergeJSONs",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-MergeJSONs-1KQI9SM5PHTQX",
       "End": true
     }
   }

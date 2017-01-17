@@ -11,6 +11,6 @@ const program = require('commander')
 program._name = 'cli/dkt test'
 program
   .command('all', 'test everything')
-  .command('services', 'test Services')
+  .command('resources', 'test Resources')
   .command('workflows', 'test Step Function definitions')
   .parse(process.argv)

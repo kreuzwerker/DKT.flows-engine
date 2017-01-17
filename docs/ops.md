@@ -1,23 +1,22 @@
 # DKT.flows-engine Deployment
 
-#### Lambdas
+#### Stack
 
 ```shell
-Usage: cli/dkt lambda deploy [options]
+Usage: cli/dkt stack deploy [options]
 
-Deploy Functions zip to AWS Lambda
+Deploy Application Stack
 
 Options:
 
-  -h, --help             output usage information
-  -f, --function <name>  only one function
-  -F, --file             path to directory with the zip file - default: <path/to/repository>/dist/
-  -v, --verbose          verbose output
+  -h, --help     output usage information
+  -v, --verbose  verbose output
 ```
 
-e.g. `$ cli/dkt lambda deploy -v -f fetchArticle`
+e.g. `$ cli/dkt stack deploy -v`
 
-#### StepFunctions
+
+##### StepFunctions
 
 ```shell
 Usage: cli/dkt stepfunctions deploy [options]
@@ -32,20 +31,3 @@ Options:
 ```
 
 e.g. `$ cli/dkt stepfunctions deploy -v -w articleTest`
-
-
-#### ApiGateway
-
-```shell
-Usage: cli/dkt api deploy [options]
-
-Update ApiGateway
-
-Options:
-
-  -h, --help          output usage information
-  -s, --stage <name>  stage to deploy - required!
-  -v, --verbose       verbose output
-```
-
-e.g. `$ cli/dkt api deploy -v -s test`

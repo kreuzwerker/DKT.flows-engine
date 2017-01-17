@@ -1,63 +1,23 @@
 # DKT.flows-engine Development
 
-Lambdas can be written in ES6 including async functions. We Transform and bundle the Lambda Function with [webpack](https://webpack.github.io/) and [babel](https://babeljs.io/) using the [latest preset](https://babeljs.io/docs/plugins/preset-latest/). See the `.babelrc` file for details.  
-Tools and Scripts written to handle the lambda functions (such as the deployment scripts etc.) should be written for Node 6.9.4.  
+### Application Model & Resources
+
+The flow-engine stack is defined with [AWS SAM (Serverless Application Model)](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/). An [AWS CloudFormation](https://aws.amazon.com/cloudformation/) extension to simplify Stack-definitions of Serverless Applications. You can find the [latest SAM template specification here](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md).
+
+The whole stack is basically a list of resources. All resources are defined in `src/resources/`. Every single resource **requires** a `template.js` file which exports a [AWS SAM resource definition](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#resource-types)! If the resource is a AWS Lambda function then there should be a `lambda` directory containing the lambda function itself and all other modules, assets, etc. that are **only** required by the function. E.g. `src/resources/<myResource>/lambda/index.js`. Please check the [AWS Lambda Getting Started Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) for more details about Lambda functions.
+
+Lambdas can be written in ES6 including [async](https://github.com/tc39/ecmascript-asyncawait) functions. We Transform and bundle the Lambda function with [webpack](https://webpack.github.io/) and [babel](https://babeljs.io/) using the [latest preset](https://babeljs.io/docs/plugins/preset-latest/). See the `.babelrc` file for details.  
 Check the [compat-table](https://kangax.github.io/compat-table/es6/) for more details about which ES6/ES7 features are supported or not.
-
-#### Styleguide
-
-I **strongly recommend** to install a realtime linter extension to your Editor. Otherwise you have to run `npm run lint` all the time.
-We're using [ESLint](http://eslint.org/) with a slightly modified version of the [Airbnb styleguide](https://github.com/airbnb/javascript). Check the `.eslintrc` file for details.
-
-
-### Lambda
-
-Check the [Getting Started Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) first!
-You'll find all Lambda functions within `src/functons`.
-
-#### Build
-
-```shell
-Usage: cli/dkt lambda build [options]
-
-Build Functions
-
-Options:
-
-  -h, --help             output usage information
-  -f, --function <name>  only one function
-  -o, --output <path>    path to output directory - default: <path/to/repository>/dist/
-  -v, --verbose          verbose output
-```
-
-e.g. `$ cli/dkt lambda build -v -f fetchArticle`
-
-#### Bundle
-
-```shell
-Usage: cli/dkt lambda bundle [options]
-
-Bundle Functions to zip files
-
-Options:
-
-  -h, --help             output usage information
-  -f, --function <name>  only one function
-  -i, --input <path>     path to directory with functions - default: <path/to/repository>/dist/
-  -o, --output <path>    path to output directory - default: <path/to/repository>/dist/
-  -v, --verbose          verbose output
-```
-
-e.g. `$ cli/dkt lambda bundle -v -f fetchArticle`
 
 
 ### StepFunctions
 
 Check the [Getting Started Guide](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) first!
-Stepfunctions flows are defined within `src/workflows`.
+Stepfunctions flows are defined within `src/workflows`.  
+**NOTE** this is a testing "feature". Real StepFunctions will be defined by the DKT client in the future.
 
 
-### ApiGateway
+#### Styleguide
 
-Check the [Getting Started Guide](https://aws.amazon.com/api-gateway/getting-started/) first!
-ApiGateway paths are defined within `src/api`.
+We **strongly recommend** to install a realtime linter extension to your Editor. Otherwise you have to run `npm run lint` all the time.
+We're using [ESLint](http://eslint.org/) with a slightly modified version of the [Airbnb styleguide](https://github.com/airbnb/javascript). Check the `.eslintrc` file for details.

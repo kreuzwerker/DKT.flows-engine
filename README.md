@@ -24,7 +24,7 @@ aws_secret_access_key = <yourSecretAccessKey>
 
 ## Command line tool `cli/dkt`
 
-This Project comes with a small command line tool to build, bundle, test and deploy AWS Lambdas and StepFunctions!
+This Project comes with a small command line tool to build, bundle, test and deploy AWS Services and StepFunctions!
 
 ```shell
 $ cli/dkt --help
@@ -34,9 +34,8 @@ Usage: cli/dkt [options] [command]
 
 Commands:
 
-  lambda [command]         build, bundle, deploy functions
+  service [command]        deploy services
   stepfunctions [command]  deploy, start step functions
-  api [command]            deploy/update api gateway
   test [command]           run tests
   help [cmd]               display help for [cmd]
 

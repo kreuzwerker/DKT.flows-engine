@@ -23,7 +23,7 @@ const mocha = new Mocha({})
 let tests = []
 
 if (lambdaFn) {
-  tests = fsUtil.fromDir(testBase, `${lambdaFn}/test.js`)
+  tests = fsUtil.fromDir(`${testBase}/${lambdaFn}`, 'test.js')
 } else {
   tests = fsUtil.fromDir(testBase, 'test.js')
 }

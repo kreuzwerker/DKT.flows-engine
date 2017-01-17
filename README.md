@@ -24,25 +24,23 @@ aws_secret_access_key = <yourSecretAccessKey>
 
 ## Command line tool `cli/dkt`
 
-This Project comes with a small command line tool to build, bundle, test and deploy AWS Services and StepFunctions!
+This Project comes with a small command line tool to build, bundle, test and deploy the flow-engine stack and StepFunctions!
 
 ```shell
-$ cli/dkt --help
-
 Usage: cli/dkt [options] [command]
 
 
-Commands:
+  Commands:
 
-  service [command]        deploy services
-  stepfunctions [command]  deploy, start step functions
-  test [command]           run tests
-  help [cmd]               display help for [cmd]
+    stack [command]          deploy stack
+    stepfunctions [command]  deploy, start step functions
+    test [command]           run tests
+    help [cmd]               display help for [cmd]
 
-Options:
+  Options:
 
-  -h, --help     output usage information
-  -V, --version  output the version number
+    -h, --help     output usage information
+    -V, --version  output the version number
 ```
 
 ## [Development](https://github.com/kreuzwerker/DKT.flows-engine/blob/master/docs/dev.md)

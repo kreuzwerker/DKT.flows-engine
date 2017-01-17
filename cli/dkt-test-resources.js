@@ -10,14 +10,14 @@ const settings = require('../settings.js')
 /*
  * ---- deploy description -----------------------------------------------------
  */
-program._name = 'cli/dkt test lambdas'
+program._name = 'cli/dkt test resources'
 program
-  .description('Test Services')
-  .option('-s, --service <name>', 'only one service')
+  .description('Test Resources')
+  .option('-r, --resource <name>', 'only one resource')
   .parse(process.argv)
 
-const lambdaFn = program.service
-const testBase = settings.fs.services.base
+const lambdaFn = program.resource
+const testBase = settings.fs.resources.base
 const mocha = new Mocha({})
 
 let tests = []

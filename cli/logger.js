@@ -9,18 +9,18 @@ function Logger(name, verbose = false) {
 
     log: (...args) => {
       if (_verbose) {
-        console.log(`[${name}]`, ...args)
+        console.log(`[${name}]`.blue, ...args)
       }
     },
 
     success: (...args) => {
       if (_verbose) {
-        console.log(`[${name}]`, 'SUCCESS'.green, ...args)
+        console.log(`[${name}]`.green, 'SUCCESS'.green, ...args)
       }
     },
 
     error: (...args) => {
-      console.error(`[${name}]`, 'ERROR'.red, ...args)
+      console.error(`[${name}]`.red, 'ERROR'.red, ...args)
     }
   }
 }

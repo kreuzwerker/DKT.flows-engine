@@ -6,7 +6,7 @@ const pkg = require('../package.json')
 program._name = 'cli/dkt'
 program
   .version(pkg.version)
-  .command('service [command]', 'deploy services')
+  .command('stack [command]', 'deploy stack')
   .command('stepfunctions [command]', 'deploy, start step functions')
   .command('test [command]', 'run tests')
   .parse(process.argv)

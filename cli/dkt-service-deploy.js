@@ -2,21 +2,12 @@ const program = require('commander')
 const path = require('path')
 const fs = require('fs')
 const uuidV1 = require('uuid/v1')
-const exec = require('child_process').exec
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
 const Lambda = require('../lib/aws/lambda')
+const CloudFormation = require('../lib/aws/cloudFormation')
 const S3 = require('../lib/aws/s3')
 const settings = require('../settings')
-
-
-const execPromise = command => new Promise((resolve, reject) => {
-  exec(command, (err, stdout, stderr) => {
-    if (err) return reject(err)
-    if (stderr) return reject(stderr)
-    return resolve(stdout)
-  })
-})
 
 
 /*
@@ -84,10 +75,7 @@ function createCloudFormationTmpl(deployedBundles) {
 
 function deployCloudFormationTmpl(tmplPath) {
   logger.log('Deploy dkt-flow-engine-template.json')
-  const stackName = settings.aws.cloudFormation.stackName
-  const capabilities = settings.aws.cloudFormation.capabilities
-  const region = settings.aws.cloudFormation.region
-  return execPromise(`aws cloudformation deploy --template-file ${tmplPath} --stack-name ${stackName} --capabilities ${capabilities} --region ${region}`)
+  return CloudFormation.deploy(tmplPath)
 }
 
 

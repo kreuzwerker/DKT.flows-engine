@@ -14,7 +14,8 @@ function createWebpackConfig(entry, bundleDirName, outputDir) {
     output: {
       path: path.join(outputDir, bundleDirName),
       filename: 'index.js',
-      libraryTarget: 'commonjs2'
+      libraryTarget: 'commonjs2',
+      sourceMapFilename: '[name].map'
     }
   })
 }

@@ -32,7 +32,7 @@ logger.log('Build Lambdas')
 const resources = fsUtil.getAllResources()
 
 return Promise.all(resources.map(resourceFn => Lambda.build(resourceFn)))
-  .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.base))
+  .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.resources))
   .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles))
   .then(deployedBundles => createCloudFormationTmpl(deployedBundles))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath))

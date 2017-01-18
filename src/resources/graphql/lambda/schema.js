@@ -1,4 +1,5 @@
 import {
+  GraphQLID,
   GraphQLSchema,
   GraphQLList,
   GraphQLString,
@@ -7,28 +8,31 @@ import {
 import * as Resolvers from './resolvers'
 
 
-const S3Content = new GraphQLObjectType({
-  name: 'S3Content',
+const FlowType = new GraphQLObjectType({
+  name: 'Flow',
   fields: () => ({
-    Key: { type: GraphQLString },
-    LastModified: { type: GraphQLString },
-    Size: { type: GraphQLString }
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    steps: {
+      type: new GraphQLList(StepType), // eslint-disable-line
+      resolve: Resolvers.flow.steps
+    }
   })
 })
 
 
-const S3Type = new GraphQLObjectType({
-  name: 'S3',
+const ProviderType = new GraphQLObjectType({
+  name: 'Provider',
   fields: () => ({
-    Bucket: { type: GraphQLString },
-    Prefix: { type: GraphQLString },
-    Contents: {
-      type: new GraphQLList(S3Content),
-      args: {
-        Bucket: { type: GraphQLString },
-        Prefix: { type: GraphQLString }
-      },
-      resolve: Resolvers.s3.content
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    group: { type: GraphQLString },
+    description: { type: GraphQLString },
+    icon: { type: GraphQLString },
+    services: {
+      type: new GraphQLList(ServiceType), // eslint-disable-line
+      resolve: Resolvers.provider.services
     }
   })
 })
@@ -37,17 +41,34 @@ const S3Type = new GraphQLObjectType({
 const ServiceType = new GraphQLObjectType({
   name: 'Service',
   fields: () => ({
-    FunctionName: { type: GraphQLString },
-    FunctionArn: { type: GraphQLString },
-    Runtime: { type: GraphQLString },
-    Description: { type: GraphQLString },
-    LastModified: { type: GraphQLString },
-    Output: {
-      type: S3Type,
-      args: {
-        FunctionName: { type: GraphQLString }
-      },
-      resolve: Resolvers.s3.info
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    type: { type: GraphQLString },
+    provider: {
+      type: ProviderType,
+      resolve: Resolvers.service.provider
+    },
+    step: {
+      type: ProviderType,
+      resolve: Resolvers.service.step
+    }
+  })
+})
+
+
+const StepType = new GraphQLObjectType({
+  name: 'Step',
+  fields: () => ({
+    id: { type: GraphQLID },
+    position: { type: GraphQLString },
+    flow: {
+      type: FlowType,
+      resolve: Resolvers.step.flow
+    },
+    service: {
+      type: ServiceType,
+      resolve: Resolvers.step.service
     }
   })
 })
@@ -56,16 +77,44 @@ const ServiceType = new GraphQLObjectType({
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    services: {
-      type: new GraphQLList(ServiceType),
-      resolve: Resolvers.Query.services
+    allFlows: {
+      type: new GraphQLList(FlowType),
+      resolve: Resolvers.Query.allFlows
     },
-    service: {
+    Flow: {
+      type: FlowType,
+      args: { id: { type: GraphQLString } },
+      resolve: Resolvers.Query.flow
+    },
+
+    allProviders: {
+      type: new GraphQLList(ProviderType),
+      resolve: Resolvers.Query.appProvider
+    },
+    Provider: {
+      type: ProviderType,
+      args: { id: { type: GraphQLString } },
+      resolve: Resolvers.Query.provider
+    },
+
+    allServices: {
+      type: new GraphQLList(ServiceType),
+      resolve: Resolvers.Query.allServices
+    },
+    Service: {
       type: ServiceType,
-      args: {
-        FunctionName: { type: GraphQLString }
-      },
+      args: { id: { type: GraphQLString } },
       resolve: Resolvers.Query.service
+    },
+
+    allSteps: {
+      type: new GraphQLList(StepType),
+      resolve: Resolvers.Query.allSteps
+    },
+    Steps: {
+      type: StepType,
+      args: { id: { type: GraphQLString } },
+      resolve: Resolvers.Query.steps
     }
   })
 })

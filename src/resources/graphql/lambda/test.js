@@ -10,7 +10,7 @@ const graphQL = promisifyLambda(handler)
 describe('ƛ GraphQL', function () {
   it('does not throw an error', function () {
     expect(async () => {
-      graphQL(event2, { awsRequestId: 'getServicesTest' })
+      graphQL(event, { awsRequestId: 'getServicesTest' })
     }).to.not.throw(Error)
   })
 
@@ -18,18 +18,16 @@ describe('ƛ GraphQL', function () {
     let result
 
     before(async function () {
-      result = await graphQL(event, { awsRequestId: 'getServicesTest' })
+      result = await graphQL(event2, { awsRequestId: 'getServicesTest' })
     })
 
     it('a list of Lambda Functions with all required parameters', function () {
       const json = JSON.parse(result)
-      expect(json.data.services).to.be.instanceof(Array)
-      json.data.services.forEach(service => expect(service).has.keys([
-        'FunctionName',
-        'FunctionArn',
-        'Runtime',
-        'Description',
-        'LastModified'
+      expect(json.data.allServices).to.be.instanceof(Array)
+      json.data.allServices.forEach(service => expect(service).has.keys([
+        'id',
+        'name',
+        'provider'
       ]))
     })
   })

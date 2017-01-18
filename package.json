@@ -16,6 +16,7 @@
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-polyfill": "^6.20.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-latest": "^6.16.0",
@@ -32,14 +33,13 @@
     "eslint-plugin-jsx-a11y": "2.2.3",
     "eslint-plugin-react": "6.8.0",
     "graphql": "^0.8.2",
-    "json-loader": "^0.5.4",
     "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "node-fetch": "^1.6.3",
     "read-art": "^0.5.1",
     "unfluff": "https://github.com/johipsum/node-unfluff/tarball/frontend-support",
     "uuid": "^3.0.1",
-    "webpack": "^1.14.0",
+    "webpack": "^2.2.0",
     "yazl": "^2.4.2"
   }
 }

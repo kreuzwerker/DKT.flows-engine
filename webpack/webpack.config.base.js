@@ -1,30 +1,32 @@
 const webpack = require('webpack')
-
+const path = require('path')
 
 module.exports = {
+  devtool: 'source-map',
   target: 'node',
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.js$/,
-        loader: 'babel',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
+        test: /\.js?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ]
       }
     ]
   },
+  resolve: {
+    extensions: ['.js', '.json']
+  },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new webpack.NoErrorsPlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.LoaderOptionsPlugin({ minimize: true }),
     new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
       compress: true,
       beautify: true,
       mangle: true,

@@ -13,8 +13,8 @@ export async function handler(event, context, callback) {
   try {
     logger.log(`start ${workflow} execution`)
     const data = await StepFunctions.startExecution(workflow)
-    callback(null, JSON.stringify(data))
+    context.succeed(JSON.stringify(data))
   } catch (err) {
-    callback(err)
+    context.fail(err)
   }
 }

@@ -7,7 +7,7 @@ import S3 from '../../../utils/s3'
 /*
  * Fetch an Article from given URL
  */
-export async function handler(event, context, callback) {
+export async function handler(event, context) {
   const logger = Logger(event.verbose)
   const { NLP_URL } = process.env
 
@@ -47,8 +47,8 @@ export async function handler(event, context, callback) {
     })
 
     logger.log('NLP Request succeeded')
-    callback(null, succeedResponse)
+    context.succeed(JSON.stringify(succeedResponse))
   } catch (err) {
-    callback(err)
+    context.fail(err)
   }
 }

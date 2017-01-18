@@ -5,6 +5,8 @@
   "main": "./cli/dkt",
   "scripts": {
     "test": "cli/dkt test all",
+    "build": "cli/dkt stack build -v",
+    "deploy": "cli/dkt stack deploy -v",
     "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/node-modules/' ."
   },
   "author": "Johannes Dirr <johannes.dirr@kreuzwerker.de>",

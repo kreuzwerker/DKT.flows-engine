@@ -4,5 +4,6 @@ const program = require('commander')
 
 program._name = 'cli/dkt stack'
 program
-  .command('deploy', 'deploy application stack')
+  .command('build', 'build the application stack')
+  .command('deploy', 'build and deploy application stack')
   .parse(process.argv)

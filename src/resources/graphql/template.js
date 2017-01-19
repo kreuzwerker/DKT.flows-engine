@@ -4,7 +4,19 @@ const settings = require('../../../settings')
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
-module.exports = ({ key }) => ({
+module.exports = ({ resource, key }) => ({
+  GraphQLApiGateway: {
+    Type: 'AWS::Serverless::Api',
+    Properties: {
+      DefinitionUri: `s3://${settings.aws.s3.bucket}/resources/${resource}/swagger.json`,
+      StageName: 'prod',
+      Variables: {
+        LambdaFunctionName: {
+          Ref: 'GraphQL'
+        }
+      }
+    }
+  },
   GraphQL: {
     Type: 'AWS::Serverless::Function',
     Properties: {
@@ -17,13 +29,26 @@ module.exports = ({ key }) => ({
         Variables: {
           S3_BUCKET: settings.aws.s3.bucket
         }
+      }
+    },
+    Events: {
+      ProxyApiRoot: {
+        Type: 'Api',
+        Properties: {
+          RestApiId: {
+            Ref: 'GraphQLApiGateway',
+            path: '/graphql/',
+            method: 'ANY'
+          }
+        }
       },
-      Events: {
-        ApiResource: {
-          Type: 'Api',
-          Properties: {
-            Path: '/graphql',
-            Method: 'post'
+      ProxyApiGreedy: {
+        Type: 'Api',
+        Properties: {
+          RestApiId: {
+            Ref: 'GraphQLApiGateway',
+            path: '/graphql/{proxy+}',
+            method: 'ANY'
           }
         }
       }

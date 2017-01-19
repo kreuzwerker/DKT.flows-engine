@@ -40,17 +40,36 @@ module.exports = logger => ({
     logger.log('Create CloudFormation definition dkt-flow-engine-template.json')
     const resourceTmplPath = path.join(settings.fs.dist.base, 'dkt-flow-engine-template.json')
     const baseTmpl = require('../src/stackBaseTemplate.json') // eslint-disable-line
+    const swagger = []
     let cloudFormationTmpl = Object.assign({}, baseTmpl, { Resources: {} })
+
 
     deployedBundles.forEach(({ resource, key }) => {
       const resourceTmpl = require(fsUtil.getResourceTemplatePath(resource)) // eslint-disable-line
-      const updatedResource = Object.assign({}, cloudFormationTmpl.Resources, resourceTmpl({ key }))
+      const swaggerPath = fsUtil.getResourceSwaggerPath(resource)
+      const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
+
+      if (swaggerTmpl) {
+        swagger.push(
+          S3.putObject({
+            Key: `resources/${resource}/swagger.json`,
+            Body: JSON.stringify(swaggerTmpl())
+          })
+        )
+      }
+
+      const updatedResource = Object.assign({}, cloudFormationTmpl.Resources, resourceTmpl({ resource, key }))
       cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
         Resources: updatedResource
       })
     })
 
     fs.writeFileSync(resourceTmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
+
+    if (swagger.length >= 1) {
+      return Promise.all(swagger).then(() => Promise.resolve(resourceTmplPath))
+    }
+
     return Promise.resolve(resourceTmplPath)
   },
 

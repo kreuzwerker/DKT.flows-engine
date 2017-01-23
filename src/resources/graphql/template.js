@@ -9,7 +9,7 @@ module.exports = ({ resource, key }) => ({
     Type: 'AWS::Serverless::Api',
     Properties: {
       DefinitionUri: `s3://${settings.aws.s3.bucket}/resources/${resource}/swagger.json`,
-      StageName: 'Test',
+      StageName: 'Dev',
       Variables: {
         LambdaFunctionName: {
           Ref: 'GraphQL'

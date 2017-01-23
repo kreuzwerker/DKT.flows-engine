@@ -9,7 +9,7 @@ module.exports = ({ resource, key }) => ({
     Type: 'AWS::Serverless::Api',
     Properties: {
       DefinitionUri: `s3://${settings.aws.s3.bucket}/resources/${resource}/swagger.json`,
-      StageName: 'prod',
+      StageName: 'Test',
       Variables: {
         LambdaFunctionName: {
           Ref: 'GraphQL'
@@ -36,20 +36,10 @@ module.exports = ({ resource, key }) => ({
         Type: 'Api',
         Properties: {
           RestApiId: {
-            Ref: 'GraphQLApiGateway',
-            path: '/graphql/',
-            method: 'ANY'
-          }
-        }
-      },
-      ProxyApiGreedy: {
-        Type: 'Api',
-        Properties: {
-          RestApiId: {
-            Ref: 'GraphQLApiGateway',
-            path: '/graphql/{proxy+}',
-            method: 'ANY'
-          }
+            Ref: 'GraphQLApiGateway'
+          },
+          path: '/',
+          method: 'POST'
         }
       }
     }

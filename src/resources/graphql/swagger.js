@@ -1,42 +1,18 @@
-const settings = require('../../../settings')
+const settings = require('../../../settings.js')
 
 
 module.exports = () => ({
   'swagger': '2.0',
-  'basePath': '/',
   'info': {
-    'version': '2016-02-23T05:35:54Z',
-    'title': 'GraphQL'
+    'version': '2017-01-19T15:32:07Z',
+    'title': 'GraphQLApiGateway'
   },
+  'basePath': '/',
   'schemes': [
     'https'
   ],
   'paths': {
     '/graphql': {
-      'x-amazon-apigateway-any-method': {
-        'produces': [
-          'application/json'
-        ],
-        'responses': {
-          '200': {
-            'description': '200 response',
-            'schema': {
-              '$ref': '#/definitions/Empty'
-            }
-          }
-        },
-        'x-amazon-apigateway-integration': {
-          'responses': {
-            'default': {
-              'statusCode': 200
-            }
-          },
-          'uri': `arn:aws:lambda:${settings.aws.lambda.region}:${settings.aws.account}:function:DKT-flow-engine-GraphQL-112KCJWK51TZ3/invocations`,
-          'passthroughBehavior': 'when_no_match',
-          'httpMethod': 'POST',
-          'type': 'aws_proxy'
-        }
-      },
       'options': {
         'consumes': [
           'application/json'
@@ -66,49 +42,22 @@ module.exports = () => ({
         'x-amazon-apigateway-integration': {
           'responses': {
             'default': {
-              'statusCode': 200,
+              'statusCode': '200',
               'responseParameters': {
                 'method.response.header.Access-Control-Allow-Methods': "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
                 'method.response.header.Access-Control-Allow-Origin': "'*'"
               }
             }
           },
-          'passthroughBehavior': 'when_no_match',
           'requestTemplates': {
             'application/json': '{\'statusCode\': 200}'
           },
+          'passthroughBehavior': 'when_no_match',
           'type': 'mock'
         }
-      }
-    },
-    '/graphql/{proxy+}': {
-      'x-amazon-apigateway-any-method': {
-        'x-amazon-apigateway-auth': {
-          'type': 'aws_iam'
-        },
-        'produces': [
-          'application/json'
-        ],
-        'parameters': [
-          {
-            'name': 'proxy',
-            'in': 'path',
-            'required': true,
-            'type': 'string'
-          }
-        ],
-        'responses': {},
-        'x-amazon-apigateway-integration': {
-          'uri': `arn:aws:lambda:${settings.aws.lambda.region}:${settings.aws.account}:function:DKT-flow-engine-GraphQL-112KCJWK51TZ3/invocations`,
-          'httpMethod': 'POST',
-          'type': 'aws_proxy'
-        }
       },
-      'options': {
-        'consumes': [
-          'application/json'
-        ],
+      'x-amazon-apigateway-any-method': {
         'produces': [
           'application/json'
         ],
@@ -117,36 +66,20 @@ module.exports = () => ({
             'description': '200 response',
             'schema': {
               '$ref': '#/definitions/Empty'
-            },
-            'headers': {
-              'Access-Control-Allow-Origin': {
-                'type': 'string'
-              },
-              'Access-Control-Allow-Methods': {
-                'type': 'string'
-              },
-              'Access-Control-Allow-Headers': {
-                'type': 'string'
-              }
             }
           }
         },
         'x-amazon-apigateway-integration': {
           'responses': {
             'default': {
-              'statusCode': 200,
-              'responseParameters': {
-                'method.response.header.Access-Control-Allow-Methods': "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
-                'method.response.header.Access-Control-Allow-Origin': "'*'"
-              }
+              'statusCode': '200'
             }
           },
+          'uri': 'arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:' + settings.aws.lambda.region + ':' + settings.aws.account + ':function:DKT-flow-engine-GraphQL-1I5YJ6ODL6UE9/invocations', // eslint-disable-line
           'passthroughBehavior': 'when_no_match',
-          'requestTemplates': {
-            'application/json': '{\'statusCode\': 200}'
-          },
-          'type': 'mock'
+          'httpMethod': 'POST',
+          'contentHandling': 'CONVERT_TO_TEXT',
+          'type': 'aws_proxy'
         }
       }
     }

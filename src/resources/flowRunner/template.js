@@ -18,15 +18,6 @@ module.exports = ({ key }) => ({
         Variables: {
           S3_BUCKET: 'dkt.flow-engine.test'
         }
-      },
-      Events: {
-        ApiResource: {
-          Type: 'Api',
-          Properties: {
-            Path: '/run',
-            Method: 'put'
-          }
-        }
       }
     }
   }

@@ -39,7 +39,7 @@ module.exports = logger => ({
   createCloudFormationTmpl: (deployedBundles, stage) => {
     logger.log('Create CloudFormation definition dkt-flow-engine-template.json')
     const resourceTmplPath = path.join(settings.fs.dist.base, 'dkt-flow-engine-template.json')
-    const baseTmpl = require('../src/stackBaseTemplate.json') // eslint-disable-line
+    const baseTmpl = require('../src/resources/stackBaseTemplate.json') // eslint-disable-line
     const swaggerDefinitionsUploadTasks = []
     let cloudFormationTmpl = Object.assign({}, baseTmpl, { Resources: {} })
 

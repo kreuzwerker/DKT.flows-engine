@@ -9,11 +9,11 @@ module.exports = ({ key }) => ({
   NLPRequest: {
     Type: 'AWS::Serverless::Function',
     Properties: {
-      Handler: settings.aws.lambda.handler,
-      Runtime: settings.aws.lambda.runtime,
+      Handler: 'index.handler',
+      Runtime: 'nodejs4.3',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
-      Timeout: settings.aws.lambda.timeout,
+      Timeout: 20,
       Environment: {
         Variables: {
           S3_BUCKET: settings.aws.s3.bucket,

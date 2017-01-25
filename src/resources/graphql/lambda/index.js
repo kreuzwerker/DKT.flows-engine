@@ -6,9 +6,9 @@ import Schema from './schema'
 /*
  * graphql service
  */
-export async function handler(event, context) {
+export async function post(event, context) {
   const logger = Logger(event.verbose)
-  logger.log('Event:', event)
+
   try {
     const body = _isString(event.body) ? JSON.parse(event.body) : event.body
 

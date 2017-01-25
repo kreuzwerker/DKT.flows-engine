@@ -11,10 +11,12 @@ const StackHelpers = require('./stackHelpers')
 program._name = 'cli/dkt stack deploy'
 program
   .description('Deploy Application Stack')
+  .option('-s, --stage <name>', 'stage - default: Dev')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 
 const logger = Logger(program._name, program.verbose)
+const stage = program.stage || 'Dev'
 const {
   bundleLambdas,
   putLambdaBundlesToS3,
@@ -26,16 +28,16 @@ const {
 /*
  * ---- task -------------------------------------------------------------------
  */
-logger.log('START', 'Deploy Stack')
+logger.log('START', 'Deploy Stack', stage)
 logger.log('Build Lambdas')
 
 const resources = fsUtil.getAllResources()
 
 return Promise.all(resources.map(resourceFn => Lambda.build(resourceFn)))
   .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.resources))
-  .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles))
-  .then(deployedBundles => createCloudFormationTmpl(deployedBundles))
-  .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath))
+  .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles, stage))
+  .then(deployedBundles => createCloudFormationTmpl(deployedBundles, stage))
+  .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
   .then((result) => {
     console.log('deployCloudFormationTmpl', result)
     logger.success('Deploy Stack')

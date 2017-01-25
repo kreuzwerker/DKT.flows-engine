@@ -9,11 +9,12 @@ Deploy Application Stack
 
 Options:
 
-  -h, --help     output usage information
-  -v, --verbose  verbose output
+  -h, --help          output usage information
+  -s, --stage <name>  stage name - default: Dev
+  -v, --verbose       verbose output
 ```
 
-e.g. `$ cli/dkt stack deploy -v`
+e.g. `$ cli/dkt stack deploy -s Staging -v`
 
 
 ##### StepFunctions

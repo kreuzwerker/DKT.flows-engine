@@ -1,4 +1,5 @@
 const settings = require('../../../settings')
+const { FETCH_ARTICLE_FUNCTION } = require('../locicalResourceIds')
 
 
 /*
@@ -6,7 +7,7 @@ const settings = require('../../../settings')
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  FetchArticle: {
+  [FETCH_ARTICLE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

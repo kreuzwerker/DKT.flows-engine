@@ -1,9 +1,8 @@
-import Lambda from '../../../utils/lambda'
-import settings from '../../../../settings'
 import Flows from './mocks/flows.json'
 import Providers from './mocks/providers.json'
 import Services from './mocks/services.json'
 import Steps from './mocks/steps.json'
+
 
 /*
  * Root resolvers

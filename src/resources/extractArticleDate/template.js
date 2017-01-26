@@ -1,12 +1,12 @@
 const settings = require('../../../settings')
-
+const { EXTRACT_ARTICLE_DATE_FUNCTION } = require('../locicalResourceIds')
 
 /*
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  ExtractArticleDate: {
+  [EXTRACT_ARTICLE_DATE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

@@ -1,4 +1,5 @@
 const settings = require('../../../settings')
+const { EXTRACT_ARTICLE_TITLE_FUNCTION } = require('../locicalResourceIds')
 
 
 /*
@@ -6,7 +7,7 @@ const settings = require('../../../settings')
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  ExtractArticleTitle: {
+  [EXTRACT_ARTICLE_TITLE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

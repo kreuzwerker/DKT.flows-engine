@@ -6,7 +6,7 @@ import Schema from './schema'
 /*
  * graphql service
  */
-export async function post(event, context) {
+export async function post(event, context, callback) {
   const logger = Logger(event.verbose)
 
   try {
@@ -18,12 +18,12 @@ export async function post(event, context) {
 
     logger.log('Result:', response)
 
-    context.succeed({
+    callback(null, {
       'statusCode': 200,
       'body': JSON.stringify(response)
     })
   } catch (err) {
     logger.log('Error:', err)
-    context.fail(err)
+    callback(err)
   }
 }

@@ -7,7 +7,7 @@ import S3 from '../../../utils/s3'
 /*
  * Fetch an Article from given URL
  */
-export async function handler(event, context) {
+export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
 
   try {
@@ -39,8 +39,8 @@ export async function handler(event, context) {
 
 
     logger.log('Fetch Article succeeded')
-    context.succeed(JSON.stringify(succeedResponse))
+    callback(null, JSON.stringify(succeedResponse))
   } catch (err) {
-    context.fail(err)
+    callback(err)
   }
 }

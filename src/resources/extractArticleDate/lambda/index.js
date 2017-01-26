@@ -33,9 +33,9 @@ export async function handler(event, context, callback) {
       Key: fileName
     })
 
-    context.succeed(JSON.stringify(succeedResponse))
+    callback(null, JSON.stringify(succeedResponse))
   } catch (err) {
     logger.log(err)
-    context.fail(err)
+    callback(err)
   }
 }

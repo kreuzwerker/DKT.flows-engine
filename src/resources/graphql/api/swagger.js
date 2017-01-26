@@ -9,7 +9,7 @@ module.exports = ({ stage }) => ({
     'title': `DKT.flow-engine.${stage}.graphql`,
     'version': new Date()
   },
-  'basePath': '/prod',
+  'basePath': '/',
   'schemes': ['https'],
   'paths': {
     '/': {
@@ -18,27 +18,19 @@ module.exports = ({ stage }) => ({
         'responses': {
           '200': {
             'description': '200 response',
-            'schema': { $ref: '#/definitions/Empty' },
-            'headers': {
-              'Access-Control-Allow-Origin': { 'type': 'string' }
-            }
+            'schema': { $ref: '#/definitions/Empty' }
           }
         },
         'x-amazon-apigateway-integration': {
           'responses': {
             'default': {
-              'statusCode': '200',
-              'responseParameters': {
-                'method.response.header.Access-Control-Allow-Origin': "'*'"
-              }
+              'statusCode': '200'
             }
           },
           'uri': [
             `arn:aws:apigateway:${apiGateway.region}:lambda:path/${lambda.apiVersion}/functions/`,
             `arn:aws:lambda:${lambda.region}:${account}:function:`,
-            /* eslint-disable */
-            '${stageVariables.LambdaFunctionName}/invocations' // TODO quick and dirty hack. we need to run the deployment twice because of this. but at the moment there's no better solution...
-            /* eslint-enable */
+            '${stageVariables.LambdaFunctionName}/invocations' // eslint-disable-line
           ].join(''),
           'passthroughBehavior': 'when_no_match',
           'httpMethod': 'POST',
@@ -51,6 +43,7 @@ module.exports = ({ stage }) => ({
         'responses': {
           '200': {
             'description': '200 response',
+            'schema': { $ref: '#/definitions/Empty' },
             'headers': {
               'Access-Control-Allow-Origin': {
                 'type': 'string'
@@ -75,10 +68,10 @@ module.exports = ({ stage }) => ({
               }
             }
           },
-          'requestTemplates': {
-            'application/json': "{'statusCode': 200}"
-          },
           'passthroughBehavior': 'when_no_match',
+          'requestTemplates': {
+            'application/json': "{\"statusCode\": 200}" // eslint-disable-line
+          },
           'type': 'mock'
         }
       }

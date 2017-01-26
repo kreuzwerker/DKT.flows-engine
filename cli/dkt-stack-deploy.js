@@ -11,12 +11,19 @@ const StackHelpers = require('./stackHelpers')
 program._name = 'cli/dkt stack deploy'
 program
   .description('Deploy Application Stack')
-  .option('-s, --stage <name>', 'stage - default: Dev')
+  .option('-s, --stage <name>', 'stage Dev || Staging || Production - default: Dev')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv)
 
 const logger = Logger(program._name, program.verbose)
 const stage = program.stage || 'Dev'
+
+if (stage !== 'Dev' && stage !== 'Staging' && stage !== 'Production') {
+  logger.error(`Invalid stage '${stage}' - Use 'Dev', 'Staging' or 'Production'`)
+  console.log('                             e.g. cli/dkt stack deploy -s Dev')
+  return
+}
+
 const {
   bundleLambdas,
   putLambdaBundlesToS3,

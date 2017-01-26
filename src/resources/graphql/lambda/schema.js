@@ -50,7 +50,7 @@ const ServiceType = new GraphQLObjectType({
       resolve: Resolvers.service.provider
     },
     step: {
-      type: ProviderType,
+      type: StepType, // eslint-disable-line
       resolve: Resolvers.service.step
     }
   })
@@ -62,6 +62,7 @@ const StepType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     position: { type: GraphQLString },
+    description: { type: GraphQLString },
     flow: {
       type: FlowType,
       resolve: Resolvers.step.flow

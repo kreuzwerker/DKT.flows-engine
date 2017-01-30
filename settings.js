@@ -25,6 +25,9 @@ module.exports = {
       mode: 'overwrite', // overwrite || merge
       region: 'eu-west-1'
     },
+    dynamoDB: {
+      apiVersion: '2012-08-10'
+    },
     lambda: {
       apiVersion: '2015-03-31',
       arn: `arn:aws:iam::${ACCOUNT}:role/lambda_s3_exec_role`,

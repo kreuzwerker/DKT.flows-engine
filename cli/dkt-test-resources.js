@@ -28,5 +28,7 @@ if (lambdaFn) {
   tests = fsUtil.fromDir(testBase, 'test.js')
 }
 
+console.log(tests)
+
 tests.map(test => mocha.addFile(test))
 mocha.run()

@@ -15,7 +15,10 @@ module.exports = {
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',
   GRAPHQL_PERMISSIONS: 'GraphQLPermissions',
-  GRAPHQL_DB: 'GraphQLDynamo',
+  GRAPHQL_DB_FLOWS: 'GraphQLDynamoFlows',
+  GRAPHQL_DB_PROVIDERS: 'GraphQLDynamoProviders',
+  GRAPHQL_DB_SERVICES: 'GraphQLDynamoServices',
+  GRAPHQL_DB_STEPS: 'GraphQLDynamoSteps',
 
   MERGE_JSONS_FUNCTION: 'MergeJSONsFunction',
 

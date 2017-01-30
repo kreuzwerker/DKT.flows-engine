@@ -6,7 +6,7 @@ import Schema from './schema'
 /*
  * graphql service
  */
-export async function post(event, context, callback) {
+export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
 
   try {

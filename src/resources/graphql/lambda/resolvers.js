@@ -1,50 +1,164 @@
-import Flows from './mocks/flows.json'
-import Providers from './mocks/providers.json'
-import Services from './mocks/services.json'
-import Steps from './mocks/steps.json'
+import { unmarshalItem } from 'dynamodb-marshaler'
+import dDB from '../../../utils/dynamoDB'
 
 
 /*
- * Root resolvers
+ * ---- Root resolvers ---------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 export const Query = {
-  allFlows: () => Flows,
-  flow: (_, { id }) => Flows.filter(s => s.id === id)[0],
+  allFlows: () => {
+    const table = process.env.DYNAMO_FLOWS
+    return dDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
+  },
 
-  allProviders: () => Providers,
-  provider: (_, { id }) => Providers.filter(s => s.id === id)[0],
+  flow: (_, { id }) => {
+    const table = process.env.DYNAMO_FLOWS
+    const query = { Key: { id: { S: id } } }
 
-  allServices: () => Services,
-  service: (_, { id }) => Services.filter(s => s.id === id)[0],
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  },
 
-  allSteps: () => Steps,
-  step: (_, { id }) => Steps.filter(s => s.id === id)[0]
+  allProviders: () => {
+    const table = process.env.DYNAMO_PROVIDERS
+    return dDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
+  },
+
+  provider: (_, { id }) => {
+    const table = process.env.DYNAMO_PROVIDERS
+    const query = { Key: { id: { S: id } } }
+
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  },
+
+
+  allServices: () => {
+    const table = process.env.DYNAMO_SERVICES
+    return dDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
+  },
+
+  service: (_, { id }) => {
+    const table = process.env.DYNAMO_SERVICES
+    const query = { Key: { id: { S: id } } }
+
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  },
+
+
+  allSteps: () => {
+    const table = process.env.DYNAMO_STEPS
+
+    return dDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
+  },
+
+  step: (_, { id }) => {
+    const table = process.env.DYNAMO_STEPS
+    const query = { Key: { id: { S: id } } }
+
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  }
 }
 
 
 /*
- * Field resolvers
+ * ---- Field resolvers --------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 export const flow = {
-  steps: instance => Steps.filter(s => s.flow === instance.id)
+  steps: (instance) => {
+    if (!instance.steps) return []
+
+    const table = process.env.DYNAMO_STEPS
+    const query = {
+      RequestItems: {
+        [table]: {
+          Keys: instance.steps.map(id => ({ id: { S: id } }))
+        }
+      }
+    }
+
+    return dDB.batchGetItem(query)
+              .then(res => res.Responses[table].map(unmarshalItem))
+  }
 }
+
 
 export const provider = {
-  services: instance => Services.filter((service) => {
-    let match = false
-    instance.services.forEach((s) => {
-      if (s === service.id) match = true
-    })
-    return match
-  })
+  services: (instance) => {
+    if (!instance.services) return []
+
+    const table = process.env.DYNAMO_SERVICES
+    const query = {
+      RequestItems: {
+        [table]: {
+          Keys: instance.services.map(id => ({ id: { S: id } }))
+        }
+      }
+    }
+
+    return dDB.batchGetItem(query)
+              .then(res => res.Responses[table].map(unmarshalItem))
+  }
 }
+
 
 export const service = {
-  provider: instance => Providers.filter(p => p.id === instance.provider)[0],
-  step: instance => Steps.filter(s => s.id === instance.step)[0]
+  provider: (instance) => {
+    if (!instance.provider) return null
+
+    const table = process.env.DYNAMO_PROVIDERS
+    const params = {
+      Key: { id: { S: instance.provider } }
+    }
+
+    return dDB.getItem(table, params)
+              .then(r => unmarshalItem(r.Item))
+  },
+
+  step: (instance) => {
+    if (!instance.step) return null
+
+    const table = process.env.DYNAMO_STEPS
+    const params = {
+      Key: { id: { S: instance.step } }
+    }
+
+    return dDB.getItem(table, params)
+              .then(r => unmarshalItem(r.Item))
+  }
 }
 
+
 export const step = {
-  flow: instance => Flows.filter(f => f.id === instance.flow)[0],
-  service: instance => Services.filter(f => f.id === instance.service)[0]
+  flow: (instance) => {
+    if (!instance.flow) return null
+
+    const table = process.env.DYNAMO_FLOWS
+    const query = {
+      Key: { id: { S: instance.flow } }
+    }
+
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  },
+
+  service: (instance) => {
+    if (!instance.service) return null
+
+    const table = process.env.DYNAMO_SERVICES
+    const query = {
+      Key: { id: { S: instance.service } }
+    }
+
+    return dDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
+  }
 }

@@ -3,7 +3,10 @@ const {
   GRAPHQL_FUNCTION,
   GRAPHQL_API_GATEWAY,
   GRAPHQL_PERMISSIONS,
-  GRAPHQL_DB
+  GRAPHQL_DB_FLOWS,
+  GRAPHQL_DB_PROVIDERS,
+  GRAPHQL_DB_SERVICES,
+  GRAPHQL_DB_STEPS
 } = require('../locicalResourceIds')
 
 
@@ -27,15 +30,17 @@ module.exports = ({ stage, resource, key }) => ({
   [GRAPHQL_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
-      Handler: 'index.post',
+      Handler: 'index.handler',
       Runtime: 'nodejs4.3',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: settings.aws.s3.bucket,
-          DYNAMO_TABLE: { Ref: GRAPHQL_DB }
+          DYNAMO_FLOWS: { Ref: GRAPHQL_DB_FLOWS },
+          DYNAMO_PROVIDERS: { Ref: GRAPHQL_DB_PROVIDERS },
+          DYNAMO_SERVICES: { Ref: GRAPHQL_DB_SERVICES },
+          DYNAMO_STEPS: { Ref: GRAPHQL_DB_STEPS }
         }
       }
     },
@@ -69,7 +74,28 @@ module.exports = ({ stage, resource, key }) => ({
     },
     DependsOn: [GRAPHQL_FUNCTION, GRAPHQL_API_GATEWAY]
   },
-  [GRAPHQL_DB]: {
+  [GRAPHQL_DB_FLOWS]: {
+    Type: 'AWS::Serverless::SimpleTable',
+    PrimaryKey: {
+      Name: 'id',
+      Type: 'String'
+    }
+  },
+  [GRAPHQL_DB_PROVIDERS]: {
+    Type: 'AWS::Serverless::SimpleTable',
+    PrimaryKey: {
+      Name: 'id',
+      Type: 'String'
+    }
+  },
+  [GRAPHQL_DB_SERVICES]: {
+    Type: 'AWS::Serverless::SimpleTable',
+    PrimaryKey: {
+      Name: 'id',
+      Type: 'String'
+    }
+  },
+  [GRAPHQL_DB_STEPS]: {
     Type: 'AWS::Serverless::SimpleTable',
     PrimaryKey: {
       Name: 'id',

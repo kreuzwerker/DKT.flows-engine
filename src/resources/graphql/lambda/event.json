@@ -1,3 +1,5 @@
 {
-  "query": "{ allProviders { services { id } } }"
+  "body": {
+    "query": "{ allProviders { services { id } } }"
+  }
 }

@@ -1,5 +1,6 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import dDB from '../../../../utils/dynamoDB'
+import dynDB from '../../../../utils/dynamoDB'
 
 
 /**
@@ -11,6 +12,8 @@ export const RootQueries = {
     const table = process.env.DYNAMO_FLOWS
     return dDB.scan(table)
               .then(r => r.Items.map(unmarshalItem))
+    return dynDB.scan(table)
+                .then(r => r.Items.map(unmarshalItem))
   },
 
   flow: (_, { id }) => {
@@ -19,6 +22,8 @@ export const RootQueries = {
 
     return dDB.getItem(table, query)
               .then(r => unmarshalItem(r.Item))
+    return dynDB.getItem(table, query)
+                .then(r => unmarshalItem(r.Item))
   }
 }
 
@@ -31,6 +36,8 @@ export function getFlowById(flowId) {
 
   return dDB.getItem(table, query)
             .then(r => unmarshalItem(r.Item))
+  return dynDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
 }
 
 

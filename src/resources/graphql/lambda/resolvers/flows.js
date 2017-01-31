@@ -10,8 +10,6 @@ import dynDB from '../../../../utils/dynamoDB'
 export const RootQueries = {
   allFlows: () => {
     const table = process.env.DYNAMO_FLOWS
-    return dDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
     return dynDB.scan(table)
                 .then(r => r.Items.map(unmarshalItem))
   },
@@ -20,8 +18,6 @@ export const RootQueries = {
     const table = process.env.DYNAMO_FLOWS
     const query = { Key: { id: { S: id } } }
 
-    return dDB.getItem(table, query)
-              .then(r => unmarshalItem(r.Item))
     return dynDB.getItem(table, query)
                 .then(r => unmarshalItem(r.Item))
   }
@@ -34,8 +30,6 @@ export function getFlowById(flowId) {
     Key: { id: { S: flowId } }
   }
 
-  return dDB.getItem(table, query)
-            .then(r => unmarshalItem(r.Item))
   return dynDB.getItem(table, query)
               .then(r => unmarshalItem(r.Item))
 }

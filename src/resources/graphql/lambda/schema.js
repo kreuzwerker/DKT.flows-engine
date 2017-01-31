@@ -11,7 +11,6 @@ import * as Services from './resolvers/services'
 import * as Steps from './resolvers/steps'
 
 
-
 const FlowType = new GraphQLObjectType({
   name: 'Flow',
   fields: () => ({

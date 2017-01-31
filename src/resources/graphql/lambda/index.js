@@ -13,8 +13,15 @@ export async function handler(event, context, callback) {
     const body = _isString(event.body) ? JSON.parse(event.body) : event.body
 
     logger.log('Query:', body.query)
+    logger.log('Mutation:', body.mutation)
 
-    const response = await graphql(Schema, body.query)
+    let response = {}
+
+    if (body.query) {
+      response = await graphql(Schema, body.query)
+    } else if (body.mutation) {
+      response = await graphql(Schema, body.mutation)
+    }
 
     logger.log('Result:', response)
 

@@ -38,5 +38,26 @@ export function getProviderById(providerId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
+export async function createProvider(provider) {
+  const table = process.env.DYNAMO_PROVIDERS
+  return dynDB.putItem(table, provider)
+}
 
-// TODO
+
+export async function updateProvider(provider) {
+  const table = process.env.DYNAMO_PROVIDERS
+  const query = {
+    Key: { id: { S: provider.id } }
+  }
+  return dynDB.updateItem(table, query, provider)
+}
+
+
+export async function deleteProvider(id) {
+  const table = process.env.DYNAMO_PROVIDERS
+  const query = {
+    Key: { id: { S: id } }
+  }
+  return dynDB.deleteItem(table, query)
+              .then(() => ({ id }))
+}

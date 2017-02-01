@@ -123,12 +123,12 @@ const MutationType = new GraphQLObjectType({
 
     createStep: {
       type: StepType,
-      args: { provider: { type: StepInputType } },
+      args: { step: { type: StepInputType } },
       resolve: (_, { step }) => Steps.createStep(step)
     },
     updateStep: {
       type: StepType,
-      args: { service: { type: StepInputType } },
+      args: { step: { type: StepInputType } },
       resolve: (_, { step }) => Steps.updateStep(step)
     },
     deleteStep: {

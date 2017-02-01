@@ -28,7 +28,7 @@ export const ServiceType = new GraphQLObjectType({
       }
     },
     step: {
-      type: StepType, // eslint-disable-line
+      type: StepType,
       resolve: (service) => {
         if (!service.step) return null
         return Steps.getStepById(service.step)
@@ -48,6 +48,6 @@ export const ServiceInputType = new GraphQLInputObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: { type: GraphQLID },
-    step: { type: GraphQLID } // eslint-disable-line
+    step: { type: GraphQLID }
   })
 })

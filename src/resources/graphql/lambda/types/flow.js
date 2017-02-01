@@ -19,7 +19,7 @@ export const FlowType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     steps: {
-      type: new GraphQLList(StepType), // eslint-disable-line
+      type: new GraphQLList(StepType),
       resolve: (flow) => {
         if (!flow.steps || flow.steps.length === 0) return []
         return Steps.batchGetStepByIds(flow.steps)
@@ -35,6 +35,6 @@ export const FlowInputType = new GraphQLInputObjectType({
     id: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
-    steps: { type: new GraphQLList(GraphQLID) } // eslint-disable-line
+    steps: { type: new GraphQLList(GraphQLID) }
   })
 })

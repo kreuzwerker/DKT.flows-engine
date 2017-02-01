@@ -21,7 +21,7 @@ export const ProviderType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     services: {
-      type: new GraphQLList(ServiceType), // eslint-disable-line
+      type: new GraphQLList(ServiceType),
       resolve: (provider) => {
         if (!provider.services || provider.services.length === 0) return []
         return Services.batchGetServicesByIds(provider.services)
@@ -39,6 +39,6 @@ export const ProviderInputType = new GraphQLInputObjectType({
     group: { type: GraphQLString },
     description: { type: GraphQLString },
     icon: { type: GraphQLString },
-    services: { type: new GraphQLList(GraphQLID) } // eslint-disable-line
+    services: { type: new GraphQLList(GraphQLID) }
   })
 })

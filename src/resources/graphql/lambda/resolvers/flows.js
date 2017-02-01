@@ -1,5 +1,5 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
-import dDB from '../../../../utils/dynamoDB'
+import dynDB from '../../../../utils/dynamoDB'
 
 
 /**
@@ -9,16 +9,16 @@ import dDB from '../../../../utils/dynamoDB'
 export const RootQueries = {
   allFlows: () => {
     const table = process.env.DYNAMO_FLOWS
-    return dDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
+    return dynDB.scan(table)
+                .then(r => r.Items.map(unmarshalItem))
   },
 
   flow: (_, { id }) => {
     const table = process.env.DYNAMO_FLOWS
     const query = { Key: { id: { S: id } } }
 
-    return dDB.getItem(table, query)
-              .then(r => unmarshalItem(r.Item))
+    return dynDB.getItem(table, query)
+                .then(r => unmarshalItem(r.Item))
   }
 }
 
@@ -29,8 +29,8 @@ export function getFlowById(flowId) {
     Key: { id: { S: flowId } }
   }
 
-  return dDB.getItem(table, query)
-            .then(r => unmarshalItem(r.Item))
+  return dynDB.getItem(table, query)
+              .then(r => unmarshalItem(r.Item))
 }
 
 
@@ -38,5 +38,26 @@ export function getFlowById(flowId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
+export function createFlow(flow) {
+  const table = process.env.DYNAMO_FLOWS
+  return dynDB.putItem(table, flow)
+}
 
-// TODO
+
+export function updateFlow(flow) {
+  const table = process.env.DYNAMO_FLOWS
+  const query = {
+    Key: { id: { S: flow.id } }
+  }
+  return dynDB.updateItem(table, query, flow)
+}
+
+
+export function deleteFlow(id) {
+  const table = process.env.DYNAMO_FLOWS
+  const query = {
+    Key: { id: { S: id } }
+  }
+  return dynDB.deleteItem(table, query)
+              .then(() => ({ id }))
+}

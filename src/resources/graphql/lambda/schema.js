@@ -1,83 +1,25 @@
 import {
-  GraphQLID,
   GraphQLSchema,
   GraphQLList,
-  GraphQLString,
-  GraphQLObjectType
+  GraphQLID,
+  GraphQLObjectType,
+  GraphQLNonNull
 } from 'graphql'
+import { FlowType, FlowInputType } from './types/flow'
+import { ProviderType, ProviderInputType } from './types/provider'
+import { ServiceType, ServiceInputType } from './types/service'
+import { StepType, StepInputType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'
 import * as Steps from './resolvers/steps'
 
 
-const FlowType = new GraphQLObjectType({
-  name: 'Flow',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    steps: {
-      type: new GraphQLList(StepType), // eslint-disable-line
-      resolve: f => (f.steps ? Steps.batchGetStepByIds(f.steps) : [])
-    }
-  })
-})
 
-
-const ProviderType = new GraphQLObjectType({
-  name: 'Provider',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    group: { type: GraphQLString },
-    description: { type: GraphQLString },
-    icon: { type: GraphQLString },
-    services: {
-      type: new GraphQLList(ServiceType), // eslint-disable-line
-      resolve: p => (p.services ? Services.batchGetServicesByIds(p.services) : [])
-    }
-  })
-})
-
-
-const ServiceType = new GraphQLObjectType({
-  name: 'Service',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    type: { type: GraphQLString },
-    provider: {
-      type: ProviderType,
-      resolve: s => (s.provider ? Providers.getProviderById(s.provider) : null)
-    },
-    step: {
-      type: StepType, // eslint-disable-line
-      resolve: s => (s.step ? Steps.getStepById(s.step) : null)
-    }
-  })
-})
-
-
-const StepType = new GraphQLObjectType({
-  name: 'Step',
-  fields: () => ({
-    id: { type: GraphQLID },
-    position: { type: GraphQLString },
-    description: { type: GraphQLString },
-    flow: {
-      type: FlowType,
-      resolve: s => (s.flow ? Flows.getFlowById(s.flow) : null)
-    },
-    service: {
-      type: ServiceType,
-      resolve: s => (s.service ? Services.getServiceById(s.service) : null)
-    }
-  })
-})
-
-
+/**
+ * ---- Queries ----------------------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
@@ -87,7 +29,7 @@ const QueryType = new GraphQLObjectType({
     },
     Flow: {
       type: FlowType,
-      args: { id: { type: GraphQLString } },
+      args: { id: { type: GraphQLID } },
       resolve: Flows.RootQueries.flow
     },
 
@@ -97,7 +39,7 @@ const QueryType = new GraphQLObjectType({
     },
     Provider: {
       type: ProviderType,
-      args: { id: { type: GraphQLString } },
+      args: { id: { type: GraphQLID } },
       resolve: Providers.RootQueries.provider
     },
 
@@ -107,7 +49,7 @@ const QueryType = new GraphQLObjectType({
     },
     Service: {
       type: ServiceType,
-      args: { id: { type: GraphQLString } },
+      args: { id: { type: GraphQLID } },
       resolve: Services.RootQueries.service
     },
 
@@ -117,13 +59,89 @@ const QueryType = new GraphQLObjectType({
     },
     Steps: {
       type: StepType,
-      args: { id: { type: GraphQLString } },
+      args: { id: { type: GraphQLID } },
       resolve: Steps.RootQueries.step
     }
   })
 })
 
 
-export default new GraphQLSchema({
-  query: QueryType
+/**
+ * ---- Mutations --------------------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
+const MutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: () => ({
+    createFlow: {
+      type: FlowType,
+      args: { flow: { type: FlowInputType } },
+      resolve: (_, { flow }) => Flows.createFlow(flow)
+    },
+    updateFlow: {
+      type: FlowType,
+      args: { flow: { type: FlowInputType } },
+      resolve: (_, { flow }) => Flows.updateFlow(flow)
+    },
+    deleteFlow: {
+      type: FlowType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Flows.deleteFlow(id)
+    },
+
+    createProvider: {
+      type: ProviderType,
+      args: { provider: { type: ProviderInputType } },
+      resolve: (_, { provider }) => Providers.createProvider(provider)
+    },
+    updateProvider: {
+      type: ProviderType,
+      args: { provider: { type: ProviderInputType } },
+      resolve: (_, { provider }) => Providers.updateProvider(provider)
+    },
+    deleteProvider: {
+      type: ProviderType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Providers.deleteProvider(id)
+    },
+
+    createService: {
+      type: ServiceType,
+      args: { service: { type: ServiceInputType } },
+      resolve: (_, { service }) => Services.createService(service)
+    },
+    updateService: {
+      type: ServiceType,
+      args: { service: { type: ServiceInputType } },
+      resolve: (_, { service }) => Services.updateService(service)
+    },
+    deleteService: {
+      type: ServiceType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Services.deleteService(id)
+    },
+
+    createStep: {
+      type: StepType,
+      args: { provider: { type: StepInputType } },
+      resolve: (_, { step }) => Steps.createStep(step)
+    },
+    updateStep: {
+      type: StepType,
+      args: { service: { type: StepInputType } },
+      resolve: (_, { step }) => Steps.updateStep(step)
+    },
+    deleteStep: {
+      type: StepType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Steps.deleteStep(id)
+    }
+  })
 })
+
+
+/**
+ * ---- Actual Schema ----------------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
+export default new GraphQLSchema({ query: QueryType, mutation: MutationType })

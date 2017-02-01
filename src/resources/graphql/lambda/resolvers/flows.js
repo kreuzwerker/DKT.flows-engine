@@ -38,7 +38,7 @@ export function getFlowById(flowId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createFlow(flow) {
+export function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
   return dynDB.putItem(table, flow)
 }

@@ -53,13 +53,13 @@ export function batchGetServicesByIds(servicesIds) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createService(service) {
+export function createService(service) {
   const table = process.env.DYNAMO_SERVICES
   return dynDB.putItem(table, service)
 }
 
 
-export async function updateService(service) {
+export function updateService(service) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
     Key: { id: { S: service.id } }
@@ -68,7 +68,7 @@ export async function updateService(service) {
 }
 
 
-export async function deleteService(id) {
+export function deleteService(id) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
     Key: { id: { S: id } }

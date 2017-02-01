@@ -54,13 +54,13 @@ export function batchGetStepByIds(stepsIds) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createStep(step) {
+export function createStep(step) {
   const table = process.env.DYNAMO_STEPS
   return dynDB.putItem(table, step)
 }
 
 
-export async function updateStep(step) {
+export function updateStep(step) {
   const table = process.env.DYNAMO_STEPS
   const query = {
     Key: { id: { S: step.id } }
@@ -69,7 +69,7 @@ export async function updateStep(step) {
 }
 
 
-export async function deleteStep(id) {
+export function deleteStep(id) {
   const table = process.env.DYNAMO_STEPS
   const query = {
     Key: { id: { S: id } }

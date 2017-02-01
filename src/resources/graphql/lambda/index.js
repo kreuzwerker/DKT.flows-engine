@@ -11,19 +11,19 @@ export async function handler(event, context, callback) {
 
   try {
     const body = _isString(event.body) ? JSON.parse(event.body) : event.body
-
-    logger.log('Query:', body.query)
-    logger.log('Mutation:', body.mutation)
-
     let response = {}
 
     if (body.query) {
+      logger.log('Query:', body.query)
       response = await graphql(Schema, body.query)
     } else if (body.mutation) {
+      logger.log('Mutation:', body.mutation)
       response = await graphql(Schema, body.mutation)
+    } else {
+      throw new Error("No 'query' or 'mutation' object defined")
     }
 
-    logger.log('Result:', response)
+    logger.log('Result:', JSON.stringify(response, null, 2))
 
     callback(null, {
       'statusCode': 200,

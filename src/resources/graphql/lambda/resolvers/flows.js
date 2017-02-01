@@ -62,31 +62,24 @@ export async function createFlow(flow) {
   }
 }
 
-// TODO
+
 export async function updateFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
-  const currentDate = new Date().toISOString()
-  const params = {
-    Key: marshalItem({ id: flow.id }),
-    ExpressionAttributeNames: {
-      '#uAt': 'updatedAt',
-      '#n': 'name',
-      '#d': 'description',
-      '#s': 'steps'
-    },
-    ExpressionAttributeValues: {
-      ':uAt': { S: currentDate },
-      ':n': { S: flow.name },
-      ':d': { S: flow.description },
-      ':s': { SS: flow.steps }
-    },
-    UpdateExpression: 'SET #uAt=:uAt, #n=:n, #d=:d, #s=:s',
-    ReturnConsumedCapacity: 'TOTAL'
+  const query = {
+    Key: { id: { S: flow.id } }
   }
 
+  const updateParams = dynDB.buildUpdateParams(query, flow)
+
   try {
-    const res = await dynDB.updateItem(table, params)
-    return flow
+    const { ConsumedCapacity } = await dynDB.updateItem(table, updateParams)
+
+    if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
+      throw new Error('createFlow failed. No units consumed by the operation')
+    }
+
+    return dynDB.getItem(table, query)
+                .then(r => unmarshalItem(r.Item))
   } catch (err) {
     return Promise.reject(err)
   }

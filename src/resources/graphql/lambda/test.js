@@ -39,8 +39,7 @@ describe('ƛ GraphQL', function () {
   describe('Mutation', function () {
     it('does not throw an error', function () {
       expect(async () => {
-        const res = await graphQL(event3, { awsRequestId: 'getServicesTest' })
-        console.log(JSON.stringify(res, null, 2))
+        await graphQL(event3, { awsRequestId: 'getServicesTest' })
       }).to.not.throw(Error)
     })
   })

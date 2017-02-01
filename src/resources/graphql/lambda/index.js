@@ -7,7 +7,7 @@ import Schema from './schema'
  * graphql service
  */
 export async function handler(event, context, callback) {
-  const logger = Logger(true)
+  const logger = Logger(event.verbose)
 
   try {
     const body = _isString(event.body) ? JSON.parse(event.body) : event.body

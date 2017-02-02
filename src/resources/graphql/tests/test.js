@@ -5,11 +5,11 @@ import dynDB from '../../../utils/dynamoDB'
 import * as FlowsResolver from '../lambda/resolvers/flows'
 import * as ProviderResolver from '../lambda/resolvers/providers'
 import * as ServicesResolver from '../lambda/resolvers/services'
-// import * as StepsResolver from '../lambda/resolvers/steps'
+import * as StepsResolver from '../lambda/resolvers/steps'
 import flowsTestData from './flows.json'
 import providersTestData from './providers.json'
 import servicesTestData from './services.json'
-// import stepsTestData from './steps.json'
+import stepsTestData from './steps.json'
 // import event from './testEvents/event.json'
 
 
@@ -20,6 +20,7 @@ process.env.DYNAMO_STEPS = 'DKT-flow-engine-Test-GraphQLDynamoSteps-L5ZS4XOU9M6O
 
 
 // const GraphQLLambda = promisifyLambda(handler)
+const deleteKeyFrom = (key, ...objs) => objs.forEach(obj => delete obj[key])
 
 
 describe('ƛ GraphQL', () => {
@@ -47,8 +48,8 @@ describe('ƛ GraphQL', () => {
 
             // createdAt and updateAt is handled by the dynamoDB util.
             // thats why we can ignore this at this point
-            testFlow.createdAt = returnedFlow[0].createdAt
-            testFlow.updatedAt = returnedFlow[0].updatedAt
+            deleteKeyFrom('createdAt', testFlow, returnedFlow[0])
+            deleteKeyFrom('updatedAt', testFlow, returnedFlow[0])
 
             expect(returnedFlow[0]).to.deep.equal(testFlow)
           })
@@ -60,8 +61,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedFlow).to.not.be.empty
 
-            flow.createdAt = returnedFlow.createdAt
-            flow.updatedAt = returnedFlow.updatedAt
+            deleteKeyFrom('createdAt', flow, returnedFlow)
+            deleteKeyFrom('updatedAt', flow, returnedFlow)
 
             expect(returnedFlow).to.deep.equal(flow)
           })
@@ -75,8 +76,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedFlow).to.not.be.empty
 
-            flow.createdAt = returnedFlow.createdAt
-            flow.updatedAt = returnedFlow.updatedAt
+            deleteKeyFrom('createdAt', flow, returnedFlow)
+            deleteKeyFrom('updatedAt', flow, returnedFlow)
 
             expect(returnedFlow).to.deep.equal(flow)
           })
@@ -105,8 +106,8 @@ describe('ƛ GraphQL', () => {
 
           expect(createdFlow).to.not.be.empty
 
-          createTestFlow.createdAt = createdFlow.createdAt
-          createTestFlow.updatedAt = createdFlow.updatedAt
+          deleteKeyFrom('createdAt', createTestFlow, createdFlow)
+          deleteKeyFrom('updatedAt', createTestFlow, createdFlow)
 
           expect(createdFlow).to.deep.equal(createTestFlow)
         })
@@ -116,10 +117,9 @@ describe('ƛ GraphQL', () => {
           const updatedFlow = await FlowsResolver.updateFlow(newUpdateTestFlow)
 
           expect(updatedFlow).to.not.be.empty
-          expect(updatedFlow.name).to.be.equal('updated!')
 
-          newUpdateTestFlow.createdAt = updatedFlow.createdAt
-          newUpdateTestFlow.updatedAt = updatedFlow.updatedAt
+          deleteKeyFrom('createdAt', updatedFlow, newUpdateTestFlow)
+          deleteKeyFrom('updatedAt', updatedFlow, newUpdateTestFlow)
 
           expect(updatedFlow).to.deep.equal(newUpdateTestFlow)
         })
@@ -156,8 +156,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.have.lengthOf(1)
 
-            testProvider.createdAt = returnedProvider[0].createdAt
-            testProvider.updatedAt = returnedProvider[0].updatedAt
+            deleteKeyFrom('createdAt', testProvider, returnedProvider[0])
+            deleteKeyFrom('updatedAt', testProvider, returnedProvider[0])
 
             expect(returnedProvider[0]).to.eql(testProvider)
           })
@@ -169,8 +169,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.not.be.empty
 
-            provider.createdAt = returnedProvider.createdAt
-            provider.updatedAt = returnedProvider.updatedAt
+            deleteKeyFrom('createdAt', provider, returnedProvider)
+            deleteKeyFrom('updatedAt', provider, returnedProvider)
 
             expect(returnedProvider).to.eql(provider)
           })
@@ -184,8 +184,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.not.be.empty
 
-            returnedProvider.updatedAt = provider.updatedAt
-            returnedProvider.createdAt = provider.createdAt
+            deleteKeyFrom('createdAt', provider, returnedProvider)
+            deleteKeyFrom('updatedAt', provider, returnedProvider)
 
             expect(returnedProvider).to.eql(provider)
           })
@@ -214,8 +214,8 @@ describe('ƛ GraphQL', () => {
 
           expect(createdProvider).to.not.be.empty
 
-          createTestProvider.createdAt = createdProvider.createdAt
-          createTestProvider.updatedAt = createdProvider.updatedAt
+          deleteKeyFrom('createdAt', createTestProvider, createdProvider)
+          deleteKeyFrom('updatedAt', createTestProvider, createdProvider)
 
           expect(createdProvider).to.eql(createTestProvider)
         })
@@ -225,10 +225,9 @@ describe('ƛ GraphQL', () => {
           const updatedProvider = await ProviderResolver.updateProvider(newUpdateTestProvider)
 
           expect(updatedProvider).to.not.be.empty
-          expect(updatedProvider.name).to.be.equal('updated!')
 
-          newUpdateTestProvider.createdAt = updatedProvider.createdAt
-          newUpdateTestProvider.updatedAt = updatedProvider.updatedAt
+          deleteKeyFrom('createdAt', newUpdateTestProvider, updatedProvider)
+          deleteKeyFrom('updatedAt', newUpdateTestProvider, updatedProvider)
 
           expect(updatedProvider).to.eql(newUpdateTestProvider)
         })
@@ -266,8 +265,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.have.length(1)
 
-            testService.createdAt = returnedService[0].createdAt
-            testService.updatedAt = returnedService[0].updatedAt
+            deleteKeyFrom('createdAt', testService, returnedService[0])
+            deleteKeyFrom('updatedAt', testService, returnedService[0])
 
             expect(returnedService[0]).to.eql(testService)
           })
@@ -279,8 +278,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.not.be.empty
 
-            service.createdAt = returnedService.createdAt
-            service.updatedAt = returnedService.updatedAt
+            deleteKeyFrom('createdAt', returnedService, service)
+            deleteKeyFrom('updatedAt', returnedService, service)
 
             expect(returnedService).to.eql(service)
           })
@@ -294,8 +293,8 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.not.be.empty
 
-            service.createdAt = returnedService.createdAt
-            service.updatedAt = returnedService.updatedAt
+            deleteKeyFrom('createdAt', returnedService, service)
+            deleteKeyFrom('updatedAt', returnedService, service)
 
             expect(returnedService).to.eql(service)
           })
@@ -324,8 +323,8 @@ describe('ƛ GraphQL', () => {
 
           expect(createdService).to.not.be.empty
 
-          createTestService.updatedAt = createdService.updatedAt
-          createTestService.createdAt = createdService.createdAt
+          deleteKeyFrom('createdAt', createTestService, createdService)
+          deleteKeyFrom('updatedAt', createTestService, createdService)
 
           expect(createdService).to.eql(createTestService)
         })
@@ -337,10 +336,9 @@ describe('ƛ GraphQL', () => {
           const updatedService = await ServicesResolver.updateService(newUpdateTestService)
 
           expect(updatedService).to.be.not.empty
-          expect(updatedService.name).to.be.equal('updated!')
 
-          newUpdateTestService.updatedAt = updatedService.updatedAt
-          newUpdateTestService.createdAt = updatedService.createdAt
+          deleteKeyFrom('createdAt', updatedService, newUpdateTestService)
+          deleteKeyFrom('updatedAt', updatedService, newUpdateTestService)
 
           expect(updatedService).to.eql(newUpdateTestService)
         })
@@ -365,7 +363,110 @@ describe('ƛ GraphQL', () => {
      * ---- Steps Resolvers ----------------------------------------------------
      */
     describe('Steps', () => {
-      // TODO
+      describe('RootQueries', () => {
+        const { RootQueries } = StepsResolver
+
+        it('allSeps() returns all steps correctly', async function () {
+          const allSteps = await RootQueries.allSteps()
+
+          expect(allSteps).to.have.length.of.at.least(stepsTestData.length)
+
+          stepsTestData.forEach((testStep) => {
+            const returnedStep = allSteps.filter(s => s.id === testStep.id)
+
+            expect(returnedStep).to.have.length(1)
+
+            deleteKeyFrom('createdAt', testStep, returnedStep[0])
+            deleteKeyFrom('updatedAt', testStep, returnedStep[0])
+
+            expect(returnedStep[0]).to.eql(testStep)
+          })
+        })
+
+        stepsTestData.forEach((step) => {
+          it(`step(_, { id: '${step.id}' }) returns the correct step`, async function () {
+            const returnedStep = await RootQueries.step(null, { id: step.id })
+
+            expect(returnedStep).to.not.be.empty
+
+            deleteKeyFrom('createdAt', step, returnedStep)
+            deleteKeyFrom('updatedAt', step, returnedStep)
+
+            expect(returnedStep).to.eql(step)
+          })
+        })
+      })
+
+      describe('Queries', () => {
+        stepsTestData.forEach((step) => {
+          it(`getStepById('${step.id}') retuns the correct step`, async function () {
+            const returnedStep = await StepsResolver.getStepById(step.id)
+
+            expect(returnedStep).to.not.be.empty
+
+            deleteKeyFrom('createdAt', step, returnedStep)
+            deleteKeyFrom('updatedAt', step, returnedStep)
+
+            expect(returnedStep).to.eql(step)
+          })
+        })
+      })
+
+      describe('Mutations', () => {
+        const createTestStep = Object.assign({}, stepsTestData[0], {
+          id: 'createTestStep1795ez58bzs'
+        })
+        const updateTestStep = Object.assign({}, stepsTestData[0], {
+          id: 'updateTestStep1795ez58bzs'
+        })
+        const deleteTestStep = Object.assign({}, stepsTestData[0], {
+          id: 'deleteTestStep1795ez58bzs'
+        })
+
+        before(async function () {
+          await Promise.all([updateTestStep, deleteTestStep].map((step) => {
+            return dynDB.putItem(process.env.DYNAMO_STEPS, step)
+          }))
+        })
+
+        it('createStep(step) is creating a new Step', async function () {
+          const createdStep = await StepsResolver.createStep(createTestStep)
+
+          expect(createdStep).not.to.be.empty
+
+          deleteKeyFrom('createdAt', createdStep, createTestStep)
+          deleteKeyFrom('updatedAt', createdStep, createTestStep)
+
+          expect(createdStep).to.eql(createTestStep)
+        })
+
+        it('updateStep(step) is updating existing Step', async function () {
+          const newUpdateTestStep = Object.assign({}, updateTestStep, {
+            description: 'updated!'
+          })
+          const updatedStep = await StepsResolver.updateStep(newUpdateTestStep)
+
+          expect(updatedStep).not.to.be.empty
+
+          deleteKeyFrom('createdAt', updatedStep, newUpdateTestStep)
+          deleteKeyFrom('updatedAt', updatedStep, newUpdateTestStep)
+
+          expect(updatedStep).to.eql(newUpdateTestStep)
+        })
+
+        it('deleteStep(stepId) is deleting a existing provider', async function () {
+          const response = await StepsResolver.deleteStep(deleteTestStep.id)
+
+          expect(response).to.have.keys('id')
+        })
+
+        after(async function () {
+          await Promise.all([createTestStep, updateTestStep].map((testStep) => {
+            const query = { Key: { id: { S: testStep.id } } }
+            return dynDB.deleteItem(process.env.DYNAMO_STEPS, query)
+          }))
+        })
+      })
     })
   })
 })

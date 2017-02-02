@@ -4,11 +4,11 @@ import seedTestdata from './seeder'
 import dynDB from '../../../utils/dynamoDB'
 import * as FlowsResolver from '../lambda/resolvers/flows'
 import * as ProviderResolver from '../lambda/resolvers/providers'
-// import * as ServicesResolver from '../lambda/resolvers/services'
+import * as ServicesResolver from '../lambda/resolvers/services'
 // import * as StepsResolver from '../lambda/resolvers/steps'
 import flowsTestData from './flows.json'
 import providersTestData from './providers.json'
-// import servicesTestData from './services.json'
+import servicesTestData from './services.json'
 // import stepsTestData from './steps.json'
 // import event from './testEvents/event.json'
 
@@ -28,6 +28,9 @@ describe('ƛ GraphQL', () => {
   })
 
   describe('Resolvers', () => {
+    /**
+     * ---- Flows Resolvers ----------------------------------------------------
+     */
     describe('Flows', () => {
       describe('RootQueries', () => {
         const { RootQueries } = FlowsResolver
@@ -35,7 +38,7 @@ describe('ƛ GraphQL', () => {
         it('allFlows() returns all flows correctly', async function () {
           const allFlows = await RootQueries.allFlows()
 
-          expect(allFlows).to.have.length.of.at.least(2)
+          expect(allFlows).to.have.length.of.at.least(flowsTestData.length)
 
           flowsTestData.forEach((testFlow) => {
             const returnedFlow = allFlows.filter(f => f.id === testFlow.id)
@@ -113,6 +116,7 @@ describe('ƛ GraphQL', () => {
           const updatedFlow = await FlowsResolver.updateFlow(newUpdateTestFlow)
 
           expect(updatedFlow).to.not.be.empty
+          expect(updatedFlow.name).to.be.equal('updated!')
 
           newUpdateTestFlow.createdAt = updatedFlow.createdAt
           newUpdateTestFlow.updatedAt = updatedFlow.updatedAt
@@ -135,6 +139,9 @@ describe('ƛ GraphQL', () => {
     })
 
 
+    /**
+     * ---- Providers Resolvers ------------------------------------------------
+     */
     describe('Providers', () => {
       describe('RootQueries', () => {
         const { RootQueries } = ProviderResolver
@@ -142,7 +149,7 @@ describe('ƛ GraphQL', () => {
         it('allProviders() returns all providers correctly', async function () {
           const allProviders = await RootQueries.allProviders()
 
-          expect(allProviders).to.have.length.of.at.least(3)
+          expect(allProviders).to.have.length.of.at.least(providersTestData.length)
 
           providersTestData.forEach((testProvider) => {
             const returnedProvider = allProviders.filter(p => p.id === testProvider.id)
@@ -218,6 +225,7 @@ describe('ƛ GraphQL', () => {
           const updatedProvider = await ProviderResolver.updateProvider(newUpdateTestProvider)
 
           expect(updatedProvider).to.not.be.empty
+          expect(updatedProvider.name).to.be.equal('updated!')
 
           newUpdateTestProvider.createdAt = updatedProvider.createdAt
           newUpdateTestProvider.updatedAt = updatedProvider.updatedAt
@@ -233,34 +241,131 @@ describe('ƛ GraphQL', () => {
 
         after(async function () {
           await Promise.all([createTestProvider, updateTestProvider].map((testProvider) => {
-            return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, { Key: { id: { S: testProvider.id } } })
+            const query = { Key: { id: { S: testProvider.id } } }
+            return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, query)
           }))
         })
       })
     })
 
 
+    /**
+     * ---- Services Resolvers -------------------------------------------------
+     */
     describe('Services', () => {
-      // TODO
+      describe('RootQueries', () => {
+        const { RootQueries } = ServicesResolver
+
+        it('allServices() returns all services correctly', async function () {
+          const allServices = await RootQueries.allServices()
+
+          expect(allServices).to.have.length.of.at.least(servicesTestData.length)
+
+          servicesTestData.forEach((testService) => {
+            const returnedService = allServices.filter(s => s.id === testService.id)
+
+            expect(returnedService).to.have.length(1)
+
+            testService.createdAt = returnedService[0].createdAt
+            testService.updatedAt = returnedService[0].updatedAt
+
+            expect(returnedService[0]).to.eql(testService)
+          })
+        })
+
+        servicesTestData.forEach((service) => {
+          it(`service(_, { id: '${service.id}'}) returns the correct service`, async function () {
+            const returnedService = await RootQueries.service(null, { id: service.id })
+
+            expect(returnedService).to.not.be.empty
+
+            service.createdAt = returnedService.createdAt
+            service.updatedAt = returnedService.updatedAt
+
+            expect(returnedService).to.eql(service)
+          })
+        })
+      })
+
+      describe('Quries', () => {
+        servicesTestData.forEach((service) => {
+          it(`getServiceById('${service.id}') returns the correct service`, async function () {
+            const returnedService = await ServicesResolver.getServiceById(service.id)
+
+            expect(returnedService).to.not.be.empty
+
+            service.createdAt = returnedService.createdAt
+            service.updatedAt = returnedService.updatedAt
+
+            expect(returnedService).to.eql(service)
+          })
+        })
+      })
+
+      describe('Mutations', () => {
+        const createTestService = Object.assign({}, servicesTestData[0], {
+          id: 'createTestService1wvcejt5'
+        })
+        const updateTestService = Object.assign({}, servicesTestData[0], {
+          id: 'updateTestService1wvcejt5'
+        })
+        const deleteTestService = Object.assign({}, servicesTestData[0], {
+          id: 'deleteTestService1wvcejt5'
+        })
+
+        before(async function () {
+          await Promise.all([updateTestService, deleteTestService].map((service) => {
+            return dynDB.putItem(process.env.DYNAMO_SERVICES, service)
+          }))
+        })
+
+        it('createService(service) is creating a new service', async function () {
+          const createdService = await ServicesResolver.createService(createTestService)
+
+          expect(createdService).to.not.be.empty
+
+          createTestService.updatedAt = createdService.updatedAt
+          createTestService.createdAt = createdService.createdAt
+
+          expect(createdService).to.eql(createTestService)
+        })
+
+        it('updateService(service) is updating a existing service', async function () {
+          const newUpdateTestService = Object.assign({}, updateTestService, {
+            name: 'updated!'
+          })
+          const updatedService = await ServicesResolver.updateService(newUpdateTestService)
+
+          expect(updatedService).to.be.not.empty
+          expect(updatedService.name).to.be.equal('updated!')
+
+          newUpdateTestService.updatedAt = updatedService.updatedAt
+          newUpdateTestService.createdAt = updatedService.createdAt
+
+          expect(updatedService).to.eql(newUpdateTestService)
+        })
+
+        it('deleteService(serviceId) is deleting a existing provider', async function () {
+          const response = await ServicesResolver.deleteService(deleteTestService.id)
+
+          expect(response).to.have.keys('id')
+        })
+
+        after(async function () {
+          await Promise.all([createTestService, updateTestService].map((testService) => {
+            const query = { Key: { id: { S: testService.id } } }
+            return dynDB.deleteItem(process.env.DYNAMO_SERVICES, query)
+          }))
+        })
+      })
     })
 
 
+    /**
+     * ---- Steps Resolvers ----------------------------------------------------
+     */
     describe('Steps', () => {
       // TODO
     })
   })
-
-  // describe('Query', () => {
-  //   it('does not throw an error', async function () {
-  //     const result = await GraphQLLambda(event, { awsRequestId: 'graphQlLambdaTest' })
-  //     console.log(result)
-  //   })
-  // })
-  //
-  // describe('Mutations', () => {
-  //   it('does not throw an error', async function () {
-  //     const result = await GraphQLLambda(event, { awsRequestId: 'graphQlLambdaTest' })
-  //     console.log(result)
-  //   })
-  // })
 })

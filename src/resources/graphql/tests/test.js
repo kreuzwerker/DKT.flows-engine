@@ -3,11 +3,11 @@
 import seedTestdata from './seeder'
 import dynDB from '../../../utils/dynamoDB'
 import * as FlowsResolver from '../lambda/resolvers/flows'
-// import * as ProviderResolver from '../lambda/resolvers/providers'
+import * as ProviderResolver from '../lambda/resolvers/providers'
 // import * as ServicesResolver from '../lambda/resolvers/services'
 // import * as StepsResolver from '../lambda/resolvers/steps'
 import flowsTestData from './flows.json'
-// import providersTestData from './providers.json'
+import providersTestData from './providers.json'
 // import servicesTestData from './services.json'
 // import stepsTestData from './steps.json'
 // import event from './testEvents/event.json'
@@ -55,6 +55,8 @@ describe('ƛ GraphQL', () => {
           it(`flow(_, { id: '${flow.id}' }) returns the correct flow`, async function () {
             const returnedFlow = await RootQueries.flow(null, { id: flow.id })
 
+            expect(returnedFlow).to.not.be.empty
+
             flow.createdAt = returnedFlow.createdAt
             flow.updatedAt = returnedFlow.updatedAt
 
@@ -67,6 +69,8 @@ describe('ƛ GraphQL', () => {
         flowsTestData.forEach((flow) => {
           it(`getFlowById('${flow.id}') returns the correct flow`, async function () {
             const returnedFlow = await FlowsResolver.getFlowById(flow.id)
+
+            expect(returnedFlow).to.not.be.empty
 
             flow.createdAt = returnedFlow.createdAt
             flow.updatedAt = returnedFlow.updatedAt
@@ -95,6 +99,9 @@ describe('ƛ GraphQL', () => {
 
         it('createFlow(flow) is creating a new flow', async function () {
           const createdFlow = await FlowsResolver.createFlow(createTestFlow)
+
+          expect(createdFlow).to.not.be.empty
+
           createTestFlow.createdAt = createdFlow.createdAt
           createTestFlow.updatedAt = createdFlow.updatedAt
 
@@ -104,6 +111,9 @@ describe('ƛ GraphQL', () => {
         it('updateFlow(flow) is updating a existing flow', async function () {
           const newUpdateTestFlow = Object.assign({}, updateTestFlow, { name: 'updated!' })
           const updatedFlow = await FlowsResolver.updateFlow(newUpdateTestFlow)
+
+          expect(updatedFlow).to.not.be.empty
+
           newUpdateTestFlow.createdAt = updatedFlow.createdAt
           newUpdateTestFlow.updatedAt = updatedFlow.updatedAt
 
@@ -126,7 +136,107 @@ describe('ƛ GraphQL', () => {
 
 
     describe('Providers', () => {
-      // TODO
+      describe('RootQueries', () => {
+        const { RootQueries } = ProviderResolver
+
+        it('allProviders() returns all providers correctly', async function () {
+          const allProviders = await RootQueries.allProviders()
+
+          expect(allProviders).to.have.length.of.at.least(3)
+
+          providersTestData.forEach((testProvider) => {
+            const returnedProvider = allProviders.filter(p => p.id === testProvider.id)
+
+            expect(returnedProvider).to.have.lengthOf(1)
+
+            testProvider.createdAt = returnedProvider[0].createdAt
+            testProvider.updatedAt = returnedProvider[0].updatedAt
+
+            expect(returnedProvider[0]).to.eql(testProvider)
+          })
+        })
+
+        providersTestData.forEach((provider) => {
+          it(`provider(_, { id: '${provider.id}' }) returns the correct provider`, async function () {
+            const returnedProvider = await RootQueries.provider(null, { id: provider.id })
+
+            expect(returnedProvider).to.not.be.empty
+
+            provider.createdAt = returnedProvider.createdAt
+            provider.updatedAt = returnedProvider.updatedAt
+
+            expect(returnedProvider).to.eql(provider)
+          })
+        })
+      })
+
+      describe('Queries', () => {
+        providersTestData.forEach((provider) => {
+          it(`getProviderById('${provider.id}') returns the correct provider`, async function () {
+            const returnedProvider = await ProviderResolver.getProviderById(provider.id)
+
+            expect(returnedProvider).to.not.be.empty
+
+            returnedProvider.updatedAt = provider.updatedAt
+            returnedProvider.createdAt = provider.createdAt
+
+            expect(returnedProvider).to.eql(provider)
+          })
+        })
+      })
+
+      describe('Mutations', () => {
+        const createTestProvider = Object.assign({}, providersTestData[0], {
+          id: 'createTestProvider3zlitjn'
+        })
+        const updateTestProvider = Object.assign({}, providersTestData[0], {
+          id: 'updateTestProvider3zlitjn'
+        })
+        const deleteTestProvider = Object.assign({}, providersTestData[0], {
+          id: 'deleteTestProvider3zlitjn'
+        })
+
+        before(async function () {
+          await Promise.all([updateTestProvider, deleteTestProvider].map((provider) => {
+            return dynDB.putItem(process.env.DYNAMO_PROVIDERS, provider)
+          }))
+        })
+
+        it('createProvider(provider) is creating a new provider', async function () {
+          const createdProvider = await ProviderResolver.createProvider(createTestProvider)
+
+          expect(createdProvider).to.not.be.empty
+
+          createTestProvider.createdAt = createdProvider.createdAt
+          createTestProvider.updatedAt = createdProvider.updatedAt
+
+          expect(createdProvider).to.eql(createTestProvider)
+        })
+
+        it('updateProvider(provider) is updating a existing provider', async function () {
+          const newUpdateTestProvider = Object.assign({}, updateTestProvider, { name: 'updated!' })
+          const updatedProvider = await ProviderResolver.updateProvider(newUpdateTestProvider)
+
+          expect(updatedProvider).to.not.be.empty
+
+          newUpdateTestProvider.createdAt = updatedProvider.createdAt
+          newUpdateTestProvider.updatedAt = updatedProvider.updatedAt
+
+          expect(updatedProvider).to.eql(newUpdateTestProvider)
+        })
+
+        it('deleteProvider(providerId) is deleting a existing provider', async function () {
+          const response = await ProviderResolver.deleteProvider(deleteTestProvider.id)
+
+          expect(response).to.have.keys('id')
+        })
+
+        after(async function () {
+          await Promise.all([createTestProvider, updateTestProvider].map((testProvider) => {
+            return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, { Key: { id: { S: testProvider.id } } })
+          }))
+        })
+      })
     })
 
 

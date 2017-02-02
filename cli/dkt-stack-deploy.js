@@ -18,8 +18,8 @@ program
 const logger = Logger(program._name, program.verbose)
 const stage = program.stage || 'Dev'
 
-if (stage !== 'Dev' && stage !== 'Staging' && stage !== 'Production') {
-  logger.error(`Invalid stage '${stage}' - Use 'Dev', 'Staging' or 'Production'`)
+if (stage !== 'Dev' && stage !== 'Test' && stage !== 'Staging' && stage !== 'Production') {
+  logger.error(`Invalid stage '${stage}' - Use 'Dev', 'Test', 'Staging' or 'Production'`)
   console.log('                             e.g. cli/dkt stack deploy -s Dev')
   return
 }

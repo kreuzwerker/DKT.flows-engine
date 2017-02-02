@@ -1,8 +1,8 @@
 [
   {
-    "id": "ciy1fjpm60oyl014323zlitjn",
-    "createdAt": "17/01/2017, 12:22:13",
-    "updatedAt": "17/01/2017, 12:22:13",
+    "id": "dontDeleteMel014323zlitjn",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
     "name": "Filter",
     "group": "DKT native app",
     "description": "Filter services.",
@@ -10,22 +10,22 @@
     "services": []
   },
   {
-    "id": "ciy0ivuazabar0133xu1vlvyj",
-    "createdAt": "16/01/2017, 21:07:51",
-    "updatedAt": "17/01/2017, 12:21:59",
+    "id": "dontDeleteMer0133xu1vlvyj",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
     "name": "RSS",
     "group": "DKT native app",
     "description": "RSS services.",
     "icon": "rss_list",
     "services": [
-      "ciy0je3qjbb1f01791a6o9kut",
-      "ciy0jeruzbb5m01790ymkz7xl"
+      "dontDeleteMef01791a6o9kut",
+      "dontDeleteMem01790ymkz7xl"
     ]
   },
   {
-    "id": "ciy0it07jaa6i0133gwr0g9i1",
-    "createdAt": "16/01/2017, 21:05:39",
-    "updatedAt": "17/01/2017, 12:22:04",
+    "id": "dontDeleteMei0133gwr0g9i1",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
     "name": "Email",
     "group": "DKT native app",
     "description": "Email services.",

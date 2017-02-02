@@ -1,24 +1,24 @@
 [
   {
-    "id": "ciy0iehaj9wu20133m8gu0lju",
-    "createdAt": "16/01/2017, 20:54:21",
-    "updatedAt": "17/01/2017, 09:42:47",
+    "id": "dontDeleteMe20133m8gu0lju",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
     "name": "SecondFlow",
     "description": "This, too, is a mocked flow object.",
     "steps": [
-      "ciy0jidbmaivt0133sqdy35e6",
-      "ciy0jipfkbc8101795ez58bzs"
+      "dontDeleteMe101795ez58bzs",
+      "dontDeleteMet0133sqdy35e6"
     ]
   },
   {
-    "id": "ciy0ie2q1aoul0179imlh0a73",
-    "createdAt": "16/01/2017, 20:54:02",
-    "updatedAt": "16/01/2017, 20:54:02",
+    "id": "dontDeleteMel0179imlh0a73",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
     "name": "first flow",
     "description": "This is a mocked flow object.",
     "steps": [
-      "ciy0jgybhai7v013373puyuvy",
-      "ciy0jhg5oaik501332dveadqc"
+      "dontDeleteMev013373puyuvy",
+      "dontDeleteMe501332dveadqc"
     ]
   }
 ]

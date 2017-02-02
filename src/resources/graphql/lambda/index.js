@@ -16,10 +16,17 @@ export async function handler(event, context, callback) {
     const response = await graphql(Schema, body.query)
     logger.log('Result:', JSON.stringify(response, null, 2))
 
-    callback(null, {
-      'statusCode': 200,
-      'body': JSON.stringify(response)
-    })
+    if (response.errors) {
+      callback(null, {
+        'statusCode': 500,
+        'body': JSON.stringify({ errors: response.errors })
+      })
+    } else {
+      callback(null, {
+        'statusCode': 200,
+        'body': JSON.stringify(response)
+      })
+    }
   } catch (err) {
     logger.log('Error:', err)
     callback(err)

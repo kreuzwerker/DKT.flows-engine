@@ -20,7 +20,7 @@ process.env.DYNAMO_STEPS = 'DKT-flow-engine-Test-GraphQLDynamoSteps-L5ZS4XOU9M6O
 
 
 // const GraphQLLambda = promisifyLambda(handler)
-const deleteKeyFrom = (key, ...objs) => objs.forEach(obj => delete obj[key])
+const deleteKeysFrom = (keys, ...objs) => keys.forEach(k => objs.forEach(obj => delete obj[k]))
 
 
 describe('ƛ GraphQL', () => {
@@ -48,8 +48,7 @@ describe('ƛ GraphQL', () => {
 
             // createdAt and updateAt is handled by the dynamoDB util.
             // thats why we can ignore this at this point
-            deleteKeyFrom('createdAt', testFlow, returnedFlow[0])
-            deleteKeyFrom('updatedAt', testFlow, returnedFlow[0])
+            deleteKeysFrom(['createdAt', 'updatedAt'], testFlow, returnedFlow[0])
 
             expect(returnedFlow[0]).to.deep.equal(testFlow)
           })
@@ -61,8 +60,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedFlow).to.not.be.empty
 
-            deleteKeyFrom('createdAt', flow, returnedFlow)
-            deleteKeyFrom('updatedAt', flow, returnedFlow)
+            deleteKeysFrom(['createdAt', 'updatedAt'], flow, returnedFlow)
 
             expect(returnedFlow).to.deep.equal(flow)
           })
@@ -76,8 +74,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedFlow).to.not.be.empty
 
-            deleteKeyFrom('createdAt', flow, returnedFlow)
-            deleteKeyFrom('updatedAt', flow, returnedFlow)
+            deleteKeysFrom(['createdAt', 'updatedAt'], flow, returnedFlow)
 
             expect(returnedFlow).to.deep.equal(flow)
           })
@@ -106,8 +103,7 @@ describe('ƛ GraphQL', () => {
 
           expect(createdFlow).to.not.be.empty
 
-          deleteKeyFrom('createdAt', createTestFlow, createdFlow)
-          deleteKeyFrom('updatedAt', createTestFlow, createdFlow)
+          deleteKeysFrom(['createdAt', 'updatedAt'], createTestFlow, createdFlow)
 
           expect(createdFlow).to.deep.equal(createTestFlow)
         })
@@ -118,8 +114,7 @@ describe('ƛ GraphQL', () => {
 
           expect(updatedFlow).to.not.be.empty
 
-          deleteKeyFrom('createdAt', updatedFlow, newUpdateTestFlow)
-          deleteKeyFrom('updatedAt', updatedFlow, newUpdateTestFlow)
+          deleteKeysFrom(['createdAt', 'updatedAt'], updatedFlow, newUpdateTestFlow)
 
           expect(updatedFlow).to.deep.equal(newUpdateTestFlow)
         })
@@ -156,8 +151,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.have.lengthOf(1)
 
-            deleteKeyFrom('createdAt', testProvider, returnedProvider[0])
-            deleteKeyFrom('updatedAt', testProvider, returnedProvider[0])
+            deleteKeysFrom(['createdAt', 'updatedAt'], testProvider, returnedProvider[0])
 
             expect(returnedProvider[0]).to.eql(testProvider)
           })
@@ -169,8 +163,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.not.be.empty
 
-            deleteKeyFrom('createdAt', provider, returnedProvider)
-            deleteKeyFrom('updatedAt', provider, returnedProvider)
+            deleteKeysFrom(['createdAt', 'updatedAt'], provider, returnedProvider)
 
             expect(returnedProvider).to.eql(provider)
           })
@@ -184,8 +177,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedProvider).to.not.be.empty
 
-            deleteKeyFrom('createdAt', provider, returnedProvider)
-            deleteKeyFrom('updatedAt', provider, returnedProvider)
+            deleteKeysFrom(['createdAt', 'updatedAt'], provider, returnedProvider)
 
             expect(returnedProvider).to.eql(provider)
           })
@@ -214,8 +206,7 @@ describe('ƛ GraphQL', () => {
 
           expect(createdProvider).to.not.be.empty
 
-          deleteKeyFrom('createdAt', createTestProvider, createdProvider)
-          deleteKeyFrom('updatedAt', createTestProvider, createdProvider)
+          deleteKeysFrom(['createdAt', 'updatedAt'], createTestProvider, createdProvider)
 
           expect(createdProvider).to.eql(createTestProvider)
         })
@@ -226,8 +217,7 @@ describe('ƛ GraphQL', () => {
 
           expect(updatedProvider).to.not.be.empty
 
-          deleteKeyFrom('createdAt', newUpdateTestProvider, updatedProvider)
-          deleteKeyFrom('updatedAt', newUpdateTestProvider, updatedProvider)
+          deleteKeysFrom(['createdAt', 'updatedAt'], newUpdateTestProvider, updatedProvider)
 
           expect(updatedProvider).to.eql(newUpdateTestProvider)
         })
@@ -265,8 +255,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.have.length(1)
 
-            deleteKeyFrom('createdAt', testService, returnedService[0])
-            deleteKeyFrom('updatedAt', testService, returnedService[0])
+            deleteKeysFrom(['createdAt', 'updatedAt'], testService, returnedService[0])
 
             expect(returnedService[0]).to.eql(testService)
           })
@@ -278,8 +267,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.not.be.empty
 
-            deleteKeyFrom('createdAt', returnedService, service)
-            deleteKeyFrom('updatedAt', returnedService, service)
+            deleteKeysFrom(['createdAt', 'updatedAt'], returnedService, service)
 
             expect(returnedService).to.eql(service)
           })
@@ -293,8 +281,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedService).to.not.be.empty
 
-            deleteKeyFrom('createdAt', returnedService, service)
-            deleteKeyFrom('updatedAt', returnedService, service)
+            deleteKeysFrom(['createdAt', 'updatedAt'], returnedService, service)
 
             expect(returnedService).to.eql(service)
           })
@@ -323,8 +310,7 @@ describe('ƛ GraphQL', () => {
 
           expect(createdService).to.not.be.empty
 
-          deleteKeyFrom('createdAt', createTestService, createdService)
-          deleteKeyFrom('updatedAt', createTestService, createdService)
+          deleteKeysFrom(['createdAt', 'updatedAt'], createTestService, createdService)
 
           expect(createdService).to.eql(createTestService)
         })
@@ -337,8 +323,7 @@ describe('ƛ GraphQL', () => {
 
           expect(updatedService).to.be.not.empty
 
-          deleteKeyFrom('createdAt', updatedService, newUpdateTestService)
-          deleteKeyFrom('updatedAt', updatedService, newUpdateTestService)
+          deleteKeysFrom(['createdAt', 'updatedAt'], updatedService, newUpdateTestService)
 
           expect(updatedService).to.eql(newUpdateTestService)
         })
@@ -376,8 +361,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedStep).to.have.length(1)
 
-            deleteKeyFrom('createdAt', testStep, returnedStep[0])
-            deleteKeyFrom('updatedAt', testStep, returnedStep[0])
+            deleteKeysFrom(['createdAt', 'updatedAt'], testStep, returnedStep[0])
 
             expect(returnedStep[0]).to.eql(testStep)
           })
@@ -389,8 +373,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedStep).to.not.be.empty
 
-            deleteKeyFrom('createdAt', step, returnedStep)
-            deleteKeyFrom('updatedAt', step, returnedStep)
+            deleteKeysFrom(['createdAt', 'updatedAt'], step, returnedStep)
 
             expect(returnedStep).to.eql(step)
           })
@@ -404,8 +387,7 @@ describe('ƛ GraphQL', () => {
 
             expect(returnedStep).to.not.be.empty
 
-            deleteKeyFrom('createdAt', step, returnedStep)
-            deleteKeyFrom('updatedAt', step, returnedStep)
+            deleteKeysFrom(['createdAt', 'updatedAt'], step, returnedStep)
 
             expect(returnedStep).to.eql(step)
           })
@@ -434,8 +416,7 @@ describe('ƛ GraphQL', () => {
 
           expect(createdStep).not.to.be.empty
 
-          deleteKeyFrom('createdAt', createdStep, createTestStep)
-          deleteKeyFrom('updatedAt', createdStep, createTestStep)
+          deleteKeysFrom(['createdAt', 'updatedAt'], createdStep, createTestStep)
 
           expect(createdStep).to.eql(createTestStep)
         })
@@ -448,8 +429,7 @@ describe('ƛ GraphQL', () => {
 
           expect(updatedStep).not.to.be.empty
 
-          deleteKeyFrom('createdAt', updatedStep, newUpdateTestStep)
-          deleteKeyFrom('updatedAt', updatedStep, newUpdateTestStep)
+          deleteKeysFrom(['createdAt', 'updatedAt'], updatedStep, newUpdateTestStep)
 
           expect(updatedStep).to.eql(newUpdateTestStep)
         })

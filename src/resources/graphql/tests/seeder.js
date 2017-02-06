@@ -1,9 +1,9 @@
 import _flatten from 'lodash/flatten'
 import dynDB from '../../../utils/dynamoDB'
-import flows from './flows.json'
-import providers from './providers.json'
-import services from './services.json'
-import steps from './steps.json'
+import flows from './testData/flows.json'
+import providers from './testData/providers.json'
+import services from './testData/services.json'
+import steps from './testData/steps.json'
 
 
 function seedTestdata() {

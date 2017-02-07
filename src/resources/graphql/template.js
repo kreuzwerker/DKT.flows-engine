@@ -50,7 +50,7 @@ module.exports = ({ stage, resource, key }) => ({
         Properties: {
           RestApiId: { Ref: GRAPHQL_API_GATEWAY },
           Path: '/',
-          Method: 'post'
+          Method: 'POST'
         }
       }
     }

@@ -24,6 +24,11 @@ export async function handler(event, context, callback) {
     } else {
       callback(null, {
         'statusCode': 200,
+        'headers': {
+          'Access-Control-Allow-Methods': 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT',
+          'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*'
+        },
         'body': JSON.stringify(response)
       })
     }

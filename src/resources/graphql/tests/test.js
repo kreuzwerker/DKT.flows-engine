@@ -33,11 +33,9 @@ describe('ƛ GraphQL', () => {
      * ---- Flows Resolvers ----------------------------------------------------
      */
     describe('Flows', () => {
-      describe('RootQueries', () => {
-        const { RootQueries } = FlowsResolver
-
+      describe('Queries', () => {
         it('allFlows() returns all flows correctly', async function () {
-          const allFlows = await RootQueries.allFlows()
+          const allFlows = await FlowsResolver.allFlows()
 
           expect(allFlows).to.have.length.of.at.least(flowsTestData.length)
 
@@ -54,20 +52,6 @@ describe('ƛ GraphQL', () => {
           })
         })
 
-        flowsTestData.forEach((flow) => {
-          it(`flow(_, { id: '${flow.id}' }) returns the correct flow`, async function () {
-            const returnedFlow = await RootQueries.flow(null, { id: flow.id })
-
-            expect(returnedFlow).to.not.be.empty
-
-            deleteKeysFrom(['createdAt', 'updatedAt'], flow, returnedFlow)
-
-            expect(returnedFlow).to.deep.equal(flow)
-          })
-        })
-      })
-
-      describe('Queries', () => {
         flowsTestData.forEach((flow) => {
           it(`getFlowById('${flow.id}') returns the correct flow`, async function () {
             const returnedFlow = await FlowsResolver.getFlowById(flow.id)
@@ -138,11 +122,9 @@ describe('ƛ GraphQL', () => {
      * ---- Providers Resolvers ------------------------------------------------
      */
     describe('Providers', () => {
-      describe('RootQueries', () => {
-        const { RootQueries } = ProviderResolver
-
+      describe('Queries', () => {
         it('allProviders() returns all providers correctly', async function () {
-          const allProviders = await RootQueries.allProviders()
+          const allProviders = await ProviderResolver.allProviders()
 
           expect(allProviders).to.have.length.of.at.least(providersTestData.length)
 
@@ -150,35 +132,17 @@ describe('ƛ GraphQL', () => {
             const returnedProvider = allProviders.filter(p => p.id === testProvider.id)
 
             expect(returnedProvider).to.have.lengthOf(1)
-
             deleteKeysFrom(['createdAt', 'updatedAt'], testProvider, returnedProvider[0])
-
             expect(returnedProvider[0]).to.eql(testProvider)
           })
         })
 
         providersTestData.forEach((provider) => {
-          it(`provider(_, { id: '${provider.id}' }) returns the correct provider`, async function () {
-            const returnedProvider = await RootQueries.provider(null, { id: provider.id })
-
-            expect(returnedProvider).to.not.be.empty
-
-            deleteKeysFrom(['createdAt', 'updatedAt'], provider, returnedProvider)
-
-            expect(returnedProvider).to.eql(provider)
-          })
-        })
-      })
-
-      describe('Queries', () => {
-        providersTestData.forEach((provider) => {
           it(`getProviderById('${provider.id}') returns the correct provider`, async function () {
             const returnedProvider = await ProviderResolver.getProviderById(provider.id)
 
             expect(returnedProvider).to.not.be.empty
-
             deleteKeysFrom(['createdAt', 'updatedAt'], provider, returnedProvider)
-
             expect(returnedProvider).to.eql(provider)
           })
         })
@@ -205,9 +169,7 @@ describe('ƛ GraphQL', () => {
           const createdProvider = await ProviderResolver.createProvider(createTestProvider)
 
           expect(createdProvider).to.not.be.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], createTestProvider, createdProvider)
-
           expect(createdProvider).to.eql(createTestProvider)
         })
 
@@ -216,9 +178,7 @@ describe('ƛ GraphQL', () => {
           const updatedProvider = await ProviderResolver.updateProvider(newUpdateTestProvider)
 
           expect(updatedProvider).to.not.be.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], newUpdateTestProvider, updatedProvider)
-
           expect(updatedProvider).to.eql(newUpdateTestProvider)
         })
 
@@ -242,11 +202,9 @@ describe('ƛ GraphQL', () => {
      * ---- Services Resolvers -------------------------------------------------
      */
     describe('Services', () => {
-      describe('RootQueries', () => {
-        const { RootQueries } = ServicesResolver
-
+      describe('Quries', () => {
         it('allServices() returns all services correctly', async function () {
-          const allServices = await RootQueries.allServices()
+          const allServices = await ServicesResolver.allServices()
 
           expect(allServices).to.have.length.of.at.least(servicesTestData.length)
 
@@ -254,35 +212,17 @@ describe('ƛ GraphQL', () => {
             const returnedService = allServices.filter(s => s.id === testService.id)
 
             expect(returnedService).to.have.length(1)
-
             deleteKeysFrom(['createdAt', 'updatedAt'], testService, returnedService[0])
-
             expect(returnedService[0]).to.eql(testService)
           })
         })
 
         servicesTestData.forEach((service) => {
-          it(`service(_, { id: '${service.id}'}) returns the correct service`, async function () {
-            const returnedService = await RootQueries.service(null, { id: service.id })
-
-            expect(returnedService).to.not.be.empty
-
-            deleteKeysFrom(['createdAt', 'updatedAt'], returnedService, service)
-
-            expect(returnedService).to.eql(service)
-          })
-        })
-      })
-
-      describe('Quries', () => {
-        servicesTestData.forEach((service) => {
           it(`getServiceById('${service.id}') returns the correct service`, async function () {
             const returnedService = await ServicesResolver.getServiceById(service.id)
 
             expect(returnedService).to.not.be.empty
-
             deleteKeysFrom(['createdAt', 'updatedAt'], returnedService, service)
-
             expect(returnedService).to.eql(service)
           })
         })
@@ -309,9 +249,7 @@ describe('ƛ GraphQL', () => {
           const createdService = await ServicesResolver.createService(createTestService)
 
           expect(createdService).to.not.be.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], createTestService, createdService)
-
           expect(createdService).to.eql(createTestService)
         })
 
@@ -322,9 +260,7 @@ describe('ƛ GraphQL', () => {
           const updatedService = await ServicesResolver.updateService(newUpdateTestService)
 
           expect(updatedService).to.be.not.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], updatedService, newUpdateTestService)
-
           expect(updatedService).to.eql(newUpdateTestService)
         })
 
@@ -348,11 +284,9 @@ describe('ƛ GraphQL', () => {
      * ---- Steps Resolvers ----------------------------------------------------
      */
     describe('Steps', () => {
-      describe('RootQueries', () => {
-        const { RootQueries } = StepsResolver
-
+      describe('Queries', () => {
         it('allSeps() returns all steps correctly', async function () {
-          const allSteps = await RootQueries.allSteps()
+          const allSteps = await StepsResolver.allSteps()
 
           expect(allSteps).to.have.length.of.at.least(stepsTestData.length)
 
@@ -360,35 +294,17 @@ describe('ƛ GraphQL', () => {
             const returnedStep = allSteps.filter(s => s.id === testStep.id)
 
             expect(returnedStep).to.have.length(1)
-
             deleteKeysFrom(['createdAt', 'updatedAt'], testStep, returnedStep[0])
-
             expect(returnedStep[0]).to.eql(testStep)
           })
         })
 
         stepsTestData.forEach((step) => {
-          it(`step(_, { id: '${step.id}' }) returns the correct step`, async function () {
-            const returnedStep = await RootQueries.step(null, { id: step.id })
-
-            expect(returnedStep).to.not.be.empty
-
-            deleteKeysFrom(['createdAt', 'updatedAt'], step, returnedStep)
-
-            expect(returnedStep).to.eql(step)
-          })
-        })
-      })
-
-      describe('Queries', () => {
-        stepsTestData.forEach((step) => {
           it(`getStepById('${step.id}') retuns the correct step`, async function () {
             const returnedStep = await StepsResolver.getStepById(step.id)
 
             expect(returnedStep).to.not.be.empty
-
             deleteKeysFrom(['createdAt', 'updatedAt'], step, returnedStep)
-
             expect(returnedStep).to.eql(step)
           })
         })
@@ -415,9 +331,7 @@ describe('ƛ GraphQL', () => {
           const createdStep = await StepsResolver.createStep(createTestStep)
 
           expect(createdStep).not.to.be.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], createdStep, createTestStep)
-
           expect(createdStep).to.eql(createTestStep)
         })
 
@@ -428,9 +342,7 @@ describe('ƛ GraphQL', () => {
           const updatedStep = await StepsResolver.updateStep(newUpdateTestStep)
 
           expect(updatedStep).not.to.be.empty
-
           deleteKeysFrom(['createdAt', 'updatedAt'], updatedStep, newUpdateTestStep)
-
           expect(updatedStep).to.eql(newUpdateTestStep)
         })
 

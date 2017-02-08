@@ -6,20 +6,10 @@ import dynDB from '../../../../utils/dynamoDB'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export const RootQueries = {
-  allFlows: () => {
-    const table = process.env.DYNAMO_FLOWS
-    return dynDB.scan(table)
-                .then(r => r.Items.map(unmarshalItem))
-  },
-
-  flow: (_, { id }) => {
-    const table = process.env.DYNAMO_FLOWS
-    const query = { Key: { id: { S: id } } }
-
-    return dynDB.getItem(table, query)
-                .then(r => unmarshalItem(r.Item))
-  }
+export function allFlows() {
+  const table = process.env.DYNAMO_FLOWS
+  return dynDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
 }
 
 

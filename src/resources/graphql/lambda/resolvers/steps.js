@@ -6,21 +6,10 @@ import dynDB from '../../../../utils/dynamoDB'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export const RootQueries = {
-  allSteps: () => {
-    const table = process.env.DYNAMO_STEPS
-
-    return dynDB.scan(table)
-                .then(r => r.Items.map(unmarshalItem))
-  },
-
-  step: (_, { id }) => {
-    const table = process.env.DYNAMO_STEPS
-    const query = { Key: { id: { S: id } } }
-
-    return dynDB.getItem(table, query)
-                .then(r => unmarshalItem(r.Item))
-  }
+export function allSteps() {
+  const table = process.env.DYNAMO_STEPS
+  return dynDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
 }
 
 

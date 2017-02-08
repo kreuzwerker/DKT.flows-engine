@@ -25,42 +25,42 @@ const QueryType = new GraphQLObjectType({
   fields: () => ({
     allFlows: {
       type: new GraphQLList(FlowType),
-      resolve: Flows.RootQueries.allFlows
+      resolve: Flows.allFlows
     },
     Flow: {
       type: FlowType,
       args: { id: { type: GraphQLID } },
-      resolve: Flows.RootQueries.flow
+      resolve: (_, { id }) => Flows.getFlowById(id)
     },
 
     allProviders: {
       type: new GraphQLList(ProviderType),
-      resolve: Providers.RootQueries.allProviders
+      resolve: Providers.allProviders
     },
     Provider: {
       type: ProviderType,
       args: { id: { type: GraphQLID } },
-      resolve: Providers.RootQueries.provider
+      resolve: (_, { id }) => Providers.getProviderById(id)
     },
 
     allServices: {
       type: new GraphQLList(ServiceType),
-      resolve: Services.RootQueries.allServices
+      resolve: Services.allServices
     },
     Service: {
       type: ServiceType,
       args: { id: { type: GraphQLID } },
-      resolve: Services.RootQueries.service
+      resolve: (_, { id }) => Services.service.getServiceById(id)
     },
 
     allSteps: {
       type: new GraphQLList(StepType),
-      resolve: Steps.RootQueries.allSteps
+      resolve: Steps.allSteps
     },
     Steps: {
       type: StepType,
       args: { id: { type: GraphQLID } },
-      resolve: Steps.RootQueries.step
+      resolve: (_, { id }) => Steps.step.getStepById(id)
     }
   })
 })

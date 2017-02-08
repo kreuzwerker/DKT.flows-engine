@@ -38,7 +38,7 @@ export default function () {
         it(`getFlowById('${flow.id}') returns the correct flow`, async function () {
           const returnedFlow = await FlowsResolver.getFlowById(flow.id)
 
-          expect(returnedFlow).to.not.be.empt
+          expect(returnedFlow).to.not.be.empty
           deleteKeysFrom(['createdAt', 'updatedAt'], flow, returnedFlow)
           expect(returnedFlow).to.deep.equal(flow)
         })

@@ -50,7 +50,7 @@ const QueryType = new GraphQLObjectType({
     Service: {
       type: ServiceType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }) => Services.service.getServiceById(id)
+      resolve: (_, { id }) => Services.getServiceById(id)
     },
 
     allSteps: {
@@ -60,7 +60,7 @@ const QueryType = new GraphQLObjectType({
     Steps: {
       type: StepType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }) => Steps.step.getStepById(id)
+      resolve: (_, { id }) => Steps.getStepById(id)
     }
   })
 })

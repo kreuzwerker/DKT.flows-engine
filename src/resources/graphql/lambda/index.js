@@ -28,6 +28,7 @@ export async function handler(event, context, callback) {
     if (response.errors) {
       callback(null, {
         'statusCode': 500,
+        'headers': corsHeader,
         'body': JSON.stringify({ errors: response.errors })
       })
     } else {

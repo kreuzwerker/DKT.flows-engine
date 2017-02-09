@@ -44,7 +44,7 @@ export function updateFlow(flow) {
   const query = {
     Key: { id: { S: flow.id } }
   }
-  delete flow.id
+
   return dynDB.updateItem(table, query, flow)
 }
 

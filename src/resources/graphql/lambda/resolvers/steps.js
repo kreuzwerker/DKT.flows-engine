@@ -64,7 +64,7 @@ export function updateStep(step) {
   const query = {
     Key: { id: { S: step.id } }
   }
-  delete step.id
+
   return dynDB.updateItem(table, query, step)
 }
 

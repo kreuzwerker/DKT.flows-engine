@@ -49,7 +49,7 @@ export function updateProvider(provider) {
   const query = {
     Key: { id: { S: provider.id } }
   }
-  delete provider.id
+
   return dynDB.updateItem(table, query, provider)
 }
 

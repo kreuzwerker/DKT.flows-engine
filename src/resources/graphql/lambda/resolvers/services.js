@@ -63,7 +63,7 @@ export function updateService(service) {
   const query = {
     Key: { id: { S: service.id } }
   }
-  delete service.id
+
   return dynDB.updateItem(table, query, service)
 }
 

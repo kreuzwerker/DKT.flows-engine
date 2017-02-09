@@ -29,7 +29,7 @@ export async function handler(event, context, callback) {
       callback(null, {
         'statusCode': 500,
         'headers': corsHeader,
-        'body': JSON.stringify({ errors: response.errors })
+        'body': JSON.stringify(response)
       })
     } else {
       callback(null, {

@@ -14,11 +14,11 @@ const {
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
-module.exports = ({ stage, resource, key }) => ({
+module.exports = ({ stage, resource, key, swaggerKey }) => ({
   [GRAPHQL_API_GATEWAY]: {
     Type: 'AWS::Serverless::Api',
     Properties: {
-      DefinitionUri: `s3://${settings.aws.s3.bucket}/resources/${stage}/${resource}/swagger.json`,
+      DefinitionUri: `s3://${settings.aws.s3.bucket}/${swaggerKey}`,
       StageName: stage,
       Variables: {
         LambdaFunctionName: {
@@ -50,7 +50,7 @@ module.exports = ({ stage, resource, key }) => ({
         Properties: {
           RestApiId: { Ref: GRAPHQL_API_GATEWAY },
           Path: '/',
-          Method: 'post'
+          Method: 'POST'
         }
       }
     }

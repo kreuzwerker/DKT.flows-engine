@@ -6,20 +6,10 @@ import dynDB from '../../../../utils/dynamoDB'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export const RootQueries = {
-  allFlows: () => {
-    const table = process.env.DYNAMO_FLOWS
-    return dynDB.scan(table)
-                .then(r => r.Items.map(unmarshalItem))
-  },
-
-  flow: (_, { id }) => {
-    const table = process.env.DYNAMO_FLOWS
-    const query = { Key: { id: { S: id } } }
-
-    return dynDB.getItem(table, query)
-                .then(r => unmarshalItem(r.Item))
-  }
+export function allFlows() {
+  const table = process.env.DYNAMO_FLOWS
+  return dynDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
 }
 
 
@@ -40,7 +30,12 @@ export function getFlowById(flowId) {
  */
 export function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
-  return dynDB.putItem(table, flow)
+  const newFlow = Object.assign({}, {
+    name: null,
+    description: null,
+    steps: [null]
+  }, flow)
+  return dynDB.putItem(table, newFlow)
 }
 
 
@@ -49,6 +44,7 @@ export function updateFlow(flow) {
   const query = {
     Key: { id: { S: flow.id } }
   }
+
   return dynDB.updateItem(table, query, flow)
 }
 

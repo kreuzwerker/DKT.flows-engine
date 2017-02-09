@@ -45,13 +45,14 @@ module.exports = logger => ({
 
     deployedBundles.forEach(({ resource, key }) => {
       const resourceTmpl = require(fsUtil.getResourceTemplatePath(resource)) // eslint-disable-line
+      const swaggerKey = `resources/${stage}/${resource}/swagger-${uuidV1()}.json`
       const swaggerPath = fsUtil.getResourceSwaggerPath(resource)
       const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
 
       if (swaggerTmpl) {
         swaggerDefinitionsUploadTasks.push(
           S3.putObject({
-            Key: `resources/${stage}/${resource}/swagger.json`,
+            Key: swaggerKey,
             Body: JSON.stringify(swaggerTmpl({ stage }))
           })
         )
@@ -59,7 +60,7 @@ module.exports = logger => ({
 
       const updatedResource = Object.assign({},
         cloudFormationTmpl.Resources,
-        resourceTmpl({ stage, resource, key })
+        resourceTmpl({ stage, resource, key, swaggerKey })
       )
 
       cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {

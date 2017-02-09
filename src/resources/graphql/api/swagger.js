@@ -18,12 +18,41 @@ module.exports = ({ stage }) => ({
         'responses': {
           '200': {
             'description': '200 response',
-            'schema': { $ref: '#/definitions/Empty' }
+            'schema': { $ref: '#/definitions/Empty' },
+            'headers': {
+              'Access-Control-Allow-Origin': {
+                'type': 'string'
+              },
+              'Access-Control-Allow-Methods': {
+                'type': 'string'
+              },
+              'Access-Control-Allow-Headers': {
+                'type': 'string'
+              }
+            }
+          },
+          '500': {
+            'description': '500 response',
+            'schema': { $ref: '#/definitions/Empty' },
+            'headers': {
+              'Access-Control-Allow-Origin': {
+                'type': 'string'
+              },
+              'Access-Control-Allow-Methods': {
+                'type': 'string'
+              },
+              'Access-Control-Allow-Headers': {
+                'type': 'string'
+              }
+            }
           }
         },
         'x-amazon-apigateway-integration': {
           'responses': {
             'default': {
+              'statusCode': '200'
+            },
+            '500': {
               'statusCode': '200'
             }
           },
@@ -54,6 +83,21 @@ module.exports = ({ stage }) => ({
               'Access-Control-Allow-Headers': {
                 'type': 'string'
               }
+            },
+            '500': {
+              'description': '500 response',
+              'schema': { $ref: '#/definitions/Empty' },
+              'headers': {
+                'Access-Control-Allow-Origin': {
+                  'type': 'string'
+                },
+                'Access-Control-Allow-Methods': {
+                  'type': 'string'
+                },
+                'Access-Control-Allow-Headers': {
+                  'type': 'string'
+                }
+              }
             }
           }
         },
@@ -62,10 +106,13 @@ module.exports = ({ stage }) => ({
             'default': {
               'statusCode': '200',
               'responseParameters': {
-                'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,POST'",
-                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                'method.response.header.Access-Control-Allow-Methods': "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
                 'method.response.header.Access-Control-Allow-Origin': "'*'"
               }
+            },
+            '500': {
+              'statusCode': '500'
             }
           },
           'passthroughBehavior': 'when_no_match',
@@ -75,6 +122,12 @@ module.exports = ({ stage }) => ({
           'type': 'mock'
         }
       }
+    }
+  },
+  'definitions': {
+    'Empty': {
+      type: 'object',
+      title: 'Empty Schema'
     }
   }
 })

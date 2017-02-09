@@ -1,0 +1,24 @@
+[
+  {
+    "id": "dontDeleteMe20133m8gu0lju",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "SecondFlow",
+    "description": "This, too, is a mocked flow object.",
+    "steps": [
+      "dontDeleteMe101795ez58bzs",
+      "dontDeleteMet0133sqdy35e6"
+    ]
+  },
+  {
+    "id": "dontDeleteMel0179imlh0a73",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "first flow",
+    "description": "This is a mocked flow object.",
+    "steps": [
+      "dontDeleteMe501332dveadqc",
+      "dontDeleteMev013373puyuvy"
+    ]
+  }
+]

@@ -1,4 +1,5 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
+import uuid from 'uuid'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -6,20 +7,10 @@ import dynDB from '../../../../utils/dynamoDB'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export const RootQueries = {
-  allProviders: () => {
-    const table = process.env.DYNAMO_PROVIDERS
-    return dynDB.scan(table)
-                .then(r => r.Items.map(unmarshalItem))
-  },
-
-  provider: (_, { id }) => {
-    const table = process.env.DYNAMO_PROVIDERS
-    const query = { Key: { id: { S: id } } }
-
-    return dynDB.getItem(table, query)
-                .then(r => unmarshalItem(r.Item))
-  }
+export function allProviders() {
+  const table = process.env.DYNAMO_PROVIDERS
+  return dynDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
 }
 
 
@@ -40,7 +31,16 @@ export function getProviderById(providerId) {
  */
 export function createProvider(provider) {
   const table = process.env.DYNAMO_PROVIDERS
-  return dynDB.putItem(table, provider)
+  const newProvider = Object.assign({}, {
+    id: uuid.v4(),
+    name: null,
+    group: null,
+    description: null,
+    icon: null,
+    services: [null]
+  }, provider)
+
+  return dynDB.putItem(table, newProvider)
 }
 
 
@@ -49,6 +49,7 @@ export function updateProvider(provider) {
   const query = {
     Key: { id: { S: provider.id } }
   }
+
   return dynDB.updateItem(table, query, provider)
 }
 

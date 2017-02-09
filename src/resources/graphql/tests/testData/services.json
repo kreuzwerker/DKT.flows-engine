@@ -1,0 +1,46 @@
+[
+  {
+    "id": "dontDeleteMel01791wvcejt5",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "Sing hallelujah",
+    "description": "DKT native app",
+    "type": "ACTION",
+    "icon": "filter_list",
+    "provider": null,
+    "step": "dontDeleteMe101795ez58bzs"
+  },
+  {
+    "id": "dontDeleteMeh0133z9r38ljg",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "Make coffee",
+    "description": "Makes a delicious freshly brewed organic coffee.",
+    "type": "ACTION",
+    "icon": "rss_list",
+    "provider": null,
+    "step": null
+  },
+  {
+    "id": "dontDeleteMem01790ymkz7xl",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "New kitten in RSS feed.",
+    "description": "Triggers on new RSS feed items which feature a kitten.",
+    "type": "TRIGGER",
+    "icon": "mail",
+    "provider": "dontDeleteMer0133xu1vlvyj",
+    "step": "dontDeleteMe501332dveadqc"
+  },
+  {
+    "id": "dontDeleteMef01791a6o9kut",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z",
+    "name": "New item in RSS feed",
+    "description": "Triggers on new RSS feed items.",
+    "type": "TRIGGER",
+    "icon": "mail",
+    "provider": "dontDeleteMer0133xu1vlvyj",
+    "step": "dontDeleteMev013373puyuvy"
+  }
+]

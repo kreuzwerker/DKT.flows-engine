@@ -33,6 +33,8 @@ function DynamoDB() {
 
     Object.keys(item).forEach((key) => {
       if (key === 'id') return
+      if (key === 'updatedAt') return
+      if (key === 'createdAt') return
       updatedParams.ExpressionAttributeNames[`#${key}`] = key
       updatedParams.ExpressionAttributeValues[`:${key}`] = marshal(key)[key]
       updatedParams.UpdateExpression = `${updatedParams.UpdateExpression}, #${key} = :${key}`

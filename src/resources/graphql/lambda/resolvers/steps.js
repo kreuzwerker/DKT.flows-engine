@@ -1,4 +1,5 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
+import uuid from 'uuid'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -6,21 +7,10 @@ import dynDB from '../../../../utils/dynamoDB'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export const RootQueries = {
-  allSteps: () => {
-    const table = process.env.DYNAMO_STEPS
-
-    return dynDB.scan(table)
-                .then(r => r.Items.map(unmarshalItem))
-  },
-
-  step: (_, { id }) => {
-    const table = process.env.DYNAMO_STEPS
-    const query = { Key: { id: { S: id } } }
-
-    return dynDB.getItem(table, query)
-                .then(r => unmarshalItem(r.Item))
-  }
+export function allSteps() {
+  const table = process.env.DYNAMO_STEPS
+  return dynDB.scan(table)
+              .then(r => r.Items.map(unmarshalItem))
 }
 
 
@@ -56,7 +46,16 @@ export function batchGetStepByIds(stepsIds) {
  */
 export function createStep(step) {
   const table = process.env.DYNAMO_STEPS
-  return dynDB.putItem(table, step)
+  // set defaults
+  const newStep = Object.assign({}, {
+    id: uuid.v1(),
+    position: 0,
+    description: null,
+    flow: null,
+    service: null
+  }, step)
+
+  return dynDB.putItem(table, newStep)
 }
 
 
@@ -65,6 +64,7 @@ export function updateStep(step) {
   const query = {
     Key: { id: { S: step.id } }
   }
+
   return dynDB.updateItem(table, query, step)
 }
 

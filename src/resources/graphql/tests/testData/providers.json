@@ -16,7 +16,7 @@
     "name": "RSS",
     "group": "DKT native app",
     "description": "RSS services.",
-    "icon": "rss_list",
+    "icon": "rss_feed",
     "services": [
       "dontDeleteMef01791a6o9kut",
       "dontDeleteMem01790ymkz7xl"

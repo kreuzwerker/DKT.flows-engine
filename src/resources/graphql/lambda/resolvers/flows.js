@@ -30,7 +30,12 @@ export function getFlowById(flowId) {
  */
 export function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
-  return dynDB.putItem(table, flow)
+  const newFlow = Object.assign({}, {
+    name: null,
+    description: null,
+    steps: [null]
+  }, flow)
+  return dynDB.putItem(table, newFlow)
 }
 
 
@@ -39,6 +44,7 @@ export function updateFlow(flow) {
   const query = {
     Key: { id: { S: flow.id } }
   }
+  delete flow.id
   return dynDB.updateItem(table, query, flow)
 }
 

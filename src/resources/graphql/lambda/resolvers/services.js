@@ -1,4 +1,5 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
+import uuid from 'uuid'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -45,7 +46,15 @@ export function batchGetServicesByIds(servicesIds) {
  */
 export function createService(service) {
   const table = process.env.DYNAMO_SERVICES
-  return dynDB.putItem(table, service)
+  const newService = Object.assign({}, {
+    id: uuid.v1(),
+    name: null,
+    description: null,
+    type: null,
+    provider: null,
+    step: null
+  }, service)
+  return dynDB.putItem(table, newService)
 }
 
 
@@ -54,6 +63,7 @@ export function updateService(service) {
   const query = {
     Key: { id: { S: service.id } }
   }
+  delete service.id
   return dynDB.updateItem(table, query, service)
 }
 

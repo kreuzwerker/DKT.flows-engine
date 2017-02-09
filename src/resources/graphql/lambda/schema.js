@@ -2,6 +2,8 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
+  GraphQLInt,
+  GraphQLString,
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
@@ -75,13 +77,22 @@ const MutationType = new GraphQLObjectType({
   fields: () => ({
     createFlow: {
       type: FlowType,
-      args: { flow: { type: FlowInputType } },
-      resolve: (_, { flow }) => Flows.createFlow(flow)
+      args: {
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        steps: { type: new GraphQLList(GraphQLID) }
+      },
+      resolve: (_, flow) => Flows.createFlow(flow)
     },
     updateFlow: {
       type: FlowType,
-      args: { flow: { type: FlowInputType } },
-      resolve: (_, { flow }) => Flows.updateFlow(flow)
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        steps: { type: new GraphQLList(GraphQLID) }
+      },
+      resolve: (_, flow) => Flows.updateFlow(flow)
     },
     deleteFlow: {
       type: FlowType,
@@ -91,13 +102,26 @@ const MutationType = new GraphQLObjectType({
 
     createProvider: {
       type: ProviderType,
-      args: { provider: { type: ProviderInputType } },
-      resolve: (_, { provider }) => Providers.createProvider(provider)
+      args: {
+        name: { type: GraphQLString },
+        group: { type: GraphQLString },
+        description: { type: GraphQLString },
+        icon: { type: GraphQLString },
+        services: { type: new GraphQLList(GraphQLID) }
+      },
+      resolve: (_, provider) => Providers.createProvider(provider)
     },
     updateProvider: {
       type: ProviderType,
-      args: { provider: { type: ProviderInputType } },
-      resolve: (_, { provider }) => Providers.updateProvider(provider)
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        group: { type: GraphQLString },
+        description: { type: GraphQLString },
+        icon: { type: GraphQLString },
+        services: { type: new GraphQLList(GraphQLID) }
+      },
+      resolve: (_, provider) => Providers.updateProvider(provider)
     },
     deleteProvider: {
       type: ProviderType,
@@ -107,13 +131,26 @@ const MutationType = new GraphQLObjectType({
 
     createService: {
       type: ServiceType,
-      args: { service: { type: ServiceInputType } },
-      resolve: (_, { service }) => Services.createService(service)
+      args: {
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        type: { type: GraphQLString },
+        provider: { type: GraphQLID },
+        step: { type: GraphQLID }
+      },
+      resolve: (_, service) => Services.createService(service)
     },
     updateService: {
       type: ServiceType,
-      args: { service: { type: ServiceInputType } },
-      resolve: (_, { service }) => Services.updateService(service)
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        type: { type: GraphQLString },
+        provider: { type: GraphQLID },
+        step: { type: GraphQLID }
+      },
+      resolve: (_, service) => Services.updateService(service)
     },
     deleteService: {
       type: ServiceType,
@@ -123,13 +160,24 @@ const MutationType = new GraphQLObjectType({
 
     createStep: {
       type: StepType,
-      args: { step: { type: StepInputType } },
-      resolve: (_, { step }) => Steps.createStep(step)
+      args: {
+        position: { type: GraphQLInt },
+        description: { type: GraphQLString },
+        flow: { type: GraphQLID },
+        service: { type: GraphQLID }
+      },
+      resolve: (_, step) => Steps.createStep(step)
     },
     updateStep: {
       type: StepType,
-      args: { step: { type: StepInputType } },
-      resolve: (_, { step }) => Steps.updateStep(step)
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        position: { type: GraphQLInt },
+        description: { type: GraphQLString },
+        flow: { type: GraphQLID },
+        service: { type: GraphQLID }
+      },
+      resolve: (_, step) => Steps.updateStep(step)
     },
     deleteStep: {
       type: StepType,

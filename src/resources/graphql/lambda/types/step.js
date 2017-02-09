@@ -1,6 +1,7 @@
 import {
   GraphQLID,
   GraphQLString,
+  GraphQLInt,
   GraphQLObjectType,
   GraphQLInputObjectType,
   GraphQLNonNull
@@ -15,7 +16,7 @@ export const StepType = new GraphQLObjectType({
   name: 'Step',
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
-    position: { type: GraphQLString },
+    position: { type: GraphQLInt },
     description: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
@@ -41,7 +42,7 @@ export const StepInputType = new GraphQLInputObjectType({
   name: 'StepInput',
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
-    position: { type: GraphQLString },
+    position: { type: GraphQLInt },
     description: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },

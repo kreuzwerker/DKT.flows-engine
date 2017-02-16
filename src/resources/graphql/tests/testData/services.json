@@ -17,7 +17,7 @@
     "name": "Make coffee",
     "description": "Makes a delicious freshly brewed organic coffee.",
     "type": "ACTION",
-    "icon": "rss_list",
+    "icon": "rss_feed",
     "provider": null,
     "step": null
   },

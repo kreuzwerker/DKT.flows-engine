@@ -22,7 +22,7 @@ module.exports = logger => ({
   putLambdaBundlesToS3: (bundles, stage) => {
     return Promise.all(bundles.map(({ fnName, bundlePath }) => {
       const lambdaName = `${fnName}-${uuidV1()}`
-      const s3Key = `resources/${stage}/${fnName}/${lambdaName}.zip`
+      const s3Key = `${stage}/${fnName}/${lambdaName}.zip`
 
       logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
       return S3.putObject({
@@ -41,11 +41,11 @@ module.exports = logger => ({
     const resourceTmplPath = path.join(settings.fs.dist.base, 'dkt-flow-engine-template.json')
     const baseTmpl = require('../src/resources/stackBaseTemplate.json') // eslint-disable-line
     const swaggerDefinitionsUploadTasks = []
-    let cloudFormationTmpl = Object.assign({}, baseTmpl, { Resources: {} })
+    let cloudFormationTmpl = Object.assign({}, baseTmpl)
 
     deployedBundles.forEach(({ resource, key }) => {
       const resourceTmpl = require(fsUtil.getResourceTemplatePath(resource)) // eslint-disable-line
-      const swaggerKey = `resources/${stage}/${resource}/swagger-${uuidV1()}.json`
+      const swaggerKey = `${stage}/${resource}/swagger-${uuidV1()}.json`
       const swaggerPath = fsUtil.getResourceSwaggerPath(resource)
       const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
 

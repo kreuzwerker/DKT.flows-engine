@@ -4,9 +4,8 @@ import { handler } from './index'
 import event from './event.json'
 import settings from '../../../../settings'
 
-
+process.env.S3_BUCKET = 'dkt.flow-engine.test'
 const ExtractArticle = promisifyLambda(handler)
-
 
 describe('ƛ ExtractArticleDate', async function () {
   let titleJSON
@@ -26,7 +25,8 @@ describe('ƛ ExtractArticleDate', async function () {
 
     before(async function () {
       const { Key } = JSON.parse(titleJSON)
-      data = await S3.getObject({ Key })
+      const s3 = S3('dkt.flow-engine.test')
+      data = await s3.getObject({ Key })
     })
 
     it('contains a date', function () {

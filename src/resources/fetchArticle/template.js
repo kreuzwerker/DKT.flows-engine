@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { FETCH_ARTICLE_FUNCTION } = require('../locicalResourceIds')
+const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
 
 /*
@@ -17,9 +17,10 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: settings.aws.s3.bucket
+          S3_BUCKET: { Ref: S3_BUCKET }
         }
       }
-    }
+    },
+    DependsOn: [S3_BUCKET]
   }
 })

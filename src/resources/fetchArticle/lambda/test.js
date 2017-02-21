@@ -4,6 +4,7 @@ import event from './event.json'
 import settings from '../../../../settings'
 
 
+process.env.S3_BUCKET = 'dkt.flow-engine.test'
 const FetchArticle = promisifyLambda(handler)
 
 

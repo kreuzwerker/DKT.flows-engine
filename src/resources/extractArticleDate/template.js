@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { EXTRACT_ARTICLE_DATE_FUNCTION } = require('../locicalResourceIds')
+const { EXTRACT_ARTICLE_DATE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
 /*
  * AWS SAM Resource Template
@@ -16,7 +16,7 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: settings.aws.s3.bucket
+          S3_BUCKET: { Ref: S3_BUCKET }
         }
       }
     }

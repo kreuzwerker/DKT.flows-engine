@@ -9,15 +9,16 @@ import S3 from '../../../utils/s3'
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
-  const { NLP_URL } = process.env
+  const { NLP_URL, S3_BUCKET } = process.env
+  const s3 = S3(S3_BUCKET)
 
   try {
     const { Key } = _isString(event) ? JSON.parse(event) : event
     const { awsRequestId } = context
 
-    logger.log(`Get '${Key}' from '${S3.bucket}'`)
+    logger.log(`Get '${Key}' from '${s3.bucket}'`)
 
-    const data = await S3.getObject({ Key })
+    const data = await s3.getObject({ Key })
     const text = JSON.parse(data.Body).article
 
     const url = `${NLP_URL}?language=de&analysis=dict&models=mendelsohnDictionary_PER&outformat=json-ld&informat=text`
@@ -37,8 +38,8 @@ export async function handler(event, context, callback) {
     const nlpJSON = await nlpResult.json()
     const fileName = `nlpRequest/out/${awsRequestId}.json`
 
-    logger.log(`put extracted text '${fileName}' to '${S3.bucket}'`)
-    const s3Response = await S3.putObject({
+    logger.log(`put extracted text '${fileName}' to '${s3.bucket}'`)
+    const s3Response = await s3.putObject({
       Key: fileName,
       Body: JSON.stringify({ nlpJSON })
     })

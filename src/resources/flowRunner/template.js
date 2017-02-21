@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { FLOW_RUNNER_FUNCTION } = require('../locicalResourceIds')
+const { FLOW_RUNNER_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
 
 /*
@@ -17,7 +17,7 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: settings.aws.s3.bucket
+          S3_BUCKET: S3_BUCKET
         }
       }
     }

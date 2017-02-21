@@ -5,7 +5,7 @@ import event from './event.json'
 import settings from '../../../../settings'
 import S3 from '../../../utils/s3'
 
-
+process.env.S3_BUCKET = 'dkt.flow-engine.test'
 const MergeJSONs = promisifyLambda(handler)
 const parse = arg => (_isString(arg) ? JSON.parse(arg) : arg)
 
@@ -24,8 +24,9 @@ describe('ƛ MergeJSONs', function () {
 
     before(async function () {
       this.timeout(settings.tests.timeout * 2)
+      const s3 = S3('dkt.flow-engine.test')
       output = await MergeJSONs(event, { awsRequestId: 'extractArticleText' }).then(parse)
-      data = await S3.getObject({ Key: output.Key })
+      data = await s3.getObject({ Key: output.Key })
     })
 
     it('stringified JSON', function () {

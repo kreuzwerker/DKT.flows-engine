@@ -4,7 +4,8 @@ import Logger from '../../../utils/logger'
 
 
 const getObjects = keys => Promise.all(keys.map((Key) => {
-  return S3.getObject({ Key })
+  const s3 = S3(process.env.S3_BUCKET)
+  return s3.getObject({ Key })
     .then(res => res.Body.toString())
     .then(jsonString => JSON.parse(jsonString))
 }))
@@ -15,13 +16,14 @@ const getObjects = keys => Promise.all(keys.map((Key) => {
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
+  const s3 = S3(process.env.S3_BUCKET)
 
   try {
     const { awsRequestId } = context
     const input = _isString(event) ? JSON.parse(event) : event
     const keys = input.map(i => (_isString(i) ? JSON.parse(i).Key : i.Key))
 
-    logger.log(`Get JSONs from '${S3.bucket}'`)
+    logger.log(`Get JSONs from '${s3.bucket}'`)
     const jsons = await getObjects(keys)
 
     logger.log('Merge JSONs')
@@ -29,8 +31,8 @@ export async function handler(event, context, callback) {
 
     const fileName = `mergeJSONs/out/${awsRequestId}.json`
 
-    logger.log(`Put merged JSON '${fileName}' to '${S3.bucket}'`)
-    const s3Response = await S3.putObject({
+    logger.log(`Put merged JSON '${fileName}' to '${s3.bucket}'`)
+    const s3Response = await s3.putObject({
       Key: fileName,
       Body: JSON.stringify(mergedJSONs)
     })

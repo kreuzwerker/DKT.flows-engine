@@ -9,6 +9,7 @@ import S3 from '../../../utils/s3'
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
+  const s3 = S3(process.env.S3_BUCKET)
 
   try {
     const { url } = _isString(event) ? JSON.parse(event) : event
@@ -27,8 +28,8 @@ export async function handler(event, context, callback) {
 
     const fileName = `fetchArticle/out/${awsRequestId}.json`
 
-    logger.log(`Put '${fileName}' to '${S3.bucket}' Bucket`)
-    const s3Response = await S3.putObject({
+    logger.log(`Put '${fileName}' to '${s3.bucket}' Bucket`)
+    const s3Response = await s3.putObject({
       Key: fileName,
       Body: JSON.stringify({ article: articleHTML })
     })

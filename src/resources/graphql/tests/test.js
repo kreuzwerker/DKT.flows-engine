@@ -58,7 +58,7 @@ describe('ƛ GraphQL', () => {
       })
     })
 
-    describe('when sending an invalid Payload', () => {
+    describe('when passing an invalid event body', () => {
       let response = {}
       const invalidPayload = {
         query: 'query FlowsQueries($id: ID) { Flows(id: $id) { id name description } }',

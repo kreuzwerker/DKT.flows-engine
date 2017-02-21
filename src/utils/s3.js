@@ -5,8 +5,12 @@ import AWS from 'aws-sdk'
 import settings from '../../settings'
 
 
-function S3() {
-  const { apiVersion, bucket } = settings.aws.s3
+function S3(bucket) {
+  if (!bucket) {
+    throw new Error('Missing bucket parameter')
+  }
+
+  const { apiVersion } = settings.aws.s3
   const s3 = new AWS.S3({ apiVersion })
 
   function merge(params) {
@@ -22,4 +26,4 @@ function S3() {
 }
 
 
-export default S3()
+export default S3

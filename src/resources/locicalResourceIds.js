@@ -3,6 +3,7 @@
  */
 
 module.exports = {
+  S3_BUCKET: 's3Bucket',
   EXTRACT_ARTICLE_DATE_FUNCTION: 'ExtractArticleDateFunction',
   EXTRACT_ARTICLE_READABILITY_FUNCTION: 'ExtractArticleReadabilityFunction',
   EXTRACT_ARTICLE_TEXT_FUNCTION: 'ExtractArticleTextFunction',

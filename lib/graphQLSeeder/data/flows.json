@@ -1,0 +1,20 @@
+[
+  {
+    "description": "This, too, is a mocked flow object",
+    "id": "ciy0iehaj9wu20133m8gu0lju",
+    "name": "SecondFlow",
+    "steps": [
+      "ciy0jidbmaivt0133sqdy35e6",
+      "ciy0jipfkbc8101795ez58bzs"
+    ]
+  },
+  {
+    "description": "This is a mocked flow object.",
+    "id": "ciy0ie2q1aoul0179imlh0a73",
+    "name": "first flow",
+    "steps": [
+      "ciy0jgybhai7v013373puyuvy",
+      "ciy0jhg5oaik501332dveadqc"
+    ]
+  }
+]

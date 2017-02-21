@@ -1,0 +1,31 @@
+[
+  {
+    "description": "Filter services.",
+    "group": "DKT native app",
+    "icon": "filter_list",
+    "id": "ciy1fjpm60oyl014323zlitjn",
+    "name": "Filter",
+    "services": []
+  },
+  {
+    "description": "Email services.",
+    "group": "DKT native app",
+    "icon": "mail",
+    "id": "ciy0it07jaa6i0133gwr0g9i1",
+    "name": "Email",
+    "services": []
+  },
+  {
+    "description": "RSS services.",
+    "group": "DKT native app",
+    "icon": "rss_feed",
+    "id": "ciy0ivuazabar0133xu1vlvyj",
+    "name": "RSS",
+    "services": [
+      "ciy0je3qjbb1f01791a6o9kut",
+      "ciy0jeruzbb5m01790ymkz7xl",
+      "ciy0jfkvuahth0133z9r38ljg",
+      "ciy0jg7bpbbcl01791wvcejt5"
+    ]
+  }
+]

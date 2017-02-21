@@ -1,0 +1,38 @@
+[
+  {
+    "description": "Triggers on new RSS feed items which feature a kitten.",
+    "icon": "mail",
+    "id": "ciy0jeruzbb5m01790ymkz7xl",
+    "name": "New kitten in RSS feed.",
+    "provider": "ciy0ivuazabar0133xu1vlvyj",
+    "step": "ciy0jgybhai7v013373puyuvy",
+    "type": "TRIGGER"
+  },
+  {
+    "description": "Makes a delicious freshly brewed organic coffee.",
+    "icon": "rss_feed",
+    "id": "ciy0jfkvuahth0133z9r38ljg",
+    "name": "Make coffee",
+    "provider": "ciy0ivuazabar0133xu1vlvyj",
+    "step": "ciy0jipfkbc8101795ez58bzs",
+    "type": "ACTION"
+  },
+  {
+    "description": "Triggers on new RSS feed items.",
+    "icon": "mail",
+    "id": "ciy0je3qjbb1f01791a6o9kut",
+    "name": "New item in RSS feed",
+    "provider": "ciy0ivuazabar0133xu1vlvyj",
+    "step": null,
+    "type": "TRIGGER"
+  },
+  {
+    "description": "DKT native app",
+    "icon": "filter_list",
+    "id": "ciy0jg7bpbbcl01791wvcejt5",
+    "name": "Sing hallelujah",
+    "provider": "ciy0ivuazabar0133xu1vlvyj",
+    "step": "ciy0jhg5oaik501332dveadqc",
+    "type": "ACTION"
+  }
+]

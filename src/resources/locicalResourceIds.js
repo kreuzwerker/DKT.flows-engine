@@ -17,6 +17,10 @@ module.exports = {
 
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
 
+  FLOW_TRIGGER_API_FUNCTION: 'FlowTriggerApiFunction',
+  FLOW_TRIGGER_API_GATEWAY: 'FlowTriggerApiGateway',
+  FLOW_TRIGGER_API_PERMISSIONS: 'FlowTriggerApiPermission',
+
 
   // ** legacy **
   EXTRACT_ARTICLE_DATE_FUNCTION: 'ExtractArticleDateFunction',

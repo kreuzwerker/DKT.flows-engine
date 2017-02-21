@@ -68,6 +68,33 @@ module.exports = logger => ({
       })
     })
 
+    const resourcesWithoutLambda = fsUtil.getAllResourcesWithoutLambda()
+
+    resourcesWithoutLambda.forEach((resource) => {
+      const resourceTmpl = require(fsUtil.getResourceTemplatePath(resource)) // eslint-disable-line
+      const swaggerKey = `${stage}/${resource}/swagger-${uuidV1()}.json`
+      const swaggerPath = fsUtil.getResourceSwaggerPath(resource)
+      const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
+
+      if (swaggerTmpl) {
+        swaggerDefinitionsUploadTasks.push(
+          S3.putObject({
+            Key: swaggerKey,
+            Body: JSON.stringify(swaggerTmpl({ stage }))
+          })
+        )
+      }
+
+      const updatedResource = Object.assign({},
+        cloudFormationTmpl.Resources,
+        resourceTmpl({ stage, resource, swaggerKey })
+      )
+
+      cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
+        Resources: updatedResource
+      })
+    })
+
     fs.writeFileSync(resourceTmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
 
     if (swaggerDefinitionsUploadTasks.length >= 1) {

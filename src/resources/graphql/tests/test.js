@@ -21,7 +21,7 @@ describe('ƛ GraphQL', () => {
   describe('Resolvers', ResolversTests)
 
   describe('Responses', () => {
-    describe('when sending a valid payload', () => {
+    describe('when passing a valid event body', () => {
       let response = {}
       const validPayload = {
         query: 'query FlowQuery($id: ID) { Flow(id: $id) { id name description } }',

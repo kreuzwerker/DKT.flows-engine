@@ -24,13 +24,13 @@ export default function () {
         expect(allFlows).to.have.length.of.at.least(flowsTestData.length)
 
         flowsTestData.forEach((testFlow) => {
-          const returnedFlow = allFlows.filter(f => f.id === testFlow.id)
-
-          expect(returnedFlow).to.have.lengthOf(1)
+          const returnedFlows = allFlows.filter(f => f.id === testFlow.id)
+          const returnedFlow = returnedFlows[0]
+          expect(returnedFlows).to.have.lengthOf(1)
           // createdAt and updateAt is handled by the dynamoDB util.
           // thats why we can ignore this at this point
-          deleteKeysFrom(['createdAt', 'updatedAt'], testFlow, returnedFlow[0])
-          expect(returnedFlow[0]).to.deep.equal(testFlow)
+          deleteKeysFrom(['createdAt', 'updatedAt'], testFlow, returnedFlow)
+          expect(returnedFlow).to.deep.equal(testFlow)
         })
       })
 
@@ -52,7 +52,7 @@ export default function () {
       const updateTestFlow = Object.assign({}, flowsTestData[0], {
         id: 'updateTestFlow133m8gu0lju'
       })
-      const deleteTestFlow = Object.assign({}, flowsTestData[0], {
+      const deleteTestFlow = Object.assign({}, flowsTestData[2], {
         id: 'deleteTestFlow133m8gu0lju'
       })
 

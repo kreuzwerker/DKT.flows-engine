@@ -11,6 +11,7 @@ module.exports = {
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',
   GRAPHQL_PERMISSIONS: 'GraphQLPermissions',
   GRAPHQL_DB_FLOWS: 'GraphQLDynamoFlows',
+  GRAPHQL_DB_FLOW_RUNS: 'GraphQLDynamoFlowRuns',
   GRAPHQL_DB_PROVIDERS: 'GraphQLDynamoProviders',
   GRAPHQL_DB_SERVICES: 'GraphQLDynamoServices',
   GRAPHQL_DB_STEPS: 'GraphQLDynamoSteps',

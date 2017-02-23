@@ -4,6 +4,7 @@ const {
   GRAPHQL_API_GATEWAY,
   GRAPHQL_PERMISSIONS,
   GRAPHQL_DB_FLOWS,
+  GRAPHQL_DB_FLOW_RUNS,
   GRAPHQL_DB_PROVIDERS,
   GRAPHQL_DB_SERVICES,
   GRAPHQL_DB_STEPS
@@ -75,6 +76,13 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
     DependsOn: [GRAPHQL_FUNCTION, GRAPHQL_API_GATEWAY]
   },
   [GRAPHQL_DB_FLOWS]: {
+    Type: 'AWS::Serverless::SimpleTable',
+    PrimaryKey: {
+      Name: 'id',
+      Type: 'String'
+    }
+  },
+  [GRAPHQL_DB_FLOW_RUNS]: {
     Type: 'AWS::Serverless::SimpleTable',
     PrimaryKey: {
       Name: 'id',

@@ -78,6 +78,7 @@ const MutationType = new GraphQLObjectType({
     createFlow: {
       type: FlowType,
       args: {
+        id: { type: GraphQLID },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) }
@@ -103,6 +104,7 @@ const MutationType = new GraphQLObjectType({
     createProvider: {
       type: ProviderType,
       args: {
+        id: { type: GraphQLID },
         name: { type: GraphQLString },
         group: { type: GraphQLString },
         description: { type: GraphQLString },
@@ -132,6 +134,7 @@ const MutationType = new GraphQLObjectType({
     createService: {
       type: ServiceType,
       args: {
+        id: { type: GraphQLID },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         type: { type: GraphQLString },
@@ -161,6 +164,7 @@ const MutationType = new GraphQLObjectType({
     createStep: {
       type: StepType,
       args: {
+        id: { type: GraphQLID },
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },

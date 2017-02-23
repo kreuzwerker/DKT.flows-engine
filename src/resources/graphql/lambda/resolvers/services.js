@@ -47,7 +47,7 @@ export function batchGetServicesByIds(servicesIds) {
 export function createService(service) {
   const table = process.env.DYNAMO_SERVICES
   const newService = Object.assign({}, {
-    id: uuid.v1(),
+    id: uuid.v4(),
     name: null,
     description: null,
     type: null,

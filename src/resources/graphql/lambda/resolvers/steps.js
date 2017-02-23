@@ -48,7 +48,7 @@ export function createStep(step) {
   const table = process.env.DYNAMO_STEPS
   // set defaults
   const newStep = Object.assign({}, {
-    id: uuid.v1(),
+    id: uuid.v4(),
     position: 0,
     description: null,
     flow: null,

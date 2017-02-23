@@ -1,4 +1,6 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
+import uuid from 'uuid'
+import { createStep } from './steps'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -28,14 +30,23 @@ export function getFlowById(flowId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export function createFlow(flow) {
+export async function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
   const newFlow = Object.assign({}, {
+    id: uuid.v4(),
     name: null,
     description: null,
     steps: [null]
   }, flow)
-  return dynDB.putItem(table, newFlow)
+
+  try {
+    const newStep = await createStep({ flow: newFlow.id })
+    const flowWithInitialStep = Object.assign({}, newFlow, { steps: [newStep.id] })
+
+    return dynDB.putItem(table, flowWithInitialStep)
+  } catch (err) {
+    return Promise.reject(err)
+  }
 }
 
 

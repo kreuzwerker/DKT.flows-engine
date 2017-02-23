@@ -1,6 +1,6 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
-import { createStep } from './steps'
+import { createStep, deleteStep } from './steps'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -62,9 +62,10 @@ export function updateFlow(flow) {
 
 export function deleteFlow(id) {
   const table = process.env.DYNAMO_FLOWS
-  const query = {
-    Key: { id: { S: id } }
-  }
-  return dynDB.deleteItem(table, query)
-              .then(() => ({ id }))
+  const query = { Key: { id: { S: id } } }
+
+  return getFlowById(id)
+    .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId))))
+    .then(() => dynDB.deleteItem(table, query))
+    .then(() => ({ id }))
 }

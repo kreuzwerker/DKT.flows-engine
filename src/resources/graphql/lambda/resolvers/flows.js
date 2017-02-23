@@ -32,18 +32,20 @@ export function getFlowById(flowId) {
  */
 export async function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
-  const newFlow = Object.assign({}, {
+  let newFlow = Object.assign({}, {
     id: uuid.v4(),
     name: null,
     description: null,
-    steps: [null]
+    steps: []
   }, flow)
 
   try {
-    const newStep = await createStep({ flow: newFlow.id })
-    const flowWithInitialStep = Object.assign({}, newFlow, { steps: [newStep.id] })
+    if (newFlow.steps.length === 0) {
+      const newStep = await createStep({ flow: newFlow.id })
+      newFlow = Object.assign({}, newFlow, { steps: [newStep.id] })
+    }
 
-    return dynDB.putItem(table, flowWithInitialStep)
+    return dynDB.putItem(table, newFlow)
   } catch (err) {
     return Promise.reject(err)
   }

@@ -7,10 +7,10 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { FlowType, FlowInputType } from './types/flow'
-import { ProviderType, ProviderInputType } from './types/provider'
-import { ServiceType, ServiceInputType } from './types/service'
-import { StepType, StepInputType } from './types/step'
+import { FlowType } from './types/flow'
+import { ProviderType } from './types/provider'
+import { ServiceType } from './types/service'
+import { StepType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'

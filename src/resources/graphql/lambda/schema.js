@@ -8,6 +8,7 @@ import {
   GraphQLNonNull
 } from 'graphql'
 import { FlowType } from './types/flow'
+import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
 import { StepType } from './types/step'
@@ -31,6 +32,16 @@ const QueryType = new GraphQLObjectType({
     },
     Flow: {
       type: FlowType,
+      args: { id: { type: GraphQLID } },
+      resolve: (_, { id }) => Flows.getFlowById(id)
+    },
+
+    allFlowRuns: {
+      type: new GraphQLList(FlowRunType),
+      resolve: Flows.allFlows
+    },
+    FlowRun: {
+      type: FlowRunType,
       args: { id: { type: GraphQLID } },
       resolve: (_, { id }) => Flows.getFlowById(id)
     },

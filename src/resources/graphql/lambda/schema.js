@@ -39,12 +39,12 @@ const QueryType = new GraphQLObjectType({
 
     allFlowRuns: {
       type: new GraphQLList(FlowRunType),
-      resolve: Flows.allFlows
+      resolve: FlowRuns.allFlowRuns
     },
     FlowRun: {
       type: FlowRunType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }) => Flows.getFlowById(id)
+      resolve: (_, { id }) => FlowRuns.getFlowRunById(id)
     },
 
     allProviders: {

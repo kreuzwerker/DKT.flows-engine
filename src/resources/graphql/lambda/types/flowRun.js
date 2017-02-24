@@ -4,7 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { FlowType } from './flow'
+import { FlowMirrorType } from './flow'
 
 
 export const FlowRunType = new GraphQLObjectType({
@@ -14,7 +14,7 @@ export const FlowRunType = new GraphQLObjectType({
     status: { type: GraphQLString },
     message: { type: GraphQLString },
     currentState: { type: GraphQLString },
-    flow: { type: FlowType },
+    flow: { type: FlowMirrorType },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString }
   })

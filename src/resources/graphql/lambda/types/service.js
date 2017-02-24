@@ -51,3 +51,18 @@ export const ServiceInputType = new GraphQLInputObjectType({
     step: { type: GraphQLID }
   })
 })
+
+
+export const ServiceMirrorType = new GraphQLObjectType({
+  name: 'ServiceInput',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    type: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
+    provider: { type: GraphQLID },
+    step: { type: GraphQLID }
+  })
+})

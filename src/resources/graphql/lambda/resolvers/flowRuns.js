@@ -67,5 +67,11 @@ export function updateFlowRun(flowRun) {
 
   return dynDB.updateItem(table, query, flowRun)
 }
+
+
+export function deleteFlowRun(id) {
+  const table = process.env.DYNAMO_FLOW_RUNS
+  const query = { Key: { id: { S: id } } }
+
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

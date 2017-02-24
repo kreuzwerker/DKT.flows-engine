@@ -57,5 +57,15 @@ export async function createFlowRun(flowRun) {
     return Promise.reject(err)
   }
 }
+
+
+export function updateFlowRun(flowRun) {
+  const table = process.env.DYNAMO_FLOW_RUNS
+  const query = {
+    Key: { id: { S: flowRun.id } }
+  }
+
+  return dynDB.updateItem(table, query, flowRun)
+}
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

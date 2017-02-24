@@ -39,6 +39,7 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
       Environment: {
         Variables: {
           DYNAMO_FLOWS: { Ref: GRAPHQL_DB_FLOWS },
+          DYNAMO_FLOW_RUNS: { Ref: GRAPHQL_DB_FLOW_RUNS },
           DYNAMO_PROVIDERS: { Ref: GRAPHQL_DB_PROVIDERS },
           DYNAMO_SERVICES: { Ref: GRAPHQL_DB_SERVICES },
           DYNAMO_STEPS: { Ref: GRAPHQL_DB_STEPS }

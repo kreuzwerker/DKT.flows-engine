@@ -1,9 +1,12 @@
 import dynDB from '../../../utils/dynamoDB'
 import * as FlowsResolver from '../lambda/resolvers/flows'
+import * as FlowRunsResolver from '../lambda/resolvers/flowRuns'
 import * as ProviderResolver from '../lambda/resolvers/providers'
 import * as ServicesResolver from '../lambda/resolvers/services'
 import * as StepsResolver from '../lambda/resolvers/steps'
 import flowsTestData from './testData/flows.json'
+import flowRunsTestData from './testData/flowRuns.json'
+import flowRunsMutationsTestData from './testData/flowRuns.mutations.json'
 import providersTestData from './testData/providers.json'
 import servicesTestData from './testData/services.json'
 import stepsTestData from './testData/steps.json'
@@ -87,6 +90,89 @@ export default function () {
       after(async function () {
         await Promise.all([createTestFlow, updateTestFlow].map((testFlow) => {
           return dynDB.deleteItem(process.env.DYNAMO_FLOWS, { Key: { id: { S: testFlow.id } } })
+        }))
+      })
+    })
+  })
+
+
+  /**
+   * ---- FlowRuns Resolvers ---------------------------------------------------
+   */
+  describe('FlowRuns', () => {
+    function cleanFlowRuns(flowRun) {
+      deleteKeysFrom(['createdAt', 'updatedAt'], flowRun)
+      if (!flowRun.flow) return
+      deleteKeysFrom(['createdAt', 'updatedAt'], flowRun.flow)
+      if (!flowRun.flow.steps) return
+      flowRun.flow.steps.forEach((step) => {
+        deleteKeysFrom(['createdAt', 'updatedAt'], step)
+        if (step.service) {
+          deleteKeysFrom(['createdAt', 'updatedAt'], step.service)
+        }
+      })
+    }
+
+    describe('Queries', () => {
+      it('allFlowRuns() returns all flows correctly', async function () {
+        const allFlowRuns = await FlowRunsResolver.allFlowRuns()
+
+        expect(allFlowRuns).to.have.length.of.at.least(flowRunsTestData.length)
+
+        flowRunsTestData.forEach((testFlowRun) => {
+          const returnedFlowRuns = allFlowRuns.filter(f => f.id === testFlowRun.id)
+          const returnedFlowRun = returnedFlowRuns[0]
+          expect(returnedFlowRuns).to.have.lengthOf(1)
+          cleanFlowRuns(returnedFlowRun)
+          expect(returnedFlowRun).to.deep.equal(testFlowRun)
+        })
+      })
+
+      flowRunsTestData.forEach((flowRun) => {
+        it(`getFlowRunById('${flowRun.id}') returns the correct flowRun`, async function () {
+          const returnedFlowRun = await FlowRunsResolver.getFlowRunById(flowRun.id)
+
+          expect(returnedFlowRun).to.not.be.empty
+          cleanFlowRuns(returnedFlowRun)
+          deleteKeysFrom(['createdAt', 'updatedAt'], flowRun, returnedFlowRun)
+          expect(returnedFlowRun).to.deep.equal(flowRun)
+        })
+      })
+    })
+
+    describe('Mutations', () => {
+      const createTestFlowRun = flowRunsMutationsTestData[0]
+      const createTestFlowRunResult = flowRunsMutationsTestData[1]
+      const updateTestFlowRun = flowRunsMutationsTestData[2]
+      const updateTestFlowRunResult = flowRunsMutationsTestData[3]
+      const deleteTestFlowRun = flowRunsMutationsTestData[4]
+
+
+      it('createFlowRun(flowRun) is creating a new flowRun', async function () {
+        const createdFlowRun = await FlowRunsResolver.createFlowRun(createTestFlowRun)
+
+        expect(createdFlowRun).to.not.be.empty
+        cleanFlowRuns(createdFlowRun)
+        expect(createdFlowRun).to.deep.equal(createTestFlowRunResult)
+      })
+
+      it('updateFlowRun(flowRun) is updating a existing flowRun', async function () {
+        const updatedFlowRun = await FlowRunsResolver.updateFlowRun(updateTestFlowRunResult)
+
+        expect(updatedFlowRun).to.not.be.empty
+        cleanFlowRuns(updatedFlowRun)
+        expect(updatedFlowRun).to.deep.equal(updateTestFlowRunResult)
+      })
+
+      it('deleteFlowRun(flowRunId) is deleting a existing flowRun', async function () {
+        const response = await FlowRunsResolver.deleteFlowRun(deleteTestFlowRun.id)
+        expect(response).to.have.keys('id')
+      })
+
+
+      after(async function () {
+        await Promise.all([createTestFlowRun, updateTestFlowRun].map((testFlow) => {
+          return dynDB.deleteItem(process.env.DYNAMO_FLOW_RUNS, { Key: { id: { S: testFlow.id } } })
         }))
       })
     })

@@ -6,7 +6,7 @@ import {
   GraphQLInputObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { StepType } from './step'
+import { StepType, StepMirrorType } from './step'
 import * as Steps from '../resolvers/steps'
 
 
@@ -36,5 +36,16 @@ export const FlowInputType = new GraphQLInputObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     steps: { type: new GraphQLList(GraphQLID) }
+  })
+})
+
+
+export const FlowMirrorType = new GraphQLObjectType({
+  name: 'FlowMirror',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    steps: { type: new GraphQLList(StepMirrorType) }
   })
 })

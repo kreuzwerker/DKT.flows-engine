@@ -5,6 +5,7 @@ import ResolversTests from './test.resolvers'
 
 
 process.env.DYNAMO_FLOWS = 'DKT-flow-engine-Test-GraphQLDynamoFlows-1O7M9YWZ9L4MI'
+process.env.DYNAMO_FLOW_RUNS = 'DKT-flow-engine-Test-GraphQLDynamoFlowRuns-OMZE59HNGDLQ'
 process.env.DYNAMO_PROVIDERS = 'DKT-flow-engine-Test-GraphQLDynamoProviders-AL9KCA0EVNVW'
 process.env.DYNAMO_SERVICES = 'DKT-flow-engine-Test-GraphQLDynamoServices-1P378KM8C9AYW'
 process.env.DYNAMO_STEPS = 'DKT-flow-engine-Test-GraphQLDynamoSteps-L5ZS4XOU9M6O'

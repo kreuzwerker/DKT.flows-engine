@@ -1,0 +1,46 @@
+[
+  {
+    "id": "createTestFlowRun38gu0lju",
+    "status": null,
+    "message": null,
+    "currentState": null,
+    "flow": "dontDeleteMe20133m8gu0lju",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z"
+  },
+  {
+    "id": "createTestFlowRun38gu0lju",
+    "status": null,
+    "message": null,
+    "currentState": null,
+    "flow": {
+      "id": "dontDeleteMe20133m8gu0lju",
+      "name": "SecondFlow",
+      "description": "This, too, is a mocked flow object.",
+      "steps": [
+        {
+          "id": "dontDeleteMe101795ez58bzs",
+          "position": "1",
+          "description": "DKT native app",
+          "flow": "dontDeleteMe20133m8gu0lju",
+          "service": {
+            "id": "dontDeleteMel01791wvcejt5",
+            "name": "Sing hallelujah",
+            "description": "DKT native app",
+            "type": "ACTION",
+            "icon": "filter_list",
+            "provider": null,
+            "step": "dontDeleteMe101795ez58bzs"
+          }
+        },
+        {
+          "id": "dontDeleteMet0133sqdy35e6",
+          "position": "0",
+          "description": "Makes a delicious freshly brewed organic coffee.",
+          "flow": "dontDeleteMe20133m8gu0lju",
+          "service": {}
+        }
+      ]
+    }
+  }
+]

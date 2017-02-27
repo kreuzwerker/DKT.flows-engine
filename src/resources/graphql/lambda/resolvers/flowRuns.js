@@ -1,8 +1,8 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById } from './flows'
-import { getStepById } from './steps'
-import { getServiceById } from './services'
+import { batchGetStepByIds } from './steps'
+import { batchGetServicesByIds } from './services'
 import dynDB from '../../../../utils/dynamoDB'
 
 
@@ -44,9 +44,10 @@ export async function createFlowRun(flowRun) {
 
   try {
     let flow = await getFlowById(flowRun.flow),
-        steps = await Promise.all(flow.steps.map(stepId => getStepById(stepId)))
-    const stepsWithServices = steps.filter(step => (step.service !== null))
-    const services = await Promise.all(stepsWithServices.map(step => getServiceById(step.service)))
+        steps = await batchGetStepByIds(flow.steps)
+    const servicesIds = steps.filter(step => (step.service !== null))
+                             .map(step => step.service)
+    const services = await batchGetServicesByIds(servicesIds)
     const getStepService = step => services.filter(s => (s.id === step.service))[0] || {}
 
     steps = steps.map(step => Object.assign({}, step, { service: getStepService(step) }))

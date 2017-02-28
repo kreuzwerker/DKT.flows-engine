@@ -1,18 +1,20 @@
 [
   {
     "id": "createTestFlowRun38gu0lju",
-    "status": null,
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": null,
-    "currentState": null,
+    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"
   },
   {
     "id": "createTestFlowRun38gu0lju",
-    "status": null,
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": null,
-    "currentState": null,
+    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -45,18 +47,20 @@
   },
   {
     "id": "updateTestFlowRun38gu0lju",
-    "status": null,
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": null,
-    "currentState": null,
+    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"
   },
   {
     "id": "updateTestFlowRun38gu0lju",
+    "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "updated!",
     "message": null,
-    "currentState": null,
+    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -89,9 +93,10 @@
   },
   {
     "id": "deleteTestFlowRun38gu0lju",
-    "status": null,
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": null,
-    "currentState": null,
+    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"

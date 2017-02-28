@@ -7,7 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { FlowType } from './types/flow'
+import { FlowType, FlowMirrorType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
@@ -71,7 +71,7 @@ const QueryType = new GraphQLObjectType({
       type: new GraphQLList(StepType),
       resolve: Steps.allSteps
     },
-    Steps: {
+    Step: {
       type: StepType,
       args: { id: { type: GraphQLID } },
       resolve: (_, { id }) => Steps.getStepById(id)
@@ -117,12 +117,28 @@ const MutationType = new GraphQLObjectType({
       type: FlowRunType,
       args: {
         id: { type: GraphQLID },
+        userId: { type: new GraphQLNonNull(GraphQLID) },
         status: { type: GraphQLString },
         message: { type: GraphQLString },
-        currentState: { type: GraphQLString },
+        currentStep: { type: GraphQLInt },
         flow: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve: (_, flowRun) => FlowRuns.createFlowRun(flowRun)
+    },
+    updateFlowRun: {
+      type: FlowRunType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        status: { type: GraphQLString },
+        message: { type: GraphQLString },
+        currentStep: { type: GraphQLInt }
+      },
+      resolve: (_, flow) => FlowRuns.updateFlowRun(flow)
+    },
+    deleteFlowRun: {
+      type: FlowRunType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => FlowRuns.deleteFlowRun(id)
     },
 
     createProvider: {

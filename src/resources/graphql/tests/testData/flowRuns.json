@@ -1,9 +1,10 @@
 [
   {
     "id": "dontDeleteMe983jhkk32h43u",
-    "status": "success",
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": "foobar",
-    "currentState": "finished",
+    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -36,9 +37,10 @@
   },
   {
     "id": "dontDeleteMe123kwpb87h00p",
-    "status": "success",
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "pending",
     "message": "foobar",
-    "currentState": "finished",
+    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMel0179imlh0a73",
       "name": "first flow",

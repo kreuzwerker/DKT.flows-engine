@@ -36,9 +36,9 @@ export async function createFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const newFlowRun = Object.assign({}, {
     id: uuid.v4(),
-    status: null,
+    status: 'pending',
     message: null,
-    currentState: null,
+    currentStep: 0,
     flow: {}
   }, flowRun)
 
@@ -47,7 +47,7 @@ export async function createFlowRun(flowRun) {
         steps = await batchGetStepByIds(flow.steps)
     const servicesIds = steps.filter(step => (step.service !== null))
                              .map(step => step.service)
-    const services = await batchGetServicesByIds(servicesIds)
+    const services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
     const getStepService = step => services.filter(s => (s.id === step.service))[0] || {}
 
     steps = steps.map(step => Object.assign({}, step, { service: getStepService(step) }))

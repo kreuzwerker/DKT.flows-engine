@@ -125,6 +125,11 @@ const MutationType = new GraphQLObjectType({
       },
       resolve: (_, flowRun) => FlowRuns.createFlowRun(flowRun)
     },
+    startFlowRun: {
+      type: FlowRunType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => FlowRuns.startFlowRun(id)
+    },
     updateFlowRun: {
       type: FlowRunType,
       args: {

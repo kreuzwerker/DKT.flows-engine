@@ -60,17 +60,6 @@ export async function createFlowRun(flowRun) {
 }
 
 
-export function startFlowRun(id) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const query = {
-    Key: { id: { S: id } }
-  }
-
-  return dynDB.updateItem(table, query, { status: 'running', currentStep: 0 })
-    .then(() => getFlowRunById(id))
-}
-
-
 export function updateFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const query = {

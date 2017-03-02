@@ -2,9 +2,6 @@
   {
     "id": "createTestFlowRun38gu0lju",
     "userId": "jfkihkfef323qw2c32lgcbklz",
-    "status": "pending",
-    "message": null,
-    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"
@@ -14,7 +11,7 @@
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "pending",
     "message": null,
-    "currentStep": "0",
+    "currentStep": 0,
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -48,9 +45,6 @@
   {
     "id": "updateTestFlowRun38gu0lju",
     "userId": "jfkihkfef323qw2c32lgcbklz",
-    "status": "pending",
-    "message": null,
-    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"
@@ -60,7 +54,7 @@
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "updated!",
     "message": null,
-    "currentStep": "0",
+    "currentStep": 0,
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -94,11 +88,51 @@
   {
     "id": "deleteTestFlowRun38gu0lju",
     "userId": "jfkihkfef323qw2c32lgcbklz",
-    "status": "pending",
-    "message": null,
-    "currentStep": "0",
     "flow": "dontDeleteMe20133m8gu0lju",
     "createdAt": "2017-02-02T10:37:46.897Z",
     "updatedAt": "2017-02-02T10:37:46.897Z"
+  },
+  {
+    "id": "createAndStartStartFlowRun38g",
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "flow": "dontDeleteMe20133m8gu0lju",
+    "createdAt": "2017-02-02T10:37:46.897Z",
+    "updatedAt": "2017-02-02T10:37:46.897Z"
+  },
+  {
+    "id": "createAndStartStartFlowRun38g",
+    "userId": "jfkihkfef323qw2c32lgcbklz",
+    "status": "running",
+    "message": null,
+    "currentStep": 0,
+    "flow": {
+      "id": "dontDeleteMe20133m8gu0lju",
+      "name": "SecondFlow",
+      "description": "This, too, is a mocked flow object.",
+      "steps": [
+        {
+          "id": "dontDeleteMe101795ez58bzs",
+          "position": "1",
+          "description": "DKT native app",
+          "flow": "dontDeleteMe20133m8gu0lju",
+          "service": {
+            "id": "dontDeleteMel01791wvcejt5",
+            "name": "Sing hallelujah",
+            "description": "DKT native app",
+            "type": "ACTION",
+            "icon": "filter_list",
+            "provider": null,
+            "step": "dontDeleteMe101795ez58bzs"
+          }
+        },
+        {
+          "id": "dontDeleteMet0133sqdy35e6",
+          "position": "0",
+          "description": "Makes a delicious freshly brewed organic coffee.",
+          "flow": "dontDeleteMe20133m8gu0lju",
+          "service": {}
+        }
+      ]
+    }
   }
 ]

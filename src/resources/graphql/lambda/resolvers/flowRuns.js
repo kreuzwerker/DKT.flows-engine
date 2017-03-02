@@ -38,9 +38,10 @@ export async function createFlowRun(flowRun) {
     id: uuid.v4(),
     status: 'pending',
     message: null,
-    currentStep: 0,
-    flow: {}
+    currentStep: 0
   }, flowRun)
+
+  console.log(newFlowRun)
 
   try {
     let flow = await getFlowById(flowRun.flow),
@@ -67,6 +68,24 @@ export function updateFlowRun(flowRun) {
   }
 
   return dynDB.updateItem(table, query, flowRun)
+}
+
+
+export function startFlowRun({ id, payload }) {
+  // TODO start flow with payload
+  console.log('payload', payload)
+
+  return updateFlowRun({ id, status: 'running' })
+}
+
+
+export function createAndStartFlowRun(args) {
+  const { payload } = args
+  delete args.payload
+  console.log('createAndStartFlowRun')
+  console.log(args)
+  return createFlowRun(args)
+    .then(flowRun => startFlowRun({ id: flowRun.id, payload }))
 }
 
 

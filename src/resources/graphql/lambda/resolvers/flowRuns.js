@@ -41,6 +41,8 @@ export async function createFlowRun(flowRun) {
     currentStep: 0
   }, flowRun)
 
+  console.log(newFlowRun)
+
   try {
     let flow = await getFlowById(flowRun.flow),
         steps = await batchGetStepByIds(flow.steps)
@@ -80,6 +82,8 @@ export function startFlowRun({ id, payload }) {
 export function createAndStartFlowRun(args) {
   const { payload } = args
   delete args.payload
+  console.log('createAndStartFlowRun')
+  console.log(args)
   return createFlowRun(args)
     .then(flowRun => startFlowRun({ id: flowRun.id, payload }))
 }

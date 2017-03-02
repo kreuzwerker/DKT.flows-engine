@@ -60,6 +60,16 @@ export async function createFlowRun(flowRun) {
 }
 
 
+export async function startFlowRun({ id, payload }) {
+  // TODO
+}
+
+
+export async function createAndStartFlowRun({ flowId, userId, payload }) {
+  // TODO
+}
+
+
 export function updateFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const query = {

@@ -26,8 +26,8 @@ export async function handler(event, context, callback) {
     logger.log(`Get '${Key}' from '${s3.bucket}'`)
     const data = await s3.getObject({ Key })
 
-    const { stateMachine, input } = data
-    const response = await StepFunctions.startExecution(stateMachine, input)
+    const { stateMachine, input } = JSON.parse(data.Body)
+    const response = await StepFunctions.startExecution(stateMachine, JSON.stringify(input))
 
     callback(null, JSON.stringify(response))
   } catch (err) {

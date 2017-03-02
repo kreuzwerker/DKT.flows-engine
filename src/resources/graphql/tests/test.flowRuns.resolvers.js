@@ -52,7 +52,10 @@ export default function () {
     const createTestFlowRunResult = flowRunsMutationsTestData[1]
     const updateTestFlowRun = flowRunsMutationsTestData[2]
     const updateTestFlowRunResult = flowRunsMutationsTestData[3]
+    const startFlowRunTestData = flowRunsTestData[0]
     const deleteTestFlowRun = flowRunsMutationsTestData[4]
+    const createAndStartFlowRunData = flowRunsMutationsTestData[5]
+    const createAndStartFlowRunResult = flowRunsMutationsTestData[6]
 
 
     it('createFlowRun(flowRun) is creating a new flowRun', async function () {
@@ -65,10 +68,24 @@ export default function () {
 
     it('updateFlowRun(flowRun) is updating a existing flowRun', async function () {
       const updatedFlowRun = await FlowRunsResolver.updateFlowRun(updateTestFlowRunResult)
-
       expect(updatedFlowRun).to.not.be.empty
       cleanFlowRuns(updatedFlowRun)
       expect(updatedFlowRun).to.deep.equal(updateTestFlowRunResult)
+    })
+
+    it('startFlowRun(flowRun) is starting a existing flowRun', async function () {
+      const { id } = startFlowRunTestData
+      const payload = 'foobar'
+      const startedFlowRun = await FlowRunsResolver.startFlowRun({ id, payload })
+      expect(startedFlowRun).to.not.be.empty
+      expect(startedFlowRun.status).to.equal('running')
+    })
+
+    it('createAndStartFlowRun(flowRun) is creating and starging a new FlowRun', async function () {
+      const createdAndStartedFlowRun = await FlowRunsResolver.createAndStartFlowRun(createAndStartFlowRunData)
+      expect(createdAndStartedFlowRun).to.not.be.empty
+      cleanFlowRuns(createdAndStartedFlowRun)
+      expect(createdAndStartedFlowRun).to.deep.equal(createAndStartFlowRunResult)
     })
 
     it('deleteFlowRun(flowRunId) is deleting a existing flowRun', async function () {
@@ -76,11 +93,12 @@ export default function () {
       expect(response).to.have.keys('id')
     })
 
-
     after(async function () {
-      await Promise.all([createTestFlowRun, updateTestFlowRun].map((testFlow) => {
+      await Promise.all([createTestFlowRun, updateTestFlowRun, createAndStartFlowRunData].map((testFlow) => {
         return dynDB.deleteItem(process.env.DYNAMO_FLOW_RUNS, { Key: { id: { S: testFlow.id } } })
       }))
+
+      await dynDB.updateItem(process.env.DYNAMO_FLOW_RUNS, { Key: { id: { S: startFlowRunTestData.id } } }, { status: 'pending' })
     })
   })
 }

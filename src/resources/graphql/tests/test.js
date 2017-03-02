@@ -20,10 +20,10 @@ describe('ƛ GraphQL', () => {
   })
 
   describe('FlowRuns Resolvers', FlowRunsResolver)
-  describe('Flows Resolvers', FlowsResolver)
-  describe('Providers Resolvers', ProvidersResolver)
-  describe('Services Resolvers', ServicesResolver)
-  describe('Steps Resolvers', StepsResolver)
+  // describe('Flows Resolvers', FlowsResolver)
+  // describe('Providers Resolvers', ProvidersResolver)
+  // describe('Services Resolvers', ServicesResolver)
+  // describe('Steps Resolvers', StepsResolver)
 
-  describe('Handler', LambdaHandler)
+  // describe('Handler', LambdaHandler)
 })

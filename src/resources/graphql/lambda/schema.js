@@ -118,9 +118,6 @@ const MutationType = new GraphQLObjectType({
       args: {
         id: { type: GraphQLID },
         userId: { type: new GraphQLNonNull(GraphQLID) },
-        status: { type: GraphQLString },
-        message: { type: GraphQLString },
-        currentStep: { type: GraphQLInt },
         flow: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve: (_, flowRun) => FlowRuns.createFlowRun(flowRun)
@@ -136,7 +133,7 @@ const MutationType = new GraphQLObjectType({
     createAndStartFlowRun: {
       type: FlowRunType,
       args: {
-        flowId: { type: new GraphQLNonNull(GraphQLID) },
+        flow: { type: new GraphQLNonNull(GraphQLID) },
         userId: { type: new GraphQLNonNull(GraphQLID) },
         payload: { type: new GraphQLNonNull(GraphQLString) }
       },

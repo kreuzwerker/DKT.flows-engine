@@ -38,8 +38,7 @@ export async function createFlowRun(flowRun) {
     id: uuid.v4(),
     status: 'pending',
     message: null,
-    currentStep: 0,
-    flow: {}
+    currentStep: 0
   }, flowRun)
 
   try {
@@ -60,16 +59,6 @@ export async function createFlowRun(flowRun) {
 }
 
 
-export async function startFlowRun({ id, payload }) {
-  // TODO
-}
-
-
-export async function createAndStartFlowRun({ flowId, userId, payload }) {
-  // TODO
-}
-
-
 export function updateFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const query = {
@@ -77,6 +66,22 @@ export function updateFlowRun(flowRun) {
   }
 
   return dynDB.updateItem(table, query, flowRun)
+}
+
+
+export function startFlowRun({ id, payload }) {
+  // TODO start flow with payload
+  console.log('payload', payload)
+
+  return updateFlowRun({ id, status: 'running' })
+}
+
+
+export function createAndStartFlowRun(args) {
+  const { payload } = args
+  delete args.payload
+  return createFlowRun(args)
+    .then(flowRun => startFlowRun({ id: flowRun.id, payload }))
 }
 
 

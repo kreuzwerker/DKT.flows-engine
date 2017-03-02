@@ -6,6 +6,14 @@ import StepFunctions from '../../../utils/stepFunctions'
 
 /*
  * Trigger StateMachine
+ *
+ * This functions requires a json document on S3 with a stateMachone and a input key. e.g.
+ * {
+ *    stateMachine: "testMachine",
+ *    input: {
+ *      Key: "<bucket>/<key>"
+ *    }
+ * }
  */
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)

@@ -21,7 +21,7 @@ export function getServiceById(serviceId) {
   }
 
   return dynDB.getItem(table, query)
-              .then(r => unmarshalItem(r.Item))
+              .then(r => (r.Item ? unmarshalItem(r.Item) : null))
 }
 
 

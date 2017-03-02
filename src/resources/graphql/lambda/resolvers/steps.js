@@ -22,7 +22,7 @@ export function getStepById(stepId) {
   }
 
   return dynDB.getItem(table, params)
-              .then(r => unmarshalItem(r.Item))
+               .then(r => (r.Item ? unmarshalItem(r.Item) : null))
 }
 
 

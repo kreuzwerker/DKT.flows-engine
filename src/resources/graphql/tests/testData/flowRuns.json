@@ -3,6 +3,7 @@
     "id": "dontDeleteMe983jhkk32h43u",
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "pending",
+    "stateMachine": "HelloWorld",
     "message": "foobar",
     "currentStep": "0",
     "flow": {
@@ -39,6 +40,7 @@
     "id": "dontDeleteMe123kwpb87h00p",
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "pending",
+    "stateMachine": "HelloWorld",
     "message": "foobar",
     "currentStep": "0",
     "flow": {

@@ -10,6 +10,7 @@
     "id": "createTestFlowRun38gu0lju",
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "pending",
+    "stateMachine": "HelloWorld",
     "message": null,
     "currentStep": 0,
     "flow": {
@@ -53,6 +54,7 @@
     "id": "updateTestFlowRun38gu0lju",
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "updated!",
+    "stateMachine": "HelloWorld",
     "message": null,
     "currentStep": 0,
     "flow": {
@@ -103,6 +105,7 @@
     "id": "createAndStartStartFlowRun38g",
     "userId": "jfkihkfef323qw2c32lgcbklz",
     "status": "running",
+    "stateMachine": "HelloWorld",
     "message": null,
     "currentStep": 0,
     "flow": {

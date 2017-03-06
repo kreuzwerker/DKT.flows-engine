@@ -4,6 +4,8 @@ import { getFlowById } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
 import dynDB from '../../../../utils/dynamoDB'
+import S3 from '../../../../utils/s3'
+import Lambda from '../../../../utils/lambda'
 
 
 /**
@@ -33,10 +35,12 @@ export function getFlowRunById(flowId) {
  * -----------------------------------------------------------------------------
  */
 export async function createFlowRun(flowRun) {
+  // TODO enhance this with a ASL generator to create flowRun state machines
   const table = process.env.DYNAMO_FLOW_RUNS
   const newFlowRun = Object.assign({}, {
     id: uuid.v4(),
     status: 'pending',
+    stateMachine: null,
     message: null,
     currentStep: 0
   }, flowRun)
@@ -71,19 +75,52 @@ export function updateFlowRun(flowRun) {
 }
 
 
-export function startFlowRun({ id, payload }) {
-  // TODO start flow with payload
-  console.log('payload', payload)
+export async function startFlowRun({ id, payload }) {
+  try {
+    const s3 = S3(process.env.S3_BUCKET)
+    const flowRun = await getFlowRunById(id)
 
-  return updateFlowRun({ id, status: 'running' })
+    const fileRunDataKey = `flows/${flowRun.flow.id}/flowRuns/${id}/in/${uuid.v1()}.json`
+    const flowRunData = {
+      flowRunId: id,
+      data: payload,
+      logs: {
+        status: 'success',
+        message: 'lorem ipsum'
+      }
+    }
+
+    await s3.putObject({
+      Key: fileRunDataKey,
+      Body: JSON.stringify(flowRunData)
+    })
+
+    const triggerPayload = {
+      stateMachine: 'HelloWorld', // TODO use real state machine
+      key: fileRunDataKey,
+      contentType: 'json',
+      contentKey: 'data'
+    }
+
+    const lambdaInvokeResponse = await Lambda.invoke({
+      ClientContext: 'ManualTrigger',
+      FunctionName: process.env.STATE_MACHINE_TRIGGER_FUNCTION,
+      InvocationType: 'Event',
+      LogType: 'Tail',
+      Payload: JSON.stringify(triggerPayload)
+    })
+
+    return updateFlowRun({ id, status: 'running' })
+  } catch (err) {
+    console.log(err)
+    return updateFlowRun({ id, status: 'error', message: err })
+  }
 }
 
 
 export function createAndStartFlowRun(args) {
   const { payload } = args
   delete args.payload
-  console.log('createAndStartFlowRun')
-  console.log(args)
   return createFlowRun(args)
     .then(flowRun => startFlowRun({ id: flowRun.id, payload }))
 }

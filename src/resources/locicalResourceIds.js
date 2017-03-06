@@ -16,6 +16,8 @@ module.exports = {
   GRAPHQL_DB_SERVICES: 'GraphQLDynamoServices',
   GRAPHQL_DB_STEPS: 'GraphQLDynamoSteps',
 
+  STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
+
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
 
   FLOW_TRIGGER_API_FUNCTION: 'FlowTriggerApiFunction',

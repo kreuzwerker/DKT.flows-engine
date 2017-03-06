@@ -1,7 +1,7 @@
 /*
  * Custom Logger - console.log when deployed or verbose is set to true
  */
-function Logger(verbose = false) {
+function Logger(verbose = true) {
   const { NODE_ENV } = process.env
 
   return {

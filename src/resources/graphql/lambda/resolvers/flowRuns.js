@@ -35,6 +35,7 @@ export function getFlowRunById(flowId) {
  * -----------------------------------------------------------------------------
  */
 export async function createFlowRun(flowRun) {
+  // TODO enhance this with a ASL generator to create flowRun state machines
   const table = process.env.DYNAMO_FLOW_RUNS
   const newFlowRun = Object.assign({}, {
     id: uuid.v4(),
@@ -95,7 +96,7 @@ export async function startFlowRun({ id, payload }) {
     })
 
     const triggerPayload = {
-      stateMachine: 'HelloWorld',
+      stateMachine: 'HelloWorld', // TODO use real state machine
       key: fileRunDataKey,
       contentType: 'json',
       contentKey: 'data'

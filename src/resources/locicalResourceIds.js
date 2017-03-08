@@ -19,6 +19,7 @@ module.exports = {
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
 
+  WAIT_SERVICE_FUNCTION: 'WaitServiceFunction',
 
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
 

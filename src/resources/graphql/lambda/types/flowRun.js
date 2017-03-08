@@ -15,7 +15,6 @@ export const FlowRunType = new GraphQLObjectType({
     status: { type: GraphQLString },
     stateMachine: { type: GraphQLString },
     message: { type: GraphQLString },
-    currentStep: { type: GraphQLString },
     flow: { type: FlowMirrorType },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString }

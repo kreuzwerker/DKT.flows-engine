@@ -1,9 +1,9 @@
 const settings = require('../../../settings')
-const { WAIT_SERVICE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
 
 module.exports = ({ key }) => ({
-  [WAIT_SERVICE_FUNCTION]: {
+  [CAPITALIZE_SERVICE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

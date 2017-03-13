@@ -1,10 +1,10 @@
 {
   "Comment": "flowRun Test",
-  "StartAt": "WaitService",
+  "StartAt": "CapitalizeService",
   "States": {
-    "WaitService": {
+    "CapitalizeService": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-WaitServiceFunction-R2IBHJBX9DJN",
+      "Resource": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
       "Next": "StateMachineOutput",
       "Catch": [{
         "ErrorEquals": ["States.ALL"],

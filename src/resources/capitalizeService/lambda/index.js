@@ -6,10 +6,11 @@ import { getFlowRunData, serviceSuccessHandler } from '../../../utils/flowRunHel
 export async function handler(event, context, callback) {
   // const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event
+  input.currentStep += 1
   try {
     const flowRunData = await getFlowRunData(input)
     const inputData = flowRunData[input.contentKey]
-    const outputData = `${inputData} dolor sit amet.`
+    const outputData = inputData.toUpperCase()
 
     const result = await serviceSuccessHandler(input, flowRunData, outputData)
     callback(null, result)

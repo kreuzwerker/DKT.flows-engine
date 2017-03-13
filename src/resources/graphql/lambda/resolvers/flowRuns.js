@@ -41,7 +41,7 @@ export async function createFlowRun(flowRun) {
   const newFlowRun = Object.assign({}, {
     id: uuid.v4(),
     status: 'pending',
-    stateMachine: 'flowRun', // TODO use real StateMachine
+    stateMachine: 'CapitalizeFlow', // TODO use real StateMachine
     message: null
   }, flowRun)
 

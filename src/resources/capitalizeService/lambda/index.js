@@ -12,10 +12,10 @@ export async function handler(event, context, callback) {
     const inputData = flowRunData[input.contentKey]
     const outputData = inputData.toUpperCase()
 
-    const result = await serviceSuccessHandler(input, flowRunData, outputData)
-    callback(null, result)
+    const output = await serviceSuccessHandler(input, flowRunData, outputData)
+    callback(null, output)
   } catch (err) {
-    const result = { input, error: 'something went wrong' }
-    callback(null, result)
+    const output = Object.assign({}, input, { error: err })
+    callback(null, output)
   }
 }

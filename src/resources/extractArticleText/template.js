@@ -17,9 +17,10 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: S3_BUCKET
+          S3_BUCKET: { Ref: S3_BUCKET }
         }
       }
-    }
+    },
+    DependsOn: [S3_BUCKET]
   }
 })

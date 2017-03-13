@@ -47,8 +47,8 @@ export function flowRunSuccessHandler(input, flowRunData) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
-  flowRunData.flowRun.status = 'done'
-  flowRunData.status = 'done'
+  flowRunData.flowRun.status = 'success'
+  flowRunData.status = 'success'
 
   return s3.putObject({ Key: key, Body: JSON.stringify(flowRunData) })
     .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
@@ -65,10 +65,14 @@ export function errorHandler(err, input, errorKey = 'error') {
   })
 
   return getFlowRunData(input)
-    .then(flowRunData => update(flowRunData))
-    .then(updatedData => s3.putObject({
-      Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
-      Body: JSON.stringify(updatedData)
-    }).then(() => updatedData))
+    .then((flowRunData) => {
+      return update(flowRunData)
+    })
+    .then((updatedData) => {
+      return s3.putObject({
+        Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
+        Body: JSON.stringify(updatedData)
+      }).then(() => updatedData)
+    })
     .then(({ key }) => Object.assign({}, input, { key, contentKey: errorKey }))
 }

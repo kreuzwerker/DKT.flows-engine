@@ -1,14 +1,14 @@
-import fetch from 'node-fetch'
+import extractor from 'unfluff'
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
 import { getFlowRunData, serviceSuccessHandler } from '../../../utils/flowRunHelpers'
 
 
 /*
- * Fetch an Article from given URL
+ * Extract article text with node unfluff
  */
 export async function handler(event, context, callback) {
-  const logger = Logger(event.verbose)
+  const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event
   input.currentStep += 1
 
@@ -16,20 +16,14 @@ export async function handler(event, context, callback) {
     const flowRunData = await getFlowRunData(input)
     const inputData = flowRunData[input.contentKey]
 
-    logger.log(`Try to fetch data from ${inputData}`)
-    const result = await fetch(inputData)
+    logger.log('parsing and extracting text from article')
+    const article = extractor.lazy(inputData)
+    const text = article.text()
 
-    if (!result.ok) {
-      throw new Error(`Failed fetching ${inputData} - ${result.status} ${result.statusText}`)
-    }
-
-    logger.log('Extract HTML')
-    let articleHTML = await result.text()
-    articleHTML = articleHTML.replace(/(\r\n|\n|\r|\t)/gm, '')
-
-    const output = await serviceSuccessHandler(input, flowRunData, articleHTML)
+    const output = await serviceSuccessHandler(input, flowRunData, text)
     callback(null, output)
   } catch (err) {
+    logger.log(err)
     const output = Object.assign({}, input, { error: err })
     callback(null, output)
   }

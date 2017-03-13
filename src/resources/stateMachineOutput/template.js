@@ -1,13 +1,9 @@
 const settings = require('../../../settings')
-const { EXTRACT_ARTICLE_TEXT_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { STATE_MACHINE_OUTPUT_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
 
-/*
- * AWS SAM Resource Template
- * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
- */
 module.exports = ({ key }) => ({
-  [EXTRACT_ARTICLE_TEXT_FUNCTION]: {
+  [STATE_MACHINE_OUTPUT_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
@@ -17,9 +13,10 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: S3_BUCKET
+          S3_BUCKET: { Ref: S3_BUCKET }
         }
       }
-    }
+    },
+    DependsOn: [S3_BUCKET]
   }
 })

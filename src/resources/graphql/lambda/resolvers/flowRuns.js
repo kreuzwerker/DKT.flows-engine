@@ -6,6 +6,7 @@ import { batchGetServicesByIds } from './services'
 import dynDB from '../../../../utils/dynamoDB'
 import S3 from '../../../../utils/s3'
 import Lambda from '../../../../utils/lambda'
+import timestamp from '../../../../utils/timestamp'
 
 
 /**
@@ -40,12 +41,9 @@ export async function createFlowRun(flowRun) {
   const newFlowRun = Object.assign({}, {
     id: uuid.v4(),
     status: 'pending',
-    stateMachine: null,
-    message: null,
-    currentStep: 0
+    stateMachine: 'CapitalizeArticle', // TODO use real StateMachine
+    message: null
   }, flowRun)
-
-  console.log(newFlowRun)
 
   try {
     let flow = await getFlowById(flowRun.flow),
@@ -75,45 +73,54 @@ export function updateFlowRun(flowRun) {
 }
 
 
-export async function startFlowRun({ id, payload }) {
+export async function startFlowRun({ id, payload }, flowRunInstance) {
+  const s3 = S3(process.env.S3_BUCKET)
+  let flowRun = flowRunInstance
+  let status = 'running'
+  let message = null
+
   try {
-    const s3 = S3(process.env.S3_BUCKET)
-    const flowRun = await getFlowRunById(id)
+    if (!flowRun) {
+      flowRun = await getFlowRunById(id)
+    }
 
-    const fileRunDataKey = `flows/${flowRun.flow.id}/flowRuns/${id}/in/${uuid.v1()}.json`
+    const runId = `${timestamp()}_${uuid.v4()}`
+    const flowId = flowRun.flow.id
+    const flowRunDataKey = `flows/${flowId}/flowRuns/${id}/in/${runId}.json`
+
     const flowRunData = {
-      flowRunId: id,
-      data: payload,
-      logs: {
-        status: 'success',
-        message: 'lorem ipsum'
-      }
+      Key: flowRunDataKey,
+      Body: JSON.stringify({
+        flowRun: flowRun,
+        currentStep: 0,
+        data: payload,
+        logs: { },
+        status
+      })
     }
 
-    await s3.putObject({
-      Key: fileRunDataKey,
-      Body: JSON.stringify(flowRunData)
-    })
-
-    const triggerPayload = {
-      stateMachine: 'HelloWorld', // TODO use real state machine
-      key: fileRunDataKey,
-      contentType: 'json',
-      contentKey: 'data'
-    }
-
-    const lambdaInvokeResponse = await Lambda.invoke({
+    const invokeParams = {
       ClientContext: 'ManualTrigger',
       FunctionName: process.env.STATE_MACHINE_TRIGGER_FUNCTION,
       InvocationType: 'Event',
       LogType: 'Tail',
-      Payload: JSON.stringify(triggerPayload)
-    })
+      Payload: JSON.stringify({
+        runId: runId,
+        key: flowRunDataKey,
+        stateMachine: flowRun.stateMachine,
+        currentStep: 0,
+        contentType: 'json',
+        contentKey: 'data'
+      })
+    }
 
-    return updateFlowRun({ id, status: 'running' })
+    await s3.putObject(flowRunData)
+    await Lambda.invoke(invokeParams)
+    return updateFlowRun({ id, status, message })
   } catch (err) {
-    console.log(err)
-    return updateFlowRun({ id, status: 'error', message: err })
+    status = 'error'
+    message = err
+    return updateFlowRun({ id, status, message })
   }
 }
 
@@ -122,7 +129,7 @@ export function createAndStartFlowRun(args) {
   const { payload } = args
   delete args.payload
   return createFlowRun(args)
-    .then(flowRun => startFlowRun({ id: flowRun.id, payload }))
+    .then(flowRun => startFlowRun({ id: flowRun.id, payload }, flowRun))
 }
 
 

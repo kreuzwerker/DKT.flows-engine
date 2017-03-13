@@ -39,6 +39,7 @@
     "graphql-tag": "^1.2.4",
     "lodash": "^4.17.4",
     "mocha": "^3.2.0",
+    "moment-timezone": "^0.5.11",
     "node-fetch": "^1.6.3",
     "read-art": "^0.5.1",
     "unfluff": "https://github.com/johipsum/node-unfluff/tarball/frontend-support",

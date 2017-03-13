@@ -5,7 +5,6 @@
     "status": "pending",
     "stateMachine": "HelloWorld",
     "message": "foobar",
-    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "SecondFlow",
@@ -42,7 +41,6 @@
     "status": "pending",
     "stateMachine": "HelloWorld",
     "message": "foobar",
-    "currentStep": "0",
     "flow": {
       "id": "dontDeleteMel0179imlh0a73",
       "name": "first flow",

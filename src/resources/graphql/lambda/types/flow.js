@@ -3,7 +3,6 @@ import {
   GraphQLList,
   GraphQLString,
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLNonNull
 } from 'graphql'
 import { StepType, StepMirrorType } from './step'
@@ -25,17 +24,6 @@ export const FlowType = new GraphQLObjectType({
         return Steps.batchGetStepByIds(flow.steps)
       }
     }
-  })
-})
-
-
-export const FlowInputType = new GraphQLInputObjectType({
-  name: 'FlowInput',
-  fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    steps: { type: new GraphQLList(GraphQLID) }
   })
 })
 

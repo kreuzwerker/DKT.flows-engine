@@ -3,7 +3,6 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLNonNull
 } from 'graphql'
 import { FlowType } from './flow'
@@ -34,20 +33,6 @@ export const StepType = new GraphQLObjectType({
         return Services.getServiceById(step.service)
       }
     }
-  })
-})
-
-
-export const StepInputType = new GraphQLInputObjectType({
-  name: 'StepInput',
-  fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    position: { type: GraphQLInt },
-    description: { type: GraphQLString },
-    updatedAt: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
-    flow: { type: GraphQLID },
-    service: { type: GraphQLID }
   })
 })
 

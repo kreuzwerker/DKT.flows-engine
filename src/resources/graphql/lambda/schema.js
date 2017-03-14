@@ -7,7 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { FlowType, FlowMirrorType } from './types/flow'
+import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'

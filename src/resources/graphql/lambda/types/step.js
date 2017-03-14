@@ -4,7 +4,8 @@ import {
   GraphQLInt,
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLList,
+  GraphQLInputObjectType
 } from 'graphql'
 import { FlowType } from './flow'
 import { ServiceType, ServiceMirrorType } from './service'
@@ -12,8 +13,17 @@ import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
 
 
-const StepConfigParamsType = new GraphQLObjectType({
+export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
+  fields: () => ({
+    id: { type: GraphQLID },
+    value: { type: GraphQLString }
+  })
+})
+
+
+export const StepConfigParamsInputType = new GraphQLInputObjectType({
+  name: 'StepConfigParamsInput',
   fields: () => ({
     id: { type: GraphQLID },
     value: { type: GraphQLString }

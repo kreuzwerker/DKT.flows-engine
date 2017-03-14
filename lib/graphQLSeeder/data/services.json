@@ -9,11 +9,27 @@
     "type": "TRIGGER",
     "configSchema": [
       {
-        "id": "url-input",
         "position": 0,
+        "id": "https-checkbox",
+        "label": "HTTPS",
+        "type": "checkbox",
+        "defaultValue": true,
+        "required": true
+      },
+      {
+        "id": "url-input",
+        "position": 1,
         "label": "URL",
         "defaultValue": "false",
         "type": "input"
+      },
+      {
+        "position": 3,
+        "id": "comment-textarea",
+        "label": "Comment",
+        "type": "textarea",
+        "defaultValue": "Sample comment",
+        "required": false
       }
     ]
   },
@@ -35,7 +51,19 @@
     "provider": "ciy0ivuazabar0133xu1vlvyj",
     "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
     "type": "ACTION",
-    "configSchema": null
+    "configSchema": [
+      {
+        "id": "language-input",
+        "position": 0,
+        "label": "Language",
+        "defaultValue": "en",
+        "type": "radio",
+        "options": [
+          { "label": "English", "value": "en" },
+          { "label": "German", "value": "de" }
+        ]
+      }
+    ]
   },
   {
     "description": "Capitalizes a given Text",

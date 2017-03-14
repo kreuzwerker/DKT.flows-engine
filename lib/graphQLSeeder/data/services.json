@@ -1,38 +1,78 @@
 [
   {
-    "description": "Triggers on new RSS feed items which feature a kitten.",
+    "description": "Triggers a flow run with a given url",
     "icon": "mail",
     "id": "ciy0jeruzbb5m01790ymkz7xl",
-    "name": "New kitten in RSS feed.",
+    "name": "URL Input",
     "provider": "ciy0ivuazabar0133xu1vlvyj",
-    "step": "ciy0jgybhai7v013373puyuvy",
-    "type": "TRIGGER"
+    "arn": null,
+    "type": "TRIGGER",
+    "configSchema": [
+      {
+        "position": 0,
+        "id": "https-checkbox",
+        "label": "HTTPS",
+        "type": "checkbox",
+        "defaultValue": true,
+        "required": true
+      },
+      {
+        "id": "url-input",
+        "position": 1,
+        "label": "URL",
+        "defaultValue": "false",
+        "type": "input"
+      },
+      {
+        "position": 3,
+        "id": "comment-textarea",
+        "label": "Comment",
+        "type": "textarea",
+        "defaultValue": "Sample comment",
+        "required": false
+      }
+    ]
   },
   {
-    "description": "Makes a delicious freshly brewed organic coffee.",
+    "description": "Fetches an Article form a given url",
     "icon": "rss_feed",
     "id": "ciy0jfkvuahth0133z9r38ljg",
-    "name": "Make coffee",
+    "name": "Fetch Article",
     "provider": "ciy0ivuazabar0133xu1vlvyj",
-    "step": "ciy0jipfkbc8101795ez58bzs",
-    "type": "ACTION"
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+    "type": "ACTION",
+    "configSchema": null
   },
   {
-    "description": "Triggers on new RSS feed items.",
-    "icon": "mail",
-    "id": "ciy0je3qjbb1f01791a6o9kut",
-    "name": "New item in RSS feed",
+    "description": "Extracts the Article from a given HTML",
+    "icon": "rss_feed",
+    "id": "ciy2jfkvufdsef0864z9r38opw",
+    "name": "Extract Article",
     "provider": "ciy0ivuazabar0133xu1vlvyj",
-    "step": null,
-    "type": "TRIGGER"
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+    "type": "ACTION",
+    "configSchema": [
+      {
+        "id": "language-input",
+        "position": 0,
+        "label": "Language",
+        "defaultValue": "en",
+        "type": "radio",
+        "options": [
+          { "label": "English", "value": "en" },
+          { "label": "German", "value": "de" }
+        ]
+      }
+    ]
   },
   {
-    "description": "DKT native app",
-    "icon": "filter_list",
-    "id": "ciy0jg7bpbbcl01791wvcejt5",
-    "name": "Sing hallelujah",
+    "description": "Capitalizes a given Text",
+    "icon": "rss_feed",
+    "id": "ciy4poibcrqth0133z4r56alz",
+    "name": "Capitalize Text",
     "provider": "ciy0ivuazabar0133xu1vlvyj",
-    "step": "ciy0jhg5oaik501332dveadqc",
-    "type": "ACTION"
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+    "type": "ACTION",
+    "configSchema": null
   }
 ]

@@ -7,11 +7,11 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
-import { FlowType, FlowMirrorType } from './types/flow'
+import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
-import { StepType } from './types/step'
+import { StepType, StepConfigParamsInputType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -222,7 +222,8 @@ const MutationType = new GraphQLObjectType({
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
-        service: { type: GraphQLID }
+        service: { type: GraphQLID },
+        configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
       resolve: (_, step) => Steps.createStep(step)
     },
@@ -233,7 +234,8 @@ const MutationType = new GraphQLObjectType({
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
-        service: { type: GraphQLID }
+        service: { type: GraphQLID },
+        configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
       resolve: (_, step) => Steps.updateStep(step)
     },

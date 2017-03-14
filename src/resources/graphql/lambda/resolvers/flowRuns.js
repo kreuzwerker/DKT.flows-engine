@@ -75,9 +75,9 @@ export function updateFlowRun(flowRun) {
 
 export async function startFlowRun({ id, payload }, flowRunInstance) {
   const s3 = S3(process.env.S3_BUCKET)
-  let flowRun = flowRunInstance
-  let status = 'running'
-  let message = null
+  let flowRun = flowRunInstance,
+      status = 'running',
+      message = null
 
   try {
     if (!flowRun) {

@@ -1,14 +1,37 @@
 import {
   GraphQLID,
+  GraphQLInt,
+  GraphQLList,
   GraphQLString,
+  GraphQLFloat,
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLNonNull
 } from 'graphql'
 import { ProviderType } from './provider'
-import { StepType } from './step'
-import * as Steps from '../resolvers/steps'
 import * as Providers from '../resolvers/providers'
+
+
+const SelectOptionsType = new GraphQLObjectType({
+  name: 'OptionsType',
+  fields: () => ({
+    label: { type: GraphQLString },
+    value: { type: GraphQLString }
+  })
+})
+
+
+const ServiceConfigSchemaType = new GraphQLObjectType({
+  name: 'ServiceConfigSchema',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    position: { type: GraphQLInt },
+    label: { type: GraphQLString },
+    type: { type: GraphQLString },
+    defaultValue: { type: GraphQLString },
+    required: { type: GraphQLFloat },
+    options: { type: new GraphQLList(SelectOptionsType) }
+  })
+})
 
 
 export const ServiceType = new GraphQLObjectType({
@@ -18,6 +41,7 @@ export const ServiceType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     type: { type: GraphQLString },
+    arn: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: {
@@ -27,28 +51,7 @@ export const ServiceType = new GraphQLObjectType({
         return Providers.getProviderById(service.provider)
       }
     },
-    step: {
-      type: StepType,
-      resolve: (service) => {
-        if (!service.step) return null
-        return Steps.getStepById(service.step)
-      }
-    }
-  })
-})
-
-
-export const ServiceInputType = new GraphQLInputObjectType({
-  name: 'ServiceInput',
-  fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    type: { type: GraphQLString },
-    updatedAt: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
-    provider: { type: GraphQLID },
-    step: { type: GraphQLID }
+    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) }
   })
 })
 
@@ -60,9 +63,10 @@ export const ServiceMirrorType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     type: { type: GraphQLString },
+    arn: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: { type: GraphQLID },
-    step: { type: GraphQLID }
+    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) }
   })
 })

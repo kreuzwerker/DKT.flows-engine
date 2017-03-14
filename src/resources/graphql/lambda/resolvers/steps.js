@@ -53,7 +53,8 @@ export async function createStep(step) {
     position: 0,
     description: null,
     flow: null,
-    service: null
+    service: null,
+    configParams: null
   }, step)
 
   try {

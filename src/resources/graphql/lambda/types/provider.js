@@ -3,7 +3,6 @@ import {
   GraphQLList,
   GraphQLString,
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLNonNull
 } from 'graphql'
 import { ServiceType } from './service'
@@ -27,18 +26,5 @@ export const ProviderType = new GraphQLObjectType({
         return Services.batchGetServicesByIds(provider.services)
       }
     }
-  })
-})
-
-
-export const ProviderInputType = new GraphQLInputObjectType({
-  name: 'ProviderInput',
-  fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
-    group: { type: GraphQLString },
-    description: { type: GraphQLString },
-    icon: { type: GraphQLString },
-    services: { type: new GraphQLList(GraphQLID) }
   })
 })

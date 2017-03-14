@@ -4,7 +4,13 @@
     "flow": "ciy0iehaj9wu20133m8gu0lju",
     "id": "ciy0jidbmaivt0133sqdy35e6",
     "position": 0,
-    "service": "ciy0jeruzbb5m01790ymkz7xl"
+    "service": "ciy0jeruzbb5m01790ymkz7xl",
+    "configParams": [
+      {
+        "id": "url-input",
+        "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+      }
+    ]
   },
   {
     "description": "Makes a delicious freshly brewed organic coffee.",

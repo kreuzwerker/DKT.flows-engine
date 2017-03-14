@@ -12,11 +12,8 @@
         "id": "url-input",
         "position": 0,
         "label": "URL",
-        "defaultValue": false,
-        "type": "String",
-        "rules": [
-          { "type": "NOT_NULL" }
-        ]
+        "defaultValue": "false",
+        "type": "input"
       }
     ]
   },

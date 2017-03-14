@@ -3,12 +3,22 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLObjectType,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLList
 } from 'graphql'
 import { FlowType } from './flow'
 import { ServiceType, ServiceMirrorType } from './service'
 import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
+
+
+const StepConfigParamsType = new GraphQLObjectType({
+  name: 'StepConfigParams',
+  fields: () => ({
+    id: { type: GraphQLID },
+    value: { type: GraphQLString }
+  })
+})
 
 
 export const StepType = new GraphQLObjectType({
@@ -32,7 +42,8 @@ export const StepType = new GraphQLObjectType({
         if (!step.service) return null
         return Services.getServiceById(step.service)
       }
-    }
+    },
+    configParams: { type: new GraphQLList(StepConfigParamsType) }
   })
 })
 
@@ -46,6 +57,7 @@ export const StepMirrorType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     flow: { type: GraphQLID },
-    service: { type: ServiceMirrorType }
+    service: { type: ServiceMirrorType },
+    configParams: { type: new GraphQLList(StepConfigParamsType) }
   })
 })

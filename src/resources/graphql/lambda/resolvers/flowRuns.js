@@ -131,7 +131,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     }
 
     await s3.putObject(flowRunData)
-    // await Lambda.invoke(invokeParams)
+    await Lambda.invoke(invokeParams)
     return updateFlowRun({ id, status, message })
   } catch (err) {
     status = 'error'

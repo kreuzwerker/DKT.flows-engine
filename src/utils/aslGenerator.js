@@ -2,7 +2,6 @@ import _sortBy from 'lodash/sortBy'
 import Lambda from './lambda'
 
 
-const outputResource = process.env.STATE_MACHINE_OUTPUT_FUNCTION
 const outputResourceName = 'StatesMachineOutput'
 
 
@@ -50,6 +49,7 @@ function createStates(sortedSteps, outputArn) {
 
 
 export default async function createASL(flowRun) {
+  const outputResource = process.env.STATE_MACHINE_OUTPUT_FUNCTION
   const sortedSteps = _sortBy(flowRun.flow.steps, step => step.position)
 
   try {

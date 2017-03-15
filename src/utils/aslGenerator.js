@@ -2,7 +2,7 @@ import _sortBy from 'lodash/sortBy'
 import Lambda from './lambda'
 
 
-const outputResource = process.env.STATE_MACHINE_OUTPUT_FUNCTION || 'DKT-flow-engine-Test-StateMachineOutputFunction-Y7JG1AL1HMIX'
+const outputResource = process.env.STATE_MACHINE_OUTPUT_FUNCTION
 const outputResourceName = 'StatesMachineOutput'
 
 

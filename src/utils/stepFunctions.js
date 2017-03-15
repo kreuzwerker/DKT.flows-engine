@@ -37,6 +37,13 @@ function StepFunctions() {
       } catch (err) {
         return Promise.reject(err)
       }
+    },
+
+    createStateMachine: (name, definition) => {
+      return stepFunctions.createStateMachine({
+        name, definition,
+        roleArn: settings.aws.stepFunctions.arn
+      }).promise()
     }
   }
 }

@@ -6,7 +6,9 @@ import { batchGetServicesByIds } from './services'
 import dynDB from '../../../../utils/dynamoDB'
 import S3 from '../../../../utils/s3'
 import Lambda from '../../../../utils/lambda'
+import StepFunctions from '../../../../utils/stepFunctions'
 import timestamp from '../../../../utils/timestamp'
+import ASLGenerator from '../../../../utils/aslGenerator'
 
 
 /**
@@ -35,28 +37,42 @@ export function getFlowRunById(flowId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createFlowRun(flowRun) {
-  // TODO enhance this with a ASL generator to create flowRun state machines
+export async function createFlowRun(params) {
   const table = process.env.DYNAMO_FLOW_RUNS
-  const newFlowRun = Object.assign({}, {
-    id: uuid.v4(),
-    status: 'pending',
-    stateMachine: 'CapitalizeArticle', // TODO use real StateMachine
-    message: null
-  }, flowRun)
+
+  function getServicesIdsFromSteps(steps) {
+    return steps.filter(step => (step.service !== null)).map(step => step.service)
+  }
+
+  function mergeServicesInSteps(steps, services) {
+    return steps.map(step => Object.assign({}, step, {
+      service: services.filter(service => (service.id === step.service))[0] || {}
+    }))
+  }
 
   try {
-    let flow = await getFlowById(flowRun.flow),
-        steps = await batchGetStepByIds(flow.steps)
-    const servicesIds = steps.filter(step => (step.service !== null))
-                             .map(step => step.service)
+    let flow = await getFlowById(params.flow)
+    const steps = await batchGetStepByIds(flow.steps)
+    const servicesIds = getServicesIdsFromSteps(steps)
     const services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
-    const getStepService = step => services.filter(s => (s.id === step.service))[0] || {}
 
-    steps = steps.map(step => Object.assign({}, step, { service: getStepService(step) }))
-    flow = Object.assign({}, flow, { steps })
+    flow = Object.assign({}, flow, { steps: mergeServicesInSteps(steps, services) })
 
-    return dynDB.putItem(table, Object.assign({}, newFlowRun, { flow }))
+    const stateMachineName = `${flow.name.replace(' ', '')}_${uuid.v4()}`
+    const newFlowRun = {
+      id: uuid.v4(),
+      status: 'pending',
+      stateMachine: stateMachineName,
+      message: null,
+      flow
+    }
+
+    const stateMachineDefinition = await ASLGenerator(newFlowRun)
+
+    return Promise.all([
+      StepFunctions.createStateMachine(stateMachineName, stateMachineDefinition),
+      dynDB.putItem(table, newFlowRun)
+    ]).then(res => res[1])
   } catch (err) {
     return Promise.reject(err)
   }
@@ -115,7 +131,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     }
 
     await s3.putObject(flowRunData)
-    await Lambda.invoke(invokeParams)
+    // await Lambda.invoke(invokeParams)
     return updateFlowRun({ id, status, message })
   } catch (err) {
     status = 'error'

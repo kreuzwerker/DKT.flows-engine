@@ -30,6 +30,17 @@
         "type": "textarea",
         "defaultValue": "Sample comment",
         "required": false
+      },
+      {
+        "id": "method-input",
+        "position": 2,
+        "label": "Method",
+        "defaultValue": "GET",
+        "type": "select",
+        "options": [
+          { "label": "GET", "value": "GET" },
+          { "label": "PUT", "value": "PUT" }
+        ]
       }
     ]
   },

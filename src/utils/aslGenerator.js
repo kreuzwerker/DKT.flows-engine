@@ -5,14 +5,14 @@ import Lambda from './lambda'
 const outputResourceName = 'StatesMachineOutput'
 
 
-function aslSaveName(currentStep) {
-  return currentStep.service.name.replace(' ', '')
+function stepName(step) {
+  return step.service.name.replace(' ', '')
 }
 
 
 function nextStepName(sortedSteps, currentIndex) {
   if (sortedSteps[currentIndex + 1]) {
-    return aslSaveName(sortedSteps[currentIndex + 1])
+    return stepName(sortedSteps[currentIndex + 1])
   }
   return outputResourceName
 }
@@ -25,8 +25,9 @@ function actionSteps(sortedSteps) {
 
 function createStates(sortedSteps, outputArn) {
   const actions = actionSteps(sortedSteps)
-  const states = actions.reduce((s, step, i) => {
-    s[aslSaveName(step)] = {
+
+  return actions.reduce((states, step, i) => Object.assign(states, {
+    [stepName(step)]: {
       Type: 'Task',
       Resource: step.service.arn,
       Next: nextStepName(actions, i),
@@ -35,16 +36,13 @@ function createStates(sortedSteps, outputArn) {
         Next: outputResourceName
       }]
     }
-    return s
-  }, {})
-
-  states[outputResourceName] = {
-    Type: 'Task',
-    Resource: outputArn,
-    End: true
-  }
-
-  return states
+  }), {
+    [outputResourceName]: {
+      Type: 'Task',
+      Resource: outputArn,
+      End: true
+    }
+  })
 }
 
 
@@ -58,9 +56,9 @@ export default async function createASL(flowRun) {
 
     return JSON.stringify({
       Comment: flowRun.flow.description || '',
-      StartAt: aslSaveName(actionSteps(sortedSteps)[0]),
+      StartAt: stepName(actionSteps(sortedSteps)[0]),
       States: createStates(sortedSteps, outputArn)
-    })
+    }, null, 2)
   } catch (err) {
     return Promise.reject(err)
   }

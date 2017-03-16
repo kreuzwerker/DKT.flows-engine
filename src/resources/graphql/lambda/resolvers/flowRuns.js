@@ -62,17 +62,16 @@ export async function createFlowRun(params) {
     const newFlowRun = {
       id: uuid.v4(),
       status: 'pending',
-      stateMachine: stateMachineName,
       message: null,
       flow
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
+    const stateMachine = await StepFunctions.createStateMachine(stateMachineName, stateMachineDefinition)
 
-    return Promise.all([
-      StepFunctions.createStateMachine(stateMachineName, stateMachineDefinition),
-      dynDB.putItem(table, newFlowRun)
-    ]).then(res => res[1])
+    newFlowRun.stateMachineArn = stateMachine.stateMachineArn
+
+    return dynDB.putItem(table, newFlowRun)
   } catch (err) {
     return Promise.reject(err)
   }
@@ -123,7 +122,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({
         runId: runId,
         key: flowRunDataKey,
-        stateMachine: flowRun.stateMachine,
+        stateMachineArn: flowRun.stateMachineArn,
         currentStep: 0,
         contentType: 'json',
         contentKey: 'data'
@@ -151,7 +150,12 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   const table = process.env.DYNAMO_FLOW_RUNS
-  const query = { Key: { id: { S: id } } }
+  const deleteQuery = { Key: { id: { S: id } } }
 
-  return dynDB.deleteItem(table, query).then(() => ({ id }))
+  return getFlowRunById(id)
+    .then(flowRun => Promise.all([
+      StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
+      dynDB.deleteItem(table, deleteQuery)
+    ]))
+    .then(() => ({ id }))
 }

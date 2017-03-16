@@ -22,6 +22,10 @@ function StepFunctions() {
         name, definition,
         roleArn: settings.aws.stepFunctions.arn
       }).promise()
+    },
+
+    deleteStateMachine: (stateMachineArn) => {
+      return stepFunctions.deleteStateMachine({ stateMachineArn }).promise()
     }
   }
 }

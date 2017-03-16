@@ -16,7 +16,7 @@ import * as Services from '../resolvers/services'
 export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
   fields: () => ({
-    id: { type: GraphQLID },
+    fieldId: { type: GraphQLID },
     value: { type: GraphQLString }
   })
 })
@@ -25,7 +25,7 @@ export const StepConfigParamsType = new GraphQLObjectType({
 export const StepConfigParamsInputType = new GraphQLInputObjectType({
   name: 'StepConfigParamsInput',
   fields: () => ({
-    id: { type: GraphQLID },
+    fieldId: { type: GraphQLID },
     value: { type: GraphQLString }
   })
 })

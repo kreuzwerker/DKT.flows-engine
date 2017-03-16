@@ -12,7 +12,8 @@ export const FlowRunType = new GraphQLObjectType({
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
     userId: { type: GraphQLID },
-    stateMachine: { type: GraphQLString },
+    stateMachineArn: { type: GraphQLString },
+    status: { type: GraphQLString },
     message: { type: GraphQLString },
     flow: { type: FlowMirrorType },
     updatedAt: { type: GraphQLString },

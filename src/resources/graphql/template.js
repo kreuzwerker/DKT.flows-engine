@@ -9,6 +9,7 @@ const {
   GRAPHQL_DB_SERVICES,
   GRAPHQL_DB_STEPS,
   STATE_MACHINE_TRIGGER_FUNCTION,
+  STATE_MACHINE_OUTPUT_FUNCTION,
   S3_BUCKET
 } = require('../locicalResourceIds')
 
@@ -46,6 +47,7 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
           DYNAMO_SERVICES: { Ref: GRAPHQL_DB_SERVICES },
           DYNAMO_STEPS: { Ref: GRAPHQL_DB_STEPS },
           STATE_MACHINE_TRIGGER_FUNCTION: { Ref: STATE_MACHINE_TRIGGER_FUNCTION },
+          STATE_MACHINE_OUTPUT_FUNCTION: { Ref: STATE_MACHINE_OUTPUT_FUNCTION },
           S3_BUCKET: { Ref: S3_BUCKET }
         }
       }

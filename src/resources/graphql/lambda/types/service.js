@@ -23,7 +23,7 @@ const SelectOptionsType = new GraphQLObjectType({
 const ServiceConfigSchemaType = new GraphQLObjectType({
   name: 'ServiceConfigSchema',
   fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    fieldId: { type: new GraphQLNonNull(GraphQLID) },
     position: { type: GraphQLInt },
     label: { type: GraphQLString },
     type: { type: GraphQLString },

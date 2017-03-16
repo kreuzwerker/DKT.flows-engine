@@ -10,14 +10,14 @@
     "configSchema": [
       {
         "position": 0,
-        "id": "https-checkbox",
+        "fieldId": "https-checkbox",
         "label": "HTTPS",
         "type": "checkbox",
         "defaultValue": true,
         "required": true
       },
       {
-        "id": "url-input",
+        "fieldId": "url-input",
         "position": 1,
         "label": "URL",
         "defaultValue": "false",
@@ -25,14 +25,14 @@
       },
       {
         "position": 3,
-        "id": "comment-textarea",
+        "fieldId": "comment-textarea",
         "label": "Comment",
         "type": "textarea",
         "defaultValue": "Sample comment",
         "required": false
       },
       {
-        "id": "method-input",
+        "fieldId": "method-input",
         "position": 2,
         "label": "Method",
         "defaultValue": "GET",
@@ -64,7 +64,7 @@
     "type": "ACTION",
     "configSchema": [
       {
-        "id": "language-input",
+        "fieldId": "language-input",
         "position": 0,
         "label": "Language",
         "defaultValue": "en",

@@ -7,7 +7,7 @@
     "service": "ciy0jeruzbb5m01790ymkz7xl",
     "configParams": [
       {
-        "id": "url-input",
+        "fieldId": "url-input",
         "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
       }
     ]

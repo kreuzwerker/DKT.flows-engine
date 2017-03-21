@@ -55,6 +55,7 @@ export async function getRuns(flowRun) {
       const steps = Object.keys(logs.steps).map(id => ({
         status: logs.steps[id].status,
         message: logs.steps[id].message,
+        finishedAt: logs.steps[id].finishedAt,
         position: logs.steps[id].position,
         id: id
       }))
@@ -62,7 +63,9 @@ export async function getRuns(flowRun) {
       return ({
         id: parsedData.runId,
         status: parsedData.status,
-        logs: { steps }
+        logs: { steps },
+        startedAt: parsedData.startedAt,
+        finishedAt: parsedData.finishedAt
       })
     })
   } catch (err) {
@@ -148,6 +151,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Key: flowRunDataKey,
       Body: JSON.stringify({
         flowRun: flowRun,
+        startedAt: timestamp(),
         currentStep: 0,
         data: payload,
         logs: { },

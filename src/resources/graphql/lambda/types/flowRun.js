@@ -16,7 +16,8 @@ const StepLogType = new GraphQLObjectType({
     id: { type: GraphQLID },
     position: { type: GraphQLInt },
     status: { type: GraphQLString },
-    message: { type: GraphQLString }
+    message: { type: GraphQLString },
+    timestamp: { type: GraphQLString }
   })
 })
 
@@ -34,7 +35,9 @@ const RunsType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     status: { type: GraphQLString },
-    logs: { type: LogsType }
+    logs: { type: LogsType },
+    startedAt: { type: GraphQLString },
+    finishedAt: { type: GraphQLString }
   })
 })
 

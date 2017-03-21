@@ -1,13 +1,14 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import S3 from './s3'
 import dynDB from './dynamoDB'
+import timestamp from './timestamp'
 
 
 const flowRunBase = flowRun => `flows/${flowRun.flow.id}/flowRuns/${flowRun.id}`
 
 
-function getStepOutputKey(flowRun, runId, stepId) {
-  return `${flowRunBase(flowRun)}/steps/${stepId}/${runId}.json`
+function getStepOutputKey(flowRun, runId, stepId, position) {
+  return `${flowRunBase(flowRun)}/steps/${position}_${stepId}/${runId}.json`
 }
 
 
@@ -27,7 +28,8 @@ function updateLogs(logs, step, status, message = '') {
     [step.id]: {
       status,
       message,
-      position: step.position
+      position: step.position,
+      finishedAt: timestamp()
     }
   })
   return Object.assign({}, logs, { status, steps })
@@ -65,7 +67,7 @@ export function serviceSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepData(flowRunData.flowRun, position)
-  const key = getStepOutputKey(flowRunData.flowRun, input.runId, step.id)
+  const key = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
 
   const updatedFlowRunData = Object.assign({}, flowRunData, {
     [input.contentKey]: serviceResult,
@@ -84,6 +86,7 @@ export function flowRunSuccessHandler(input, flowRunData) {
 
   flowRunData.flowRun.status = 'success'
   flowRunData.status = 'success'
+  flowRunData.finishedAt = timestamp()
 
   return s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
     .then(() => updateFlowRun({
@@ -112,6 +115,7 @@ export function errorHandler(err, input, errorKey = 'error') {
       return updateFlowRun({
         id: flowRunData.flowRun.id,
         status: 'error',
+        finishedAt: timestamp(),
         message: flowRunData.flowRun.message
       })
       .then(() => update(flowRunData))

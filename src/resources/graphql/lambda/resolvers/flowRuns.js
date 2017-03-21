@@ -33,6 +33,44 @@ export function getFlowRunById(flowId) {
 }
 
 
+export async function getRuns(flowRun) {
+  if (!flowRun.runs) return null
+
+  const s3 = S3(process.env.S3_BUCKET)
+  const flowId = flowRun.flow.id
+  const flowRunId = flowRun.id
+
+  const flowRunDataKeys = flowRun.runs.map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
+
+  if (flowRunDataKeys.length <= 0) {
+    return null
+  }
+
+  try {
+    const flowRunsData = await Promise.all(flowRunDataKeys.map(key => s3.getObject({ Key: key })))
+    return flowRunsData.map((data) => {
+      const parsedData = JSON.parse(data.Body)
+      const logs = parsedData.logs
+
+      const steps = Object.keys(logs.steps).map(id => ({
+        status: logs.steps[id].status,
+        message: logs.steps[id].message,
+        position: logs.steps[id].position,
+        id: id
+      }))
+
+      return ({
+        id: parsedData.runId,
+        status: parsedData.status,
+        logs: { steps }
+      })
+    })
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+
 /**
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -63,6 +101,7 @@ export async function createFlowRun(params) {
       id: uuid.v4(),
       status: 'pending',
       message: null,
+      runs: [],
       flow
     }
 
@@ -92,7 +131,8 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
   const s3 = S3(process.env.S3_BUCKET)
   let flowRun = flowRunInstance,
       status = 'running',
-      message = null
+      message = null,
+      runs = []
 
   try {
     if (!flowRun) {
@@ -102,6 +142,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     const runId = `${timestamp()}_${uuid.v4()}`
     const flowId = flowRun.flow.id
     const flowRunDataKey = `flows/${flowId}/flowRuns/${id}/in/${runId}.json`
+    runs = flowRun.runs.concat(runId)
 
     const flowRunData = {
       Key: flowRunDataKey,
@@ -110,7 +151,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
         currentStep: 0,
         data: payload,
         logs: { },
-        status
+        status, runId
       })
     }
 
@@ -131,11 +172,11 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
 
     await s3.putObject(flowRunData)
     await Lambda.invoke(invokeParams)
-    return updateFlowRun({ id, status, message })
+    return updateFlowRun({ id, status, message, runs })
   } catch (err) {
     status = 'error'
     message = err
-    return updateFlowRun({ id, status, message })
+    return updateFlowRun({ id, status, message, runs })
   }
 }
 

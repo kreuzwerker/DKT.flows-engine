@@ -61,7 +61,6 @@ export async function getRuns(flowRun, args) {
         .catch(() => Promise.resolve())
     }))
 
-    // const flowRunsData = await Promise.alldataKeys.map(key => s3.getObject({ Key: key })))
     return flowRunsData.map((data) => {
       const parsedData = JSON.parse(data.Body)
       const logs = parsedData.logs

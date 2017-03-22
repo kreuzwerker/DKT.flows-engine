@@ -54,7 +54,14 @@ export async function getRuns(flowRun, args) {
   }
 
   try {
-    const flowRunsData = await Promise.all(dataKeys.map(key => s3.getObject({ Key: key })))
+    const flowRunsData = []
+    await Promise.all(dataKeys.map((key) => {
+      return s3.getObject({ Key: key })
+        .then(data => flowRunsData.push(data))
+        .catch(() => Promise.resolve())
+    }))
+
+    // const flowRunsData = await Promise.alldataKeys.map(key => s3.getObject({ Key: key })))
     return flowRunsData.map((data) => {
       const parsedData = JSON.parse(data.Body)
       const logs = parsedData.logs
@@ -77,7 +84,7 @@ export async function getRuns(flowRun, args) {
       })
     })
   } catch (err) {
-    return Promise.reject(err)
+    return err
   }
 }
 

@@ -67,7 +67,8 @@ export function serviceSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepData(flowRunData.flowRun, position)
-  const key = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
+  const stepOutputKey = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
+  const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
   const updatedFlowRunData = Object.assign({}, flowRunData, {
     [input.contentKey]: serviceResult,
@@ -75,8 +76,10 @@ export function serviceSuccessHandler(input, flowRunData, serviceResult) {
     logs: updateLogs(flowRunData.logs, step, 'success')
   })
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(updatedFlowRunData, null, 2) })
-    .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
+  return Promise.all([
+    s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) }),
+    s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) })
+  ]).then(() => Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey }))
 }
 
 

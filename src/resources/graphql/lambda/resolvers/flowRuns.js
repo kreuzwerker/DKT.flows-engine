@@ -35,7 +35,7 @@ export function getFlowRunById(flowId) {
 
 export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
-
+  const { runs } = flowRun
   const s3 = S3(process.env.S3_BUCKET)
   const flowId = flowRun.flow.id
   const flowRunId = flowRun.id
@@ -45,16 +45,16 @@ export async function getRuns(flowRun, args) {
     end: (args.offset + args.limit) || undefined
   }
 
-  const flowRunDataKeys = flowRun.runs.reverse()
-                                      .slice(pagination.start, pagination.end)
-                                      .map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
+  const dataKeys = runs.reverse()
+                       .slice(pagination.start, pagination.end)
+                       .map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
 
-  if (flowRunDataKeys.length <= 0) {
+  if (dataKeys.length <= 0) {
     return null
   }
 
   try {
-    const flowRunsData = await Promise.all(flowRunDataKeys.map(key => s3.getObject({ Key: key })))
+    const flowRunsData = await Promise.all(dataKeys.map(key => s3.getObject({ Key: key })))
     return flowRunsData.map((data) => {
       const parsedData = JSON.parse(data.Body)
       const logs = parsedData.logs

@@ -33,14 +33,21 @@ export function getFlowRunById(flowId) {
 }
 
 
-export async function getRuns(flowRun) {
+export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
 
   const s3 = S3(process.env.S3_BUCKET)
   const flowId = flowRun.flow.id
   const flowRunId = flowRun.id
 
-  const flowRunDataKeys = flowRun.runs.map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
+  const pagination = {
+    start: args.offset,
+    end: (args.offset + args.limit) || undefined
+  }
+
+  const flowRunDataKeys = flowRun.runs.reverse()
+                                      .slice(pagination.start, pagination.end)
+                                      .map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
 
   if (flowRunDataKeys.length <= 0) {
     return null
@@ -106,6 +113,7 @@ export async function createFlowRun(params) {
       status: 'pending',
       message: null,
       runs: [],
+      runsCount: 0,
       flow
     }
 
@@ -135,8 +143,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
   const s3 = S3(process.env.S3_BUCKET)
   let flowRun = flowRunInstance,
       status = 'running',
-      message = null,
-      runs = []
+      message = null
 
   try {
     if (!flowRun) {
@@ -146,7 +153,8 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     const runId = `${timestamp()}_${uuid.v4()}`
     const flowId = flowRun.flow.id
     const flowRunDataKey = `flows/${flowId}/flowRuns/${id}/in/${runId}.json`
-    runs = flowRun.runs.concat(runId)
+
+    flowRun.runs.push(runId)
 
     const flowRunData = {
       Key: flowRunDataKey,
@@ -177,11 +185,11 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
 
     await s3.putObject(flowRunData)
     await Lambda.invoke(invokeParams)
-    return updateFlowRun({ id, status, message, runs })
+    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
   } catch (err) {
     status = 'error'
     message = err
-    return updateFlowRun({ id, status, message, runs })
+    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
   }
 }
 

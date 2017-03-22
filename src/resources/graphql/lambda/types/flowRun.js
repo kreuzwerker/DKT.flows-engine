@@ -54,8 +54,13 @@ export const FlowRunType = new GraphQLObjectType({
     flow: { type: FlowMirrorType },
     runs: {
       type: new GraphQLList(RunsType),
+      args: {
+        limit: { type: GraphQLInt },
+        offset: { type: GraphQLInt }
+      },
       resolve: getRuns
     },
+    runsCount: { type: GraphQLInt },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString }
   })

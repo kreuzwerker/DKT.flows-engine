@@ -21,11 +21,11 @@ describe('ƛ GraphQL', () => {
     await seedTestdata()
   })
 
-  describe('FlowRuns Resolvers', FlowRunsResolver)
+  // describe('FlowRuns Resolvers', FlowRunsResolver)
   // describe('Flows Resolvers', FlowsResolver)
   // describe('Providers Resolvers', ProvidersResolver)
   // describe('Services Resolvers', ServicesResolver)
   // describe('Steps Resolvers', StepsResolver)
 
-  // describe('Handler', LambdaHandler)
+  describe('Handler', LambdaHandler)
 })

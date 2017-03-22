@@ -33,6 +33,55 @@ export function getFlowRunById(flowId) {
 }
 
 
+export async function getRuns(flowRun, args) {
+  if (!flowRun.runs) return null
+
+  const s3 = S3(process.env.S3_BUCKET)
+  const flowId = flowRun.flow.id
+  const flowRunId = flowRun.id
+
+  const pagination = {
+    start: args.offset,
+    end: (args.offset + args.limit) || undefined
+  }
+
+  const flowRunDataKeys = flowRun.runs.reverse()
+                                      .slice(pagination.start, pagination.end)
+                                      .map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
+
+  if (flowRunDataKeys.length <= 0) {
+    return null
+  }
+
+  try {
+    const flowRunsData = await Promise.all(flowRunDataKeys.map(key => s3.getObject({ Key: key })))
+    return flowRunsData.map((data) => {
+      const parsedData = JSON.parse(data.Body)
+      const logs = parsedData.logs
+
+      const steps = Object.keys(logs.steps).map(id => ({
+        status: logs.steps[id].status,
+        message: logs.steps[id].message,
+        finishedAt: logs.steps[id].finishedAt,
+        position: logs.steps[id].position,
+        id: id
+      }))
+
+      return ({
+        id: parsedData.runId,
+        status: parsedData.status,
+        logs: { steps },
+        result: parsedData.data,
+        startedAt: parsedData.startedAt,
+        finishedAt: parsedData.finishedAt
+      })
+    })
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+
 /**
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -63,6 +112,8 @@ export async function createFlowRun(params) {
       id: uuid.v4(),
       status: 'pending',
       message: null,
+      runs: [],
+      runsCount: 0,
       flow
     }
 
@@ -103,14 +154,17 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     const flowId = flowRun.flow.id
     const flowRunDataKey = `flows/${flowId}/flowRuns/${id}/in/${runId}.json`
 
+    flowRun.runs.push(runId)
+
     const flowRunData = {
       Key: flowRunDataKey,
       Body: JSON.stringify({
         flowRun: flowRun,
+        startedAt: timestamp(),
         currentStep: 0,
         data: payload,
         logs: { },
-        status
+        status, runId
       })
     }
 
@@ -131,11 +185,11 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
 
     await s3.putObject(flowRunData)
     await Lambda.invoke(invokeParams)
-    return updateFlowRun({ id, status, message })
+    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
   } catch (err) {
     status = 'error'
     message = err
-    return updateFlowRun({ id, status, message })
+    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
   }
 }
 

@@ -1,11 +1,14 @@
+import { unmarshalItem } from 'dynamodb-marshaler'
 import S3 from './s3'
+import dynDB from './dynamoDB'
+import timestamp from './timestamp'
 
 
 const flowRunBase = flowRun => `flows/${flowRun.flow.id}/flowRuns/${flowRun.id}`
 
 
-function getStepOutputKey(flowRun, runId, stepIndex) {
-  return `${flowRunBase(flowRun)}/steps/${stepIndex}/${runId}.json`
+function getStepOutputKey(flowRun, runId, stepId, position) {
+  return `${flowRunBase(flowRun)}/steps/${position}_${stepId}/${runId}.json`
 }
 
 
@@ -14,11 +17,43 @@ function getFlowRunOutputKey(flowRun, runId) {
 }
 
 
-function updateLogs(logs, currentStep, status, message = '') {
+function getStepData(flowRun, currentStep) {
+  const steps = flowRun.flow.steps || []
+  return steps.filter(s => (s.position === currentStep))[0]
+}
+
+
+function updateLogs(logs, step, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
-    [currentStep]: { status, message }
+    [step.id]: {
+      status,
+      message,
+      position: step.position,
+      finishedAt: timestamp()
+    }
   })
   return Object.assign({}, logs, { status, steps })
+}
+
+
+function getFlowRunById(flowId) {
+  const table = process.env.DYNAMO_FLOW_RUNS
+  const query = {
+    Key: { id: { S: flowId } }
+  }
+
+  return dynDB.getItem(table, query)
+              .then(r => (r.Item ? unmarshalItem(r.Item) : null))
+}
+
+
+function updateFlowRun(flowRun) {
+  const table = process.env.DYNAMO_FLOW_RUNS
+  const query = {
+    Key: { id: { S: flowRun.id } }
+  }
+
+  return dynDB.updateItem(table, query, flowRun)
 }
 
 
@@ -30,15 +65,17 @@ export function getFlowRunData(input) {
 
 export function serviceSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
-  const currentStep = input.currentStep
-  const key = getStepOutputKey(flowRunData.flowRun, input.runId, currentStep)
+  const position = input.currentStep
+  const step = getStepData(flowRunData.flowRun, position)
+  const key = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
+
   const updatedFlowRunData = Object.assign({}, flowRunData, {
     [input.contentKey]: serviceResult,
-    currentStep: currentStep,
-    logs: updateLogs(flowRunData.logs, currentStep, 'success')
+    currentStep: position,
+    logs: updateLogs(flowRunData.logs, step, 'success')
   })
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(updatedFlowRunData) })
+  return s3.putObject({ Key: key, Body: JSON.stringify(updatedFlowRunData, null, 2) })
     .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
 }
 
@@ -49,29 +86,44 @@ export function flowRunSuccessHandler(input, flowRunData) {
 
   flowRunData.flowRun.status = 'success'
   flowRunData.status = 'success'
+  flowRunData.finishedAt = timestamp()
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(flowRunData) })
+  return s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
+    .then(() => updateFlowRun({
+      id: flowRunData.flowRun.id,
+      status: 'success',
+      message: flowRunData.flowRun.message
+    }))
     .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
 }
 
 
 export function errorHandler(err, input, errorKey = 'error') {
   const s3 = S3(process.env.S3_BUCKET)
-  const currentStep = input.currentStep
-  const update = currentData => Object.assign({}, currentData, {
-    status: 'error',
-    currentStep: currentStep,
-    logs: updateLogs(currentData.logs, currentStep, 'error', err)
-  })
+  const position = input.currentStep
+  const update = (currentData) => {
+    const step = getStepData(currentData.flowRun, position)
+    return Object.assign({}, position, {
+      status: 'error',
+      currentStep: position,
+      logs: updateLogs(currentData.logs, step, 'error', err)
+    })
+  }
 
   return getFlowRunData(input)
     .then((flowRunData) => {
-      return update(flowRunData)
+      return updateFlowRun({
+        id: flowRunData.flowRun.id,
+        status: 'error',
+        finishedAt: timestamp(),
+        message: flowRunData.flowRun.message
+      })
+      .then(() => update(flowRunData))
     })
     .then((updatedData) => {
       return s3.putObject({
         Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
-        Body: JSON.stringify(updatedData)
+        Body: JSON.stringify(updatedData, null, 2)
       }).then(() => updatedData)
     })
     .then(({ key }) => Object.assign({}, input, { key, contentKey: errorKey }))

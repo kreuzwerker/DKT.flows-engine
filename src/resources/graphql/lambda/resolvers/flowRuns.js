@@ -64,6 +64,7 @@ export async function getRuns(flowRun) {
         id: parsedData.runId,
         status: parsedData.status,
         logs: { steps },
+        result: parsedData.data,
         startedAt: parsedData.startedAt,
         finishedAt: parsedData.finishedAt
       })

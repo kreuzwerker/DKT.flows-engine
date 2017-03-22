@@ -36,6 +36,7 @@ const RunsType = new GraphQLObjectType({
     id: { type: GraphQLID },
     status: { type: GraphQLString },
     logs: { type: LogsType },
+    result: { type: GraphQLString },
     startedAt: { type: GraphQLString },
     finishedAt: { type: GraphQLString }
   })

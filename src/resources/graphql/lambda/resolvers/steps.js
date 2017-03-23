@@ -1,7 +1,15 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById, updateFlow } from './flows'
+import { getServiceById } from './services'
 import dynDB from '../../../../utils/dynamoDB'
+import Lambda from '../../../../utils/lambda'
+import S3 from '../../../../utils/s3'
+import timestamp from '../../../../utils/timestamp'
+import {
+  createTestStepDataParams,
+  createTestStepTriggerParams
+} from '../../../../utils/helpers/stepHelpers'
 
 
 /**
@@ -82,6 +90,28 @@ export function updateStep(step) {
   }
 
   return dynDB.updateItem(table, query, step)
+}
+
+
+export async function testStep(stepId, payload) {
+  const s3 = S3(process.env.S3_BUCKET)
+  try {
+    const step = await getStepById(stepId)
+    const service = await getServiceById(step.service)
+    const runId = `${timestamp()}_${uuid.v4()}`
+
+    const testStepData = createTestStepDataParams(stepId, runId, payload)
+    const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
+
+    return s3.putObject(testStepData)
+      .then(() => Lambda.invoke(invokeParams))
+      .then((output) => {
+        console.log(output)
+        return step
+      })
+  } catch (err) {
+    return err
+  }
 }
 
 

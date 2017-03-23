@@ -239,6 +239,14 @@ const MutationType = new GraphQLObjectType({
       },
       resolve: (_, step) => Steps.updateStep(step)
     },
+    testStep: {
+      type: StepType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        payload: { type: new GraphQLNonNull(GraphQLString) }
+      },
+      resolve: (_, { id, payload }) => Steps.testStep(id, payload)
+    },
     deleteStep: {
       type: StepType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },

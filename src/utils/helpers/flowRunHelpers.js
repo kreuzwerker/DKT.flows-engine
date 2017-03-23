@@ -1,6 +1,6 @@
-import S3 from './s3'
-import dynDB from './dynamoDB'
-import timestamp from './timestamp'
+import S3 from '../s3'
+import dynDB from '../dynamoDB'
+import timestamp from '../timestamp'
 
 
 /*
@@ -38,7 +38,7 @@ export function createFlowRunDataParams(flowRun, runId, payload, status = 'runni
       data: payload,
       logs: { },
       status, runId
-    })
+    }, null, 2)
   }
 }
 
@@ -104,7 +104,7 @@ function updateFlowRun(flowRun) {
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export function serviceSuccessHandler(input, flowRunData, serviceResult) {
+export function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepData(flowRunData.flowRun, position)
@@ -144,7 +144,7 @@ export function flowRunSuccessHandler(input, flowRunData) {
 /*
  * ---- Error Handler ----------------------------------------------------------
  */
-export function errorHandler(err, input, errorKey = 'error') {
+export function flowRunErrorHandler(err, input, errorKey = 'error') {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const update = (currentData) => {

@@ -1,6 +1,6 @@
 import _isString from 'lodash/isString'
 // import Logger from '../../../utils/logger'
-import { getFlowRunData, serviceSuccessHandler } from '../../../utils/flowRunHelpers'
+import { getFlowRunData, flowRunStepSuccessHandler } from '../../../utils/helpers/flowRunHelpers'
 
 
 export async function handler(event, context, callback) {
@@ -12,7 +12,7 @@ export async function handler(event, context, callback) {
     const inputData = flowRunData[input.contentKey]
     const outputData = inputData.toUpperCase()
 
-    const output = await serviceSuccessHandler(input, flowRunData, outputData)
+    const output = await flowRunStepSuccessHandler(input, flowRunData, outputData)
     callback(null, output)
   } catch (err) {
     const output = Object.assign({}, input, { error: err })

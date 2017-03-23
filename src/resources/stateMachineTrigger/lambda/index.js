@@ -2,7 +2,7 @@ import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
 import S3 from '../../../utils/s3'
 import StepFunctions from '../../../utils/stepFunctions'
-import { errorHandler } from '../../../utils/flowRunHelpers'
+import { flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 
 
 export async function handler(event, context, callback) {
@@ -19,6 +19,6 @@ export async function handler(event, context, callback) {
     callback(null, JSON.stringify(response))
   } catch (err) {
     logger.log(`Unable to start StateMachine: '${input.stateMachineArn}'`, err)
-    errorHandler(err, input).then(result => callback(result))
+    flowRunErrorHandler(err, input).then(result => callback(result))
   }
 }

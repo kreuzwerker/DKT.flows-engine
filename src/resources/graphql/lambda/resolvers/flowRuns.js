@@ -13,7 +13,7 @@ import {
   getFlowRunOutputKey,
   createFlowRunDataParams,
   createFlowRunTriggerParams
-} from '../../../../utils/flowRunHelpers'
+} from '../../../../utils/helpers/flowRunHelpers'
 
 
 /**

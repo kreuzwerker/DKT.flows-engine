@@ -1,7 +1,7 @@
 import extractor from 'unfluff'
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
-import { getFlowRunData, serviceSuccessHandler } from '../../../utils/flowRunHelpers'
+import { getFlowRunData, flowRunStepSuccessHandler } from '../../../utils/helpers/flowRunHelpers'
 
 
 /*
@@ -20,7 +20,7 @@ export async function handler(event, context, callback) {
     const article = extractor.lazy(inputData)
     const text = article.text()
 
-    const output = await serviceSuccessHandler(input, flowRunData, text)
+    const output = await flowRunStepSuccessHandler(input, flowRunData, text)
     callback(null, output)
   } catch (err) {
     logger.log(err)

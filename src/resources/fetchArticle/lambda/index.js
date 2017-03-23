@@ -1,13 +1,15 @@
 import fetch from 'node-fetch'
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
-import { getFlowRunData, serviceSuccessHandler } from '../../../utils/flowRunHelpers'
+import { getFlowRunData, flowRunStepSuccessHandler } from '../../../utils/helpers/flowRunHelpers'
 
 
 /*
  * Fetch an Article from given URL
  */
 export async function handler(event, context, callback) {
+  console.log('** CLIENT CONTEXT **', JSON.stringify(event, null, 2))
+
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   input.currentStep += 1
@@ -27,7 +29,7 @@ export async function handler(event, context, callback) {
     let articleHTML = await result.text()
     articleHTML = articleHTML.replace(/(\r\n|\n|\r|\t)/gm, '')
 
-    const output = await serviceSuccessHandler(input, flowRunData, articleHTML)
+    const output = await flowRunStepSuccessHandler(input, flowRunData, articleHTML)
     callback(null, output)
   } catch (err) {
     const output = Object.assign({}, input, { error: err })

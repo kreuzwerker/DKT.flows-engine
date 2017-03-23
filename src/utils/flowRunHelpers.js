@@ -1,27 +1,83 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import S3 from './s3'
 import dynDB from './dynamoDB'
 import timestamp from './timestamp'
 
 
-const flowRunBase = flowRun => `flows/${flowRun.flow.id}/flowRuns/${flowRun.id}`
+/*
+ * ---- Path helpers -----------------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
+function getFlowRunBase(flowRun) {
+  return `flows/${flowRun.flow.id}/flowRuns/${flowRun.id}`
+}
 
+export function getFlowRunInputKey(flowRun, runId) {
+  return `${getFlowRunBase(flowRun)}/in/${runId}.json`
+}
 
-function getStepOutputKey(flowRun, runId, stepId, position) {
-  return `${flowRunBase(flowRun)}/steps/${position}_${stepId}/${runId}.json`
+export function getStepOutputKey(flowRun, runId, stepId, position) {
+  return `${getFlowRunBase(flowRun)}/steps/${position}_${stepId}/${runId}.json`
+}
+
+export function getFlowRunOutputKey(flowRun, runId) {
+  return `${getFlowRunBase(flowRun)}/out/${runId}.json`
 }
 
 
-function getFlowRunOutputKey(flowRun, runId) {
-  return `${flowRunBase(flowRun)}/out/${runId}.json`
+/*
+ * ---- Payload generators -----------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
+export function createFlowRunDataParams(flowRun, runId, payload, status = 'running') {
+  return {
+    Key: getFlowRunInputKey(flowRun, runId),
+    Body: JSON.stringify({
+      flowRun: flowRun,
+      startedAt: timestamp(),
+      currentStep: 0,
+      data: payload,
+      logs: { },
+      status, runId
+    })
+  }
+}
+
+export function createFlowRunTriggerParams(flowRun, runId) {
+  return {
+    ClientContext: 'ManualTrigger',
+    FunctionName: process.env.STATE_MACHINE_TRIGGER_FUNCTION,
+    InvocationType: 'Event',
+    LogType: 'Tail',
+    Payload: JSON.stringify({
+      runId: runId,
+      key: getFlowRunInputKey(flowRun, runId),
+      stateMachineArn: flowRun.stateMachineArn,
+      currentStep: 0,
+      contentType: 'json',
+      contentKey: 'data'
+    })
+  }
 }
 
 
+/*
+ * ---- Data Fetcher -----------------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
+export function getFlowRunData(input) {
+  const s3 = S3(process.env.S3_BUCKET)
+  return s3.getObject({ Key: input.key }).then(data => JSON.parse(data.Body))
+}
+
+
+/*
+ * ---- Success / Error Handler ------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
 function getStepData(flowRun, currentStep) {
   const steps = flowRun.flow.steps || []
   return steps.filter(s => (s.position === currentStep))[0]
 }
-
 
 function updateLogs(logs, step, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
@@ -35,18 +91,6 @@ function updateLogs(logs, step, status, message = '') {
   return Object.assign({}, logs, { status, steps })
 }
 
-
-function getFlowRunById(flowId) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const query = {
-    Key: { id: { S: flowId } }
-  }
-
-  return dynDB.getItem(table, query)
-              .then(r => (r.Item ? unmarshalItem(r.Item) : null))
-}
-
-
 function updateFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const query = {
@@ -57,12 +101,9 @@ function updateFlowRun(flowRun) {
 }
 
 
-export function getFlowRunData(input) {
-  const s3 = S3(process.env.S3_BUCKET)
-  return s3.getObject({ Key: input.key }).then(data => JSON.parse(data.Body))
-}
-
-
+/*
+ * ---- Success Handler --------------------------------------------------------
+ */
 export function serviceSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
@@ -82,7 +123,6 @@ export function serviceSuccessHandler(input, flowRunData, serviceResult) {
   ]).then(() => Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey }))
 }
 
-
 export function flowRunSuccessHandler(input, flowRunData) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
@@ -101,6 +141,9 @@ export function flowRunSuccessHandler(input, flowRunData) {
 }
 
 
+/*
+ * ---- Error Handler ----------------------------------------------------------
+ */
 export function errorHandler(err, input, errorKey = 'error') {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep

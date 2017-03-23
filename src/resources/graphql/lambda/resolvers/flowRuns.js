@@ -9,6 +9,11 @@ import Lambda from '../../../../utils/lambda'
 import StepFunctions from '../../../../utils/stepFunctions'
 import timestamp from '../../../../utils/timestamp'
 import ASLGenerator from '../../../../utils/aslGenerator'
+import {
+  getFlowRunOutputKey,
+  createFlowRunDataParams,
+  createFlowRunTriggerParams
+} from '../../../../utils/flowRunHelpers'
 
 
 /**
@@ -37,8 +42,6 @@ export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
   const { runs } = flowRun
   const s3 = S3(process.env.S3_BUCKET)
-  const flowId = flowRun.flow.id
-  const flowRunId = flowRun.id
 
   const pagination = {
     start: args.offset,
@@ -47,7 +50,7 @@ export async function getRuns(flowRun, args) {
 
   const dataKeys = runs.reverse()
                        .slice(pagination.start, pagination.end)
-                       .map(runId => `flows/${flowId}/flowRuns/${flowRunId}/out/${runId}.json`)
+                       .map(runId => getFlowRunOutputKey(flowRun, runId))
 
   if (dataKeys.length <= 0) {
     return null
@@ -147,9 +150,9 @@ export function updateFlowRun(flowRun) {
 
 export async function startFlowRun({ id, payload }, flowRunInstance) {
   const s3 = S3(process.env.S3_BUCKET)
-  let flowRun = flowRunInstance,
-      status = 'running',
-      message = null
+  const status = 'running'
+  const message = null
+  let flowRun = flowRunInstance
 
   try {
     if (!flowRun) {
@@ -157,45 +160,25 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     }
 
     const runId = `${timestamp()}_${uuid.v4()}`
-    const flowId = flowRun.flow.id
-    const flowRunDataKey = `flows/${flowId}/flowRuns/${id}/in/${runId}.json`
-
     flowRun.runs.push(runId)
 
-    const flowRunData = {
-      Key: flowRunDataKey,
-      Body: JSON.stringify({
-        flowRun: flowRun,
-        startedAt: timestamp(),
-        currentStep: 0,
-        data: payload,
-        logs: { },
-        status, runId
-      })
-    }
+    const flowRunData = createFlowRunDataParams(flowRun, runId, payload, status)
+    const invokeParams = createFlowRunTriggerParams(flowRun, runId)
 
-    const invokeParams = {
-      ClientContext: 'ManualTrigger',
-      FunctionName: process.env.STATE_MACHINE_TRIGGER_FUNCTION,
-      InvocationType: 'Event',
-      LogType: 'Tail',
-      Payload: JSON.stringify({
-        runId: runId,
-        key: flowRunDataKey,
-        stateMachineArn: flowRun.stateMachineArn,
-        currentStep: 0,
-        contentType: 'json',
-        contentKey: 'data'
-      })
-    }
-
-    await s3.putObject(flowRunData)
-    await Lambda.invoke(invokeParams)
-    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
+    return s3.putObject(flowRunData)
+      .then(() => Lambda.invoke(invokeParams))
+      .then(() => updateFlowRun({
+        id, status, message,
+        runs: flowRun.runs,
+        runsCount: flowRun.runs.length
+      }))
   } catch (err) {
-    status = 'error'
-    message = err
-    return updateFlowRun({ id, status, message, runs: flowRun.runs, runsCount: flowRun.runs.length })
+    return updateFlowRun({ id,
+      status: 'error',
+      message: err,
+      runs: flowRun.runs,
+      runsCount: flowRun.runs.length
+    })
   }
 }
 

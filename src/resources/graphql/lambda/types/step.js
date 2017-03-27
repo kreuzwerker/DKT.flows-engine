@@ -59,7 +59,7 @@ export const StepType = new GraphQLObjectType({
 
 
 export const StepMirrorType = new GraphQLObjectType({
-  name: 'StepInput',
+  name: 'StepMirrorType',
   fields: () => ({
     id: { type: GraphQLID },
     position: { type: GraphQLInt },
@@ -69,5 +69,21 @@ export const StepMirrorType = new GraphQLObjectType({
     flow: { type: GraphQLID },
     service: { type: ServiceMirrorType },
     configParams: { type: new GraphQLList(StepConfigParamsType) }
+  })
+})
+
+
+export const StepTestType = new GraphQLObjectType({
+  name: 'StepTestType',
+  fields: () => ({
+    id: { type: GraphQLID },
+    position: { type: GraphQLInt },
+    description: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
+    flow: { type: GraphQLID },
+    service: { type: ServiceMirrorType },
+    configParams: { type: new GraphQLList(StepConfigParamsType) },
+    result: { type: GraphQLString }
   })
 })

@@ -1,6 +1,7 @@
 import S3 from '../s3'
 import dynDB from '../dynamoDB'
 import timestamp from '../timestamp'
+import { getStepData } from './stepHelpers'
 
 
 /*
@@ -61,20 +62,10 @@ export function createFlowRunTriggerParams(flowRun, runId) {
 
 
 /*
- * ---- Data Fetcher -----------------------------------------------------------
- * -----------------------------------------------------------------------------
- */
-export function getFlowRunData(input) {
-  const s3 = S3(process.env.S3_BUCKET)
-  return s3.getObject({ Key: input.key }).then(data => JSON.parse(data.Body))
-}
-
-
-/*
  * ---- Success / Error Handler ------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-function getStepData(flowRun, currentStep) {
+function getStepFromFlowRun(flowRun, currentStep) {
   const steps = flowRun.flow.steps || []
   return steps.filter(s => (s.position === currentStep))[0]
 }
@@ -107,7 +98,7 @@ function updateFlowRun(flowRun) {
 export function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
-  const step = getStepData(flowRunData.flowRun, position)
+  const step = getStepFromFlowRun(flowRunData.flowRun, position)
   const stepOutputKey = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
   const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
@@ -148,7 +139,7 @@ export function flowRunErrorHandler(err, input, errorKey = 'error') {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const update = (currentData) => {
-    const step = getStepData(currentData.flowRun, position)
+    const step = getStepFromFlowRun(currentData.flowRun, position)
     return Object.assign({}, position, {
       status: 'error',
       currentStep: position,
@@ -156,7 +147,7 @@ export function flowRunErrorHandler(err, input, errorKey = 'error') {
     })
   }
 
-  return getFlowRunData(input)
+  return getStepData(input)
     .then((flowRunData) => {
       return updateFlowRun({
         id: flowRunData.flowRun.id,

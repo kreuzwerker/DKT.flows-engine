@@ -22,6 +22,7 @@ function S3(bucket) {
     copyObject: params => s3.copyObject(merge(params)).promise(),
     getObject: params => s3.getObject(merge(params)).promise(),
     putObject: params => s3.putObject(merge(params)).promise(),
+    deleteObject: params => s3.deleteObject(merge(params)).promise(),
     listObjects: params => s3.listObjects(merge(params)).promise()
   }
 }

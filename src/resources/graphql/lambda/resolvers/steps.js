@@ -106,18 +106,28 @@ export async function testStep(stepId, payload) {
       .then(() => Lambda.invoke(invokeParams))
       .then((output) => {
         const parsedOutput = JSON.parse(output.Payload)
-        return s3.getObject({ Key: parsedOutput.key })
+        return s3.getObject({ Key: parsedOutput.key }).then(res => [res, parsedOutput.key])
       })
-      .then(({ Body }) => {
-        const result = Body.toString()
+      .then((res) => {
+        const [lambdaOutput, outputKey] = res
+        const result = lambdaOutput.Body.toString()
         let newStep = {}
+
         if (JSON.parse(result).status === 'error') {
           newStep = Object.assign({}, step, { tested: false })
           return updateStep(newStep)
+            .then(() => Promise.all([
+              s3.deleteObject({ Key: testStepData.Key }),
+              s3.deleteObject({ Key: outputKey })
+            ]))
             .then(() => Object.assign({}, newStep, { service, error: result }))
         }
         newStep = Object.assign({}, step, { tested: true })
         return updateStep(newStep)
+          .then(() => Promise.all([
+            s3.deleteObject({ Key: testStepData.Key }),
+            s3.deleteObject({ Key: outputKey })
+          ]))
           .then(() => Object.assign({}, newStep, { service, result }))
       })
   } catch (err) {

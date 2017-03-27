@@ -11,7 +11,7 @@ import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
-import { StepType, StepConfigParamsInputType } from './types/step'
+import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -240,7 +240,7 @@ const MutationType = new GraphQLObjectType({
       resolve: (_, step) => Steps.updateStep(step)
     },
     testStep: {
-      type: StepType,
+      type: StepTestType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
         payload: { type: new GraphQLNonNull(GraphQLString) }

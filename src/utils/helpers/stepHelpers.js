@@ -31,7 +31,6 @@ export function getStepData(input) {
 }
 
 
-
 /*
  * ---- Payload generators -----------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -65,6 +64,10 @@ export function createTestStepTriggerParams(stepId, serviceArn, runId) {
 }
 
 
+/*
+ * ---- Success / Error Handler ------------------------------------------------
+ * -----------------------------------------------------------------------------
+ */
 function updateLogs(logs, stepData, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
     [stepData.stepId]: {
@@ -76,6 +79,9 @@ function updateLogs(logs, stepData, status, message = '') {
   return Object.assign({}, logs, { status, steps })
 }
 
+/*
+ * ---- Success Handler --------------------------------------------------------
+ */
 export function testStepSuccessHandler(input, stepData, result) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getTestStepOutputKey(stepData.stepId, stepData.runId)
@@ -87,4 +93,20 @@ export function testStepSuccessHandler(input, stepData, result) {
 
   return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
     .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
+}
+
+/*
+ * ---- Error Handler ----------------------------------------------------------
+ */
+export function testStepErrorHandler(input, stepData, error) {
+  const s3 = S3(process.env.S3_BUCKET)
+  const key = getTestStepOutputKey(stepData.stepId, stepData.runId)
+
+  stepData.status = 'error'
+  stepData.finishedAt = timestamp()
+  stepData.error = error
+  stepData.logs = updateLogs(stepData.logs, stepData, 'error')
+
+  return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
+    .then(() => Object.assign({}, input, { key, contentKey: 'error' }))
 }

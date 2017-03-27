@@ -99,15 +99,18 @@ export async function testStep(stepId, payload) {
     const step = await getStepById(stepId)
     const service = await getServiceById(step.service)
     const runId = `${timestamp()}_${uuid.v4()}`
-
     const testStepData = createTestStepDataParams(stepId, runId, payload)
     const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
 
     return s3.putObject(testStepData)
       .then(() => Lambda.invoke(invokeParams))
       .then((output) => {
-        console.log(output)
-        return step
+        const parsedOutput = JSON.parse(output.Payload)
+        return s3.getObject({ Key: parsedOutput.key })
+      })
+      .then(({ Body }) => {
+        const result = Body.toString()
+        return Object.assign({}, step, { service, result })
       })
   } catch (err) {
     return err

@@ -110,7 +110,15 @@ export async function testStep(stepId, payload) {
       })
       .then(({ Body }) => {
         const result = Body.toString()
-        return Object.assign({}, step, { service, result })
+        let newStep = {}
+        if (JSON.parse(result).status === 'error') {
+          newStep = Object.assign({}, step, { tested: false })
+          return updateStep(newStep)
+            .then(() => Object.assign({}, newStep, { service, error: result }))
+        }
+        newStep = Object.assign({}, step, { tested: true })
+        return updateStep(newStep)
+          .then(() => Object.assign({}, newStep, { service, result }))
       })
   } catch (err) {
     return err

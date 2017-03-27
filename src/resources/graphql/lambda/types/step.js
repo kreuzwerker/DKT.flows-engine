@@ -5,6 +5,7 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLList,
+  GraphQLBoolean,
   GraphQLInputObjectType
 } from 'graphql'
 import { FlowType } from './flow'
@@ -53,7 +54,8 @@ export const StepType = new GraphQLObjectType({
         return Services.getServiceById(step.service)
       }
     },
-    configParams: { type: new GraphQLList(StepConfigParamsType) }
+    configParams: { type: new GraphQLList(StepConfigParamsType) },
+    tested: { type: GraphQLBoolean }
   })
 })
 
@@ -68,7 +70,8 @@ export const StepMirrorType = new GraphQLObjectType({
     createdAt: { type: GraphQLString },
     flow: { type: GraphQLID },
     service: { type: ServiceMirrorType },
-    configParams: { type: new GraphQLList(StepConfigParamsType) }
+    configParams: { type: new GraphQLList(StepConfigParamsType) },
+    tested: { type: GraphQLBoolean }
   })
 })
 
@@ -84,6 +87,8 @@ export const StepTestType = new GraphQLObjectType({
     flow: { type: GraphQLID },
     service: { type: ServiceMirrorType },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
-    result: { type: GraphQLString }
+    result: { type: GraphQLString },
+    error: { type: GraphQLString },
+    tested: { type: GraphQLBoolean }
   })
 })

@@ -1,7 +1,15 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById, updateFlow } from './flows'
+import { getServiceById } from './services'
 import dynDB from '../../../../utils/dynamoDB'
+import Lambda from '../../../../utils/lambda'
+import S3 from '../../../../utils/s3'
+import timestamp from '../../../../utils/timestamp'
+import {
+  createTestStepDataParams,
+  createTestStepTriggerParams
+} from '../../../../utils/helpers/stepHelpers'
 
 
 /**
@@ -82,6 +90,49 @@ export function updateStep(step) {
   }
 
   return dynDB.updateItem(table, query, step)
+}
+
+
+export async function testStep(stepId, payload) {
+  const s3 = S3(process.env.S3_BUCKET)
+  try {
+    const step = await getStepById(stepId)
+    const service = await getServiceById(step.service)
+    const runId = `${timestamp()}_${uuid.v4()}`
+    const testStepData = createTestStepDataParams(stepId, runId, payload)
+    const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
+
+    return s3.putObject(testStepData)
+      .then(() => Lambda.invoke(invokeParams))
+      .then((output) => {
+        const parsedOutput = JSON.parse(output.Payload)
+        return s3.getObject({ Key: parsedOutput.key }).then(res => [res, parsedOutput.key])
+      })
+      .then((res) => {
+        const [lambdaOutput, outputKey] = res
+        const result = lambdaOutput.Body.toString()
+        let newStep = {}
+
+        if (JSON.parse(result).status === 'error') {
+          newStep = Object.assign({}, step, { tested: false })
+          return updateStep(newStep)
+            .then(() => Promise.all([
+              s3.deleteObject({ Key: testStepData.Key }),
+              s3.deleteObject({ Key: outputKey })
+            ]))
+            .then(() => Object.assign({}, newStep, { service, error: result }))
+        }
+        newStep = Object.assign({}, step, { tested: true })
+        return updateStep(newStep)
+          .then(() => Promise.all([
+            s3.deleteObject({ Key: testStepData.Key }),
+            s3.deleteObject({ Key: outputKey })
+          ]))
+          .then(() => Object.assign({}, newStep, { service, result }))
+      })
+  } catch (err) {
+    return err
+  }
 }
 
 

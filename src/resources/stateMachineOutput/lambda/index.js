@@ -1,6 +1,7 @@
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
-import { flowRunSuccessHandler, getFlowRunData, errorHandler } from '../../../utils/flowRunHelpers'
+import { flowRunSuccessHandler, flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
+import { getStepData } from '../../../utils/helpers/stepHelpers'
 
 
 export async function handler(event, context, callback) {
@@ -11,11 +12,11 @@ export async function handler(event, context, callback) {
     if (input.error) {
       logger.log(input.error)
 
-      const result = await errorHandler(input.error, input)
+      const result = await flowRunErrorHandler(input.error, input)
       callback(null, result)
     } else {
       logger.log(input)
-      const flowRunData = await getFlowRunData(input)
+      const flowRunData = await getStepData(input)
       const result = await flowRunSuccessHandler(input, flowRunData)
       callback(null, result)
     }

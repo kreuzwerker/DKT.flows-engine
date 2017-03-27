@@ -1,6 +1,6 @@
 [
   {
-    "description": "Triggers on new RSS feed items.",
+    "description": "Triggers a flow run with a given url",
     "flow": "ciy0iehaj9wu20133m8gu0lju",
     "id": "ciy0jidbmaivt0133sqdy35e6",
     "position": 0,
@@ -13,7 +13,7 @@
     ]
   },
   {
-    "description": "Makes a delicious freshly brewed organic coffee.",
+    "description": "Fetches an Article form a given url",
     "flow": "ciy0ie2q1aoul0179imlh0a73",
     "id": "ciy0jgybhai7v013373puyuvy",
     "position": 1,

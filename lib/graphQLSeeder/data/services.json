@@ -42,7 +42,8 @@
           { "label": "PUT", "value": "PUT" }
         ]
       }
-    ]
+    ],
+    "samplePayload": null
   },
   {
     "description": "Fetches an Article form a given url",
@@ -52,7 +53,8 @@
     "provider": "ciy0ivuazabar0133xu1vlvyj",
     "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
     "type": "ACTION",
-    "configSchema": null
+    "configSchema": null,
+    "samplePayload": "http://www.spiegel.de/politik/ausland/brexit-schotten-sollen-ueber-unabhaengigkeit-abstimmen-a-1138530.html"
   },
   {
     "description": "Extracts the Article from a given HTML",
@@ -74,7 +76,8 @@
           { "label": "German", "value": "de" }
         ]
       }
-    ]
+    ],
+    "samplePayload": "<html><head></head><body><article>Lorem Ipsum</article></body></html>"
   },
   {
     "description": "Capitalizes a given Text",
@@ -84,6 +87,7 @@
     "provider": "ciy0ivuazabar0133xu1vlvyj",
     "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
     "type": "ACTION",
-    "configSchema": null
+    "configSchema": null,
+    "samplePayload": "Lorem Ipsum dolor sit amet."
   }
 ]

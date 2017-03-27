@@ -51,7 +51,8 @@ export const ServiceType = new GraphQLObjectType({
         return Providers.getProviderById(service.provider)
       }
     },
-    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) }
+    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) },
+    samplePayload: { type: GraphQLString }
   })
 })
 
@@ -67,6 +68,7 @@ export const ServiceMirrorType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: { type: GraphQLID },
-    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) }
+    configSchema: { type: new GraphQLList(ServiceConfigSchemaType) },
+    samplePayload: { type: GraphQLString }
   })
 })

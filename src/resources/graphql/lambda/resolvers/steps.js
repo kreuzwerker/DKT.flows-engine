@@ -102,6 +102,12 @@ export async function testStep(stepId, payload) {
     const testStepData = createTestStepDataParams(stepId, runId, payload)
     const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
 
+    if (service.type === 'TRIGGER') {
+      const newStep = Object.assign({}, step, { tested: true })
+      return updateStep(newStep)
+        .then(() => Promise.resolve(Object.assign({}, newStep, { service })))
+    }
+
     return s3.putObject(testStepData)
       .then(() => Lambda.invoke(invokeParams))
       .then((output) => {
@@ -122,7 +128,9 @@ export async function testStep(stepId, payload) {
             ]))
             .then(() => Object.assign({}, newStep, { service, error: result }))
         }
+
         newStep = Object.assign({}, step, { tested: true })
+
         return updateStep(newStep)
           .then(() => Promise.all([
             s3.deleteObject({ Key: testStepData.Key }),

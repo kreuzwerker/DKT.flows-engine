@@ -1,5 +1,5 @@
-const settings = require('../../../settings')
-const { EXTRACT_ARTICLE_TEXT_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const settings = require('../../../../settings')
+const { NLP_REQUEST_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
 
 
 /*
@@ -7,7 +7,7 @@ const { EXTRACT_ARTICLE_TEXT_FUNCTION, S3_BUCKET } = require('../locicalResource
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  [EXTRACT_ARTICLE_TEXT_FUNCTION]: {
+  [NLP_REQUEST_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
@@ -17,10 +17,10 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: { Ref: S3_BUCKET }
+          S3_BUCKET: S3_BUCKET,
+          NLP_URL: 'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'
         }
       }
-    },
-    DependsOn: [S3_BUCKET]
+    }
   }
 })

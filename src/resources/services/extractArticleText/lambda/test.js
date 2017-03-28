@@ -1,8 +1,8 @@
-import { promisifyLambda } from '../../../../lib/promisifier'
-import S3 from '../../../utils/s3'
+import { promisifyLambda } from '..././../../../lib/promisifier'
+import S3 from '../../../../utils/s3'
 import { handler } from './index'
 import event from './event.json'
-import settings from '../../../../settings'
+import settings from '../../../../../settings'
 
 
 process.env.S3_BUCKET = 'dkt.flow-engine.test'

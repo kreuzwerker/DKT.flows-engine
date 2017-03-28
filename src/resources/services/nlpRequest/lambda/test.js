@@ -1,7 +1,7 @@
-import { promisifyLambda } from '../../../../lib/promisifier'
+import { promisifyLambda } from '../../../../../lib/promisifier'
 import { handler } from './index'
 import event from './event.json'
-import settings from '../../../../settings'
+import settings from '../../../../../settings'
 
 process.env.S3_BUCKET = 'dkt.flow-engine.test'
 process.env.NLP_URL = 'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'

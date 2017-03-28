@@ -1,5 +1,5 @@
-const settings = require('../../../settings')
-const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const settings = require('../../../../settings')
+const { EXTRACT_ARTICLE_TEXT_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
 
 
 /*
@@ -7,7 +7,7 @@ const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
 module.exports = ({ key }) => ({
-  [FETCH_ARTICLE_FUNCTION]: {
+  [EXTRACT_ARTICLE_TEXT_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

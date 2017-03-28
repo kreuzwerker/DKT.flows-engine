@@ -61,7 +61,10 @@ module.exports = {
       base: Path.resolve(__dirname, 'src', 'workflows')
     },
     resources: {
-      base: Path.resolve(__dirname, 'src', 'resources')
+      base: Path.resolve(__dirname, 'src', 'resources'),
+      services: {
+        base: Path.resolve(__dirname, 'src', 'resources', 'services')
+      }
     },
     dist: {
       base: Path.resolve(__dirname, 'dist'),

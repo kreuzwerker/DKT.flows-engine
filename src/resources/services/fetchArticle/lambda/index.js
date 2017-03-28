@@ -1,8 +1,8 @@
 import fetch from 'node-fetch'
 import _isString from 'lodash/isString'
-import Logger from '../../../utils/logger'
-import { flowRunStepSuccessHandler } from '../../../utils/helpers/flowRunHelpers'
-import { getStepData, testStepSuccessHandler, testStepErrorHandler } from '../../../utils/helpers/stepHelpers'
+import Logger from '../../../../utils/logger'
+import { flowRunStepSuccessHandler } from '../../../../utils/helpers/flowRunHelpers'
+import { getStepData, testStepSuccessHandler, testStepErrorHandler } from '../../../../utils/helpers/stepHelpers'
 
 /*
  * Fetch an Article from given URL

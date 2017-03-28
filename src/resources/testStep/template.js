@@ -2,11 +2,11 @@ const settings = require('../../../settings')
 const {
   TEST_STEP_FUNCTION,
   GRAPHQL_FUNCTION,
-  GRAPHQL_DB_FLOWS,
-  GRAPHQL_DB_FLOW_RUNS,
-  GRAPHQL_DB_SERVICES,
-  GRAPHQL_DB_PROVIDERS,
-  GRAPHQL_DB_STEPS,
+  DYN_DB_FLOWS,
+  DYN_DB_FLOW_RUNS,
+  DYN_DB_SERVICES,
+  DYN_DB_PROVIDERS,
+  DYN_DB_STEPS,
   S3_BUCKET
 } = require('../locicalResourceIds')
 
@@ -26,22 +26,22 @@ module.exports = ({ stage, resource, key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          DYNAMO_FLOWS: { Ref: GRAPHQL_DB_FLOWS },
-          DYNAMO_FLOW_RUNS: { Ref: GRAPHQL_DB_FLOW_RUNS },
-          DYNAMO_PROVIDERS: { Ref: GRAPHQL_DB_PROVIDERS },
-          DYNAMO_SERVICES: { Ref: GRAPHQL_DB_SERVICES },
-          DYNAMO_STEPS: { Ref: GRAPHQL_DB_STEPS },
+          DYNAMO_FLOWS: { Ref: DYN_DB_FLOWS },
+          DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
+          DYNAMO_PROVIDERS: { Ref: DYN_DB_PROVIDERS },
+          DYNAMO_SERVICES: { Ref: DYN_DB_SERVICES },
+          DYNAMO_STEPS: { Ref: DYN_DB_STEPS },
           S3_BUCKET: { Ref: S3_BUCKET }
         }
       }
     },
     DependsOn: [
       GRAPHQL_FUNCTION,
-      GRAPHQL_DB_FLOWS,
-      GRAPHQL_DB_FLOW_RUNS,
-      GRAPHQL_DB_STEPS,
-      GRAPHQL_DB_PROVIDERS,
-      GRAPHQL_DB_SERVICES
+      DYN_DB_FLOWS,
+      DYN_DB_FLOW_RUNS,
+      DYN_DB_STEPS,
+      DYN_DB_PROVIDERS,
+      DYN_DB_SERVICES
     ]
   }
 })

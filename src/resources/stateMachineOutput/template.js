@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { STATE_MACHINE_OUTPUT_FUNCTION, S3_BUCKET, GRAPHQL_DB_FLOW_RUNS } = require('../locicalResourceIds')
+const { STATE_MACHINE_OUTPUT_FUNCTION, S3_BUCKET, DYN_DB_FLOW_RUNS } = require('../locicalResourceIds')
 
 
 module.exports = ({ key }) => ({
@@ -14,10 +14,10 @@ module.exports = ({ key }) => ({
       Environment: {
         Variables: {
           S3_BUCKET: { Ref: S3_BUCKET },
-          DYNAMO_FLOW_RUNS: { Ref: GRAPHQL_DB_FLOW_RUNS }
+          DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS }
         }
       }
     },
-    DependsOn: [S3_BUCKET, GRAPHQL_DB_FLOW_RUNS]
+    DependsOn: [S3_BUCKET, DYN_DB_FLOW_RUNS]
   }
 })

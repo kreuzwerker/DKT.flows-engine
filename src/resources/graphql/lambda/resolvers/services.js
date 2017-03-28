@@ -1,6 +1,5 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
-import dynDB from '../../../../utils/dynamoDB'
+import * as dbServices from '../../../dbServices/resolvers'
 
 
 /**
@@ -8,35 +7,17 @@ import dynDB from '../../../../utils/dynamoDB'
  * -----------------------------------------------------------------------------
  */
 export function allServices() {
-  const table = process.env.DYNAMO_SERVICES
-  return dynDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
+  return dbServices.allServices()
 }
 
 
 export function getServiceById(serviceId) {
-  const table = process.env.DYNAMO_SERVICES
-  const query = {
-    Key: { id: { S: serviceId } }
-  }
-
-  return dynDB.getItem(table, query)
-              .then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dbServices.getServiceById(serviceId)
 }
 
 
 export function batchGetServicesByIds(servicesIds) {
-  const table = process.env.DYNAMO_SERVICES
-  const query = {
-    RequestItems: {
-      [table]: {
-        Keys: servicesIds.map(id => ({ id: { S: id } }))
-      }
-    }
-  }
-
-  return dynDB.batchGetItem(query)
-              .then(res => res.Responses[table].map(unmarshalItem))
+  return dbServices.batchGetServicesByIds(servicesIds)
 }
 
 
@@ -45,7 +26,6 @@ export function batchGetServicesByIds(servicesIds) {
  * -----------------------------------------------------------------------------
  */
 export function createService(service) {
-  const table = process.env.DYNAMO_SERVICES
   const newService = Object.assign({}, {
     id: uuid.v4(),
     name: null,
@@ -54,25 +34,15 @@ export function createService(service) {
     provider: null,
     step: null
   }, service)
-  return dynDB.putItem(table, newService)
+  return dbServices.createService(newService)
 }
 
 
 export function updateService(service) {
-  const table = process.env.DYNAMO_SERVICES
-  const query = {
-    Key: { id: { S: service.id } }
-  }
-
-  return dynDB.updateItem(table, query, service)
+  return dbServices.updateService(service)
 }
 
 
 export function deleteService(id) {
-  const table = process.env.DYNAMO_SERVICES
-  const query = {
-    Key: { id: { S: id } }
-  }
-  return dynDB.deleteItem(table, query)
-              .then(() => ({ id }))
+  return dbServices.deleteService(id)
 }

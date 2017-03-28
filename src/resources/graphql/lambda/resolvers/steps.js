@@ -1,8 +1,6 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById, updateFlow } from './flows'
 import { getServiceById } from './services'
-import dynDB from '../../../../utils/dynamoDB'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
 import timestamp from '../../../../utils/timestamp'
@@ -10,6 +8,7 @@ import {
   createTestStepDataParams,
   createTestStepTriggerParams
 } from '../../../../utils/helpers/stepHelpers'
+import * as dbSteps from '../../../dbSteps/resolvers'
 
 
 /**
@@ -17,35 +16,17 @@ import {
  * -----------------------------------------------------------------------------
  */
 export function allSteps() {
-  const table = process.env.DYNAMO_STEPS
-  return dynDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
+  return dbSteps.allSteps()
 }
 
 
 export function getStepById(stepId) {
-  const table = process.env.DYNAMO_STEPS
-  const params = {
-    Key: { id: { S: stepId } }
-  }
-
-  return dynDB.getItem(table, params)
-               .then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dbSteps.getStepById(stepId)
 }
 
 
 export function batchGetStepByIds(stepsIds) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    RequestItems: {
-      [table]: {
-        Keys: stepsIds.map(id => ({ id: { S: id } }))
-      }
-    }
-  }
-
-  return dynDB.batchGetItem(query)
-              .then(res => res.Responses[table].map(unmarshalItem))
+  return dbSteps.batchGetStepByIds(stepsIds)
 }
 
 
@@ -54,7 +35,6 @@ export function batchGetStepByIds(stepsIds) {
  * -----------------------------------------------------------------------------
  */
 export async function createStep(step) {
-  const table = process.env.DYNAMO_STEPS
   // set defaults
   const newStep = Object.assign({}, {
     id: uuid.v4(),
@@ -76,7 +56,7 @@ export async function createStep(step) {
       }
     }
 
-    return dynDB.putItem(table, newStep)
+    return dbSteps.createStep(newStep)
   } catch (err) {
     return Promise.reject(err)
   }
@@ -84,12 +64,7 @@ export async function createStep(step) {
 
 
 export function updateStep(step) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    Key: { id: { S: step.id } }
-  }
-
-  return dynDB.updateItem(table, query, step)
+  return dbSteps.updateStep(step)
 }
 
 
@@ -145,10 +120,5 @@ export async function testStep(stepId, payload) {
 
 
 export function deleteStep(id) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    Key: { id: { S: id } }
-  }
-  return dynDB.deleteItem(table, query)
-              .then(() => ({ id }))
+  return dbSteps.deleteStep(id)
 }

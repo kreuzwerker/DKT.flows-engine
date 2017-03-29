@@ -103,7 +103,7 @@ export function testStepErrorHandler(input, stepData, error) {
 
   stepData.status = 'error'
   stepData.finishedAt = timestamp()
-  stepData.error = error
+  stepData.error = error.message
   stepData.logs = updateLogs(stepData.logs, stepData, 'error')
 
   return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })

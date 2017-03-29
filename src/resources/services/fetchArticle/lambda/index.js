@@ -18,11 +18,12 @@ export async function handler(event, context, callback) {
   try {
     stepData = await getStepData(input)
     const inputData = stepData[input.contentKey]
-    console.log(inputData)
+
     logger.log(`Try to fetch data from ${inputData}`)
     const result = await fetch(inputData)
 
     if (!result.ok) {
+      console.log('** ERROR **')
       throw new Error(`Failed fetching ${inputData} - ${result.status} ${result.statusText}`)
     }
 

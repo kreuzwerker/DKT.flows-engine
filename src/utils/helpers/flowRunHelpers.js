@@ -146,7 +146,7 @@ export async function flowRunErrorHandler(err, input) {
     const updatedData = Object.assign({}, position, {
       status: 'error',
       currentStep: position,
-      logs: updateLogs(currentData.logs, step, 'error', err)
+      logs: updateLogs(currentData.logs, step, 'error', err.message)
     })
     return s3.putObject({
       Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),

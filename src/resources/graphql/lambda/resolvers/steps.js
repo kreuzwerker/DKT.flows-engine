@@ -91,14 +91,18 @@ export async function testStep(stepId, payload) {
     const stepOutput = await s3.getObject({ Key: parsedStepResult.key })
     const output = JSON.parse(stepOutput.Body.toString())
     const testedStep = step
-    const result = Object.assign({}, testedStep, { service })
+    let result = {}
 
     if (output.status === 'error') {
       testedStep.tested = false
-      result.error = output
+      result = Object.assign({}, testedStep, { service,
+        error: output[parsedStepResult.contentKey]
+      })
     } else {
       testedStep.tested = true
-      result.result = output
+      result = Object.assign({}, testedStep, { service,
+        result: JSON.stringify(output[parsedStepResult.contentKey])
+      })
     }
 
     await Promise.all([

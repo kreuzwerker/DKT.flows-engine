@@ -70,6 +70,7 @@ export function updateStep(step) {
 
 export async function testStep(stepId, payload) {
   const s3 = S3(process.env.S3_BUCKET)
+
   try {
     const step = await getStepById(stepId)
     const service = await getServiceById(step.service)
@@ -79,40 +80,34 @@ export async function testStep(stepId, payload) {
 
     if (service.type === 'TRIGGER') {
       const newStep = Object.assign({}, step, { tested: true })
-      return updateStep(newStep)
-        .then(() => Promise.resolve(Object.assign({}, newStep, { service })))
+      await updateStep(newStep)
+      return Object.assign({}, newStep, { service })
     }
 
-    return s3.putObject(testStepData)
-      .then(() => Lambda.invoke(invokeParams))
-      .then((output) => {
-        const parsedOutput = JSON.parse(output.Payload)
-        return s3.getObject({ Key: parsedOutput.key }).then(res => [res, parsedOutput.key])
-      })
-      .then((res) => {
-        const [lambdaOutput, outputKey] = res
-        const result = lambdaOutput.Body.toString()
-        let newStep = {}
+    await s3.putObject(testStepData)
 
-        if (JSON.parse(result).status === 'error') {
-          newStep = Object.assign({}, step, { tested: false })
-          return updateStep(newStep)
-            .then(() => Promise.all([
-              s3.deleteObject({ Key: testStepData.Key }),
-              s3.deleteObject({ Key: outputKey })
-            ]))
-            .then(() => Object.assign({}, newStep, { service, error: result }))
-        }
+    const stepResult = await Lambda.invoke(invokeParams)
+    const parsedStepResult = JSON.parse(stepResult.Payload)
+    const stepOutput = await s3.getObject({ Key: parsedStepResult.key })
+    const output = JSON.parse(stepOutput.Body.toString())
+    const testedStep = step
+    const result = Object.assign({}, testedStep, { service })
 
-        newStep = Object.assign({}, step, { tested: true })
+    if (output.status === 'error') {
+      testedStep.tested = false
+      result.error = output
+    } else {
+      testedStep.tested = true
+      result.result = output
+    }
 
-        return updateStep(newStep)
-          .then(() => Promise.all([
-            s3.deleteObject({ Key: testStepData.Key }),
-            s3.deleteObject({ Key: outputKey })
-          ]))
-          .then(() => Object.assign({}, newStep, { service, result }))
-      })
+    await Promise.all([
+      updateStep(testedStep),
+      s3.deleteObject({ Key: testStepData.Key }),
+      s3.deleteObject({ Key: parsedStepResult.key })
+    ])
+
+    return result
   } catch (err) {
     return err
   }

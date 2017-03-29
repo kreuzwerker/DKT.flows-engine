@@ -15,13 +15,6 @@ Check the [compat-table](https://kangax.github.io/compat-table/es6/) for more de
 AWS SAM does not support CORS out of the box (yet). But it is possible to add CORS with a seperate Swagger api definition. There is a   [api_swagger_cors](https://github.com/awslabs/serverless-application-model/tree/master/examples/2016-10-31/api_swagger_cors) example you should check. **But you have to do one more thing to make it work.** For each Lambda that has a Serverless::Api event you must specify a [AWS::Lambda::Permission](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html) resource. Our [GraphQL resource](https://github.com/kreuzwerker/DKT.flows-engine/blob/master/src/resources/graphql/template.js#L45) is a working example for that.
 
 
-### StepFunctions
-
-Check the [Getting Started Guide](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) first!
-Stepfunctions flows are defined within `src/workflows`.  
-**NOTE** this is a testing "feature". Real StepFunctions will be defined by the DKT client in the future.
-
-
 #### Styleguide
 
 We **strongly recommend** to install a realtime linter extension to your Editor. Otherwise you have to run `npm run lint` all the time.

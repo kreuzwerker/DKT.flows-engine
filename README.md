@@ -33,7 +33,7 @@ Usage: cli/dkt [options] [command]
   Commands:
 
     stack [command]          deploy stack
-    stepfunctions [command]  deploy, start step functions
+    stepfunctions [command]  start step functions
     test [command]           run tests
     help [cmd]               display help for [cmd]
 

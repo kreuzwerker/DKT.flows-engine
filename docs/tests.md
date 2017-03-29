@@ -32,19 +32,3 @@ Options:
 ```
 
 e.g. `cli/dkt test resources -r fetchArticle`
-
-
-#### StepFunctions
-
-StepFunctions tests are defined within the workflows `test.js` file (`src/workflows/tests.js`). *We will change this in the future.*  
-Run the workflows tests with
-
-```shell
-Usage: cli/dkt test workflows [options]
-
-Test Workflows
-
-Options:
-
-  -h, --help  output usage information
-```

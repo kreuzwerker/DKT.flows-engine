@@ -1,9 +1,7 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
-import dynDB from '../../../../utils/dynamoDB'
 import S3 from '../../../../utils/s3'
 import Lambda from '../../../../utils/lambda'
 import StepFunctions from '../../../../utils/stepFunctions'
@@ -14,6 +12,7 @@ import {
   createFlowRunDataParams,
   createFlowRunTriggerParams
 } from '../../../../utils/helpers/flowRunHelpers'
+import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 
 
 /**
@@ -21,20 +20,12 @@ import {
  * -----------------------------------------------------------------------------
  */
 export function allFlowRuns() {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  return dynDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
+  return dbFlowRuns.allFlowRuns()
 }
 
 
-export function getFlowRunById(flowId) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const query = {
-    Key: { id: { S: flowId } }
-  }
-
-  return dynDB.getItem(table, query)
-              .then(r => (r.Item ? unmarshalItem(r.Item) : null))
+export function getFlowRunById(id) {
+  return dbFlowRuns.getFlowRunById(id)
 }
 
 
@@ -96,8 +87,6 @@ export async function getRuns(flowRun, args) {
  * -----------------------------------------------------------------------------
  */
 export async function createFlowRun(params) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-
   function getServicesIdsFromSteps(steps) {
     return steps.filter(step => (step.service !== null)).map(step => step.service)
   }
@@ -131,7 +120,7 @@ export async function createFlowRun(params) {
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
 
-    return dynDB.putItem(table, newFlowRun)
+    return dbFlowRuns.createFlowRun(newFlowRun)
   } catch (err) {
     return Promise.reject(err)
   }
@@ -139,12 +128,7 @@ export async function createFlowRun(params) {
 
 
 export function updateFlowRun(flowRun) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const query = {
-    Key: { id: { S: flowRun.id } }
-  }
-
-  return dynDB.updateItem(table, query, flowRun)
+  return dbFlowRuns.updateFlowRun(flowRun)
 }
 
 
@@ -192,13 +176,10 @@ export function createAndStartFlowRun(args) {
 
 
 export function deleteFlowRun(id) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const deleteQuery = { Key: { id: { S: id } } }
-
   return getFlowRunById(id)
     .then(flowRun => Promise.all([
       StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
-      dynDB.deleteItem(table, deleteQuery)
+      dbFlowRuns.deleteFlowRun(id)
     ]))
     .then(() => ({ id }))
 }

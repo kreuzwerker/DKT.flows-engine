@@ -1,8 +1,7 @@
 import S3 from '../s3'
-import dynDB from '../dynamoDB'
 import timestamp from '../timestamp'
 import { getStepData } from './stepHelpers'
-
+import * as dbFlowRun from '../../resources/dbFlowRuns/resolvers'
 
 /*
  * ---- Path helpers -----------------------------------------------------------
@@ -82,20 +81,11 @@ function updateLogs(logs, step, status, message = '') {
   return Object.assign({}, logs, { status, steps })
 }
 
-function updateFlowRun(flowRun) {
-  const table = process.env.DYNAMO_FLOW_RUNS
-  const query = {
-    Key: { id: { S: flowRun.id } }
-  }
-
-  return dynDB.updateItem(table, query, flowRun)
-}
-
 
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
+export async function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
@@ -108,13 +98,20 @@ export function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
     logs: updateLogs(flowRunData.logs, step, 'success')
   })
 
-  return Promise.all([
-    s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) }),
-    s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) })
-  ]).then(() => Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey }))
+  try {
+    await Promise.all([
+      s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) }),
+      s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) })
+    ])
+
+    return Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey })
+  } catch (err) {
+    console.log(err)
+    return err
+  }
 }
 
-export function flowRunSuccessHandler(input, flowRunData) {
+export async function flowRunSuccessHandler(input, flowRunData) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
@@ -122,46 +119,56 @@ export function flowRunSuccessHandler(input, flowRunData) {
   flowRunData.status = 'success'
   flowRunData.finishedAt = timestamp()
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
-    .then(() => updateFlowRun({
+  try {
+    await s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
+    await dbFlowRun.updateFlowRun({
       id: flowRunData.flowRun.id,
       status: 'success',
       message: flowRunData.flowRun.message
-    }))
-    .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
+    })
+
+    return Object.assign({}, input, { key, contentKey: input.contentKey })
+  } catch (err) {
+    console.log(err)
+    return err
+  }
 }
 
 
 /*
  * ---- Error Handler ----------------------------------------------------------
  */
-export function flowRunErrorHandler(err, input, errorKey = 'error') {
+export async function flowRunErrorHandler(err, input) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const update = (currentData) => {
     const step = getStepFromFlowRun(currentData.flowRun, position)
-    return Object.assign({}, position, {
+    const updatedData = Object.assign({}, position, {
       status: 'error',
       currentStep: position,
       logs: updateLogs(currentData.logs, step, 'error', err)
     })
+    return s3.putObject({
+      Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
+      Body: JSON.stringify(updatedData, null, 2)
+    })
   }
 
-  return getStepData(input)
-    .then((flowRunData) => {
-      return updateFlowRun({
+  try {
+    const flowRunData = await getStepData(input)
+    const [_, updatedData] = await Promise.all([
+      dbFlowRun.updateFlowRun({
         id: flowRunData.flowRun.id,
         status: 'error',
         finishedAt: timestamp(),
         message: flowRunData.flowRun.message
-      })
-      .then(() => update(flowRunData))
-    })
-    .then((updatedData) => {
-      return s3.putObject({
-        Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
-        Body: JSON.stringify(updatedData, null, 2)
-      }).then(() => updatedData)
-    })
-    .then(({ key }) => Object.assign({}, input, { key, contentKey: errorKey }))
+      }),
+      update(flowRunData)
+    ])
+
+    return updatedData
+  } catch (error) {
+    console.log(error)
+    return error
+  }
 }

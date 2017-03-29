@@ -10,16 +10,15 @@ module.exports = {
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',
   GRAPHQL_PERMISSIONS: 'GraphQLPermissions',
-  GRAPHQL_DB_FLOWS: 'GraphQLDynamoFlows',
-  GRAPHQL_DB_FLOW_RUNS: 'GraphQLDynamoFlowRuns',
-  GRAPHQL_DB_PROVIDERS: 'GraphQLDynamoProviders',
-  GRAPHQL_DB_SERVICES: 'GraphQLDynamoServices',
-  GRAPHQL_DB_STEPS: 'GraphQLDynamoSteps',
+
+  DYN_DB_FLOWS: 'DynamoDBFlows',
+  DYN_DB_FLOW_RUNS: 'DynamoDBFlowRuns',
+  DYN_DB_PROVIDERS: 'DynamoDBProviders',
+  DYN_DB_SERVICES: 'DynamoDBServices',
+  DYN_DB_STEPS: 'DynamoDBSteps',
 
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
-
-  TEST_STEP_FUNCTION: 'TestStepFunction',
 
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 

@@ -3,11 +3,11 @@ const {
   GRAPHQL_FUNCTION,
   GRAPHQL_API_GATEWAY,
   GRAPHQL_PERMISSIONS,
-  GRAPHQL_DB_FLOWS,
-  GRAPHQL_DB_FLOW_RUNS,
-  GRAPHQL_DB_PROVIDERS,
-  GRAPHQL_DB_SERVICES,
-  GRAPHQL_DB_STEPS,
+  DYN_DB_FLOWS,
+  DYN_DB_FLOW_RUNS,
+  DYN_DB_PROVIDERS,
+  DYN_DB_SERVICES,
+  DYN_DB_STEPS,
   STATE_MACHINE_TRIGGER_FUNCTION,
   STATE_MACHINE_OUTPUT_FUNCTION,
   S3_BUCKET
@@ -18,7 +18,7 @@ const {
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
-module.exports = ({ stage, resource, key, swaggerKey }) => ({
+module.exports = ({ stage, key, swaggerKey }) => ({
   [GRAPHQL_API_GATEWAY]: {
     Type: 'AWS::Serverless::Api',
     Properties: {
@@ -41,11 +41,11 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          DYNAMO_FLOWS: { Ref: GRAPHQL_DB_FLOWS },
-          DYNAMO_FLOW_RUNS: { Ref: GRAPHQL_DB_FLOW_RUNS },
-          DYNAMO_PROVIDERS: { Ref: GRAPHQL_DB_PROVIDERS },
-          DYNAMO_SERVICES: { Ref: GRAPHQL_DB_SERVICES },
-          DYNAMO_STEPS: { Ref: GRAPHQL_DB_STEPS },
+          DYNAMO_FLOWS: { Ref: DYN_DB_FLOWS },
+          DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
+          DYNAMO_PROVIDERS: { Ref: DYN_DB_PROVIDERS },
+          DYNAMO_SERVICES: { Ref: DYN_DB_SERVICES },
+          DYNAMO_STEPS: { Ref: DYN_DB_STEPS },
           STATE_MACHINE_TRIGGER_FUNCTION: { Ref: STATE_MACHINE_TRIGGER_FUNCTION },
           STATE_MACHINE_OUTPUT_FUNCTION: { Ref: STATE_MACHINE_OUTPUT_FUNCTION },
           S3_BUCKET: { Ref: S3_BUCKET }
@@ -61,7 +61,14 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
           Method: 'POST'
         }
       }
-    }
+    },
+    DependsOn: [
+      DYN_DB_FLOWS,
+      DYN_DB_FLOW_RUNS,
+      DYN_DB_PROVIDERS,
+      DYN_DB_SERVICES,
+      DYN_DB_STEPS
+    ]
   },
   [GRAPHQL_PERMISSIONS]: {
     Type: 'AWS::Lambda::Permission',
@@ -81,40 +88,5 @@ module.exports = ({ stage, resource, key, swaggerKey }) => ({
       }
     },
     DependsOn: [GRAPHQL_FUNCTION, GRAPHQL_API_GATEWAY]
-  },
-  [GRAPHQL_DB_FLOWS]: {
-    Type: 'AWS::Serverless::SimpleTable',
-    PrimaryKey: {
-      Name: 'id',
-      Type: 'String'
-    }
-  },
-  [GRAPHQL_DB_FLOW_RUNS]: {
-    Type: 'AWS::Serverless::SimpleTable',
-    PrimaryKey: {
-      Name: 'id',
-      Type: 'String'
-    }
-  },
-  [GRAPHQL_DB_PROVIDERS]: {
-    Type: 'AWS::Serverless::SimpleTable',
-    PrimaryKey: {
-      Name: 'id',
-      Type: 'String'
-    }
-  },
-  [GRAPHQL_DB_SERVICES]: {
-    Type: 'AWS::Serverless::SimpleTable',
-    PrimaryKey: {
-      Name: 'id',
-      Type: 'String'
-    }
-  },
-  [GRAPHQL_DB_STEPS]: {
-    Type: 'AWS::Serverless::SimpleTable',
-    PrimaryKey: {
-      Name: 'id',
-      Type: 'String'
-    }
   }
 })

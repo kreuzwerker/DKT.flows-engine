@@ -21,6 +21,9 @@ describe('ƛ GraphQL', () => {
     await seedTestdata()
   })
 
+  /*
+   * depricated resolver tests
+   */
   // describe('FlowRuns Resolvers', FlowRunsResolver)
   // describe('Flows Resolvers', FlowsResolver)
   // describe('Providers Resolvers', ProvidersResolver)

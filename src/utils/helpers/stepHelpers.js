@@ -1,5 +1,4 @@
 import S3 from '../s3'
-import dynDB from '../dynamoDB'
 import timestamp from '../timestamp'
 
 

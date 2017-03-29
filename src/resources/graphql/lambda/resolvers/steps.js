@@ -1,8 +1,6 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import uuid from 'uuid'
 import { getFlowById, updateFlow } from './flows'
 import { getServiceById } from './services'
-import dynDB from '../../../../utils/dynamoDB'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
 import timestamp from '../../../../utils/timestamp'
@@ -10,6 +8,7 @@ import {
   createTestStepDataParams,
   createTestStepTriggerParams
 } from '../../../../utils/helpers/stepHelpers'
+import * as dbSteps from '../../../dbSteps/resolvers'
 
 
 /**
@@ -17,35 +16,17 @@ import {
  * -----------------------------------------------------------------------------
  */
 export function allSteps() {
-  const table = process.env.DYNAMO_STEPS
-  return dynDB.scan(table)
-              .then(r => r.Items.map(unmarshalItem))
+  return dbSteps.allSteps()
 }
 
 
 export function getStepById(stepId) {
-  const table = process.env.DYNAMO_STEPS
-  const params = {
-    Key: { id: { S: stepId } }
-  }
-
-  return dynDB.getItem(table, params)
-               .then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dbSteps.getStepById(stepId)
 }
 
 
 export function batchGetStepByIds(stepsIds) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    RequestItems: {
-      [table]: {
-        Keys: stepsIds.map(id => ({ id: { S: id } }))
-      }
-    }
-  }
-
-  return dynDB.batchGetItem(query)
-              .then(res => res.Responses[table].map(unmarshalItem))
+  return dbSteps.batchGetStepByIds(stepsIds)
 }
 
 
@@ -54,7 +35,6 @@ export function batchGetStepByIds(stepsIds) {
  * -----------------------------------------------------------------------------
  */
 export async function createStep(step) {
-  const table = process.env.DYNAMO_STEPS
   // set defaults
   const newStep = Object.assign({}, {
     id: uuid.v4(),
@@ -76,7 +56,7 @@ export async function createStep(step) {
       }
     }
 
-    return dynDB.putItem(table, newStep)
+    return dbSteps.createStep(newStep)
   } catch (err) {
     return Promise.reject(err)
   }
@@ -84,17 +64,13 @@ export async function createStep(step) {
 
 
 export function updateStep(step) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    Key: { id: { S: step.id } }
-  }
-
-  return dynDB.updateItem(table, query, step)
+  return dbSteps.updateStep(step)
 }
 
 
 export async function testStep(stepId, payload) {
   const s3 = S3(process.env.S3_BUCKET)
+
   try {
     const step = await getStepById(stepId)
     const service = await getServiceById(step.service)
@@ -104,40 +80,34 @@ export async function testStep(stepId, payload) {
 
     if (service.type === 'TRIGGER') {
       const newStep = Object.assign({}, step, { tested: true })
-      return updateStep(newStep)
-        .then(() => Promise.resolve(Object.assign({}, newStep, { service })))
+      await updateStep(newStep)
+      return Object.assign({}, newStep, { service })
     }
 
-    return s3.putObject(testStepData)
-      .then(() => Lambda.invoke(invokeParams))
-      .then((output) => {
-        const parsedOutput = JSON.parse(output.Payload)
-        return s3.getObject({ Key: parsedOutput.key }).then(res => [res, parsedOutput.key])
-      })
-      .then((res) => {
-        const [lambdaOutput, outputKey] = res
-        const result = lambdaOutput.Body.toString()
-        let newStep = {}
+    await s3.putObject(testStepData)
 
-        if (JSON.parse(result).status === 'error') {
-          newStep = Object.assign({}, step, { tested: false })
-          return updateStep(newStep)
-            .then(() => Promise.all([
-              s3.deleteObject({ Key: testStepData.Key }),
-              s3.deleteObject({ Key: outputKey })
-            ]))
-            .then(() => Object.assign({}, newStep, { service, error: result }))
-        }
+    const stepResult = await Lambda.invoke(invokeParams)
+    const parsedStepResult = JSON.parse(stepResult.Payload)
+    const stepOutput = await s3.getObject({ Key: parsedStepResult.key })
+    const output = JSON.parse(stepOutput.Body.toString())
+    const testedStep = step
+    const result = Object.assign({}, testedStep, { service })
 
-        newStep = Object.assign({}, step, { tested: true })
+    if (output.status === 'error') {
+      testedStep.tested = false
+      result.error = output
+    } else {
+      testedStep.tested = true
+      result.result = output
+    }
 
-        return updateStep(newStep)
-          .then(() => Promise.all([
-            s3.deleteObject({ Key: testStepData.Key }),
-            s3.deleteObject({ Key: outputKey })
-          ]))
-          .then(() => Object.assign({}, newStep, { service, result }))
-      })
+    await Promise.all([
+      updateStep(testedStep),
+      s3.deleteObject({ Key: testStepData.Key }),
+      s3.deleteObject({ Key: parsedStepResult.key })
+    ])
+
+    return result
   } catch (err) {
     return err
   }
@@ -145,10 +115,5 @@ export async function testStep(stepId, payload) {
 
 
 export function deleteStep(id) {
-  const table = process.env.DYNAMO_STEPS
-  const query = {
-    Key: { id: { S: id } }
-  }
-  return dynDB.deleteItem(table, query)
-              .then(() => ({ id }))
+  return dbSteps.deleteStep(id)
 }

@@ -185,36 +185,6 @@ const MutationType = new GraphQLObjectType({
       resolve: (_, { id }) => Providers.deleteProvider(id)
     },
 
-    createService: {
-      type: ServiceType,
-      args: {
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        description: { type: GraphQLString },
-        type: { type: GraphQLString },
-        provider: { type: GraphQLID },
-        step: { type: GraphQLID }
-      },
-      resolve: (_, service) => Services.createService(service)
-    },
-    updateService: {
-      type: ServiceType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        name: { type: GraphQLString },
-        description: { type: GraphQLString },
-        type: { type: GraphQLString },
-        provider: { type: GraphQLID },
-        step: { type: GraphQLID }
-      },
-      resolve: (_, service) => Services.updateService(service)
-    },
-    deleteService: {
-      type: ServiceType,
-      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => Services.deleteService(id)
-    },
-
     createStep: {
       type: StepType,
       args: {

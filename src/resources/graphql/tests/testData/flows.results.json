@@ -1,0 +1,288 @@
+{
+  "allFlows": [
+    {
+      "id": "dontDeleteMe20133m8gu0lju",
+      "name": "first flow",
+      "description": "This is a mocked flow object.",
+      "steps": [
+        {
+          "id": "dontDeleteMe101795ez58bzs",
+          "description": "Triggers a flow run with a given url",
+          "tested": null,
+          "position": 0,
+          "configParams": [
+            {
+              "fieldId": "url-input",
+              "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+            }
+          ],
+          "service": {
+            "id": "dontDeleteMel01791wvcejt5",
+            "name": "URL Input",
+            "type": "TRIGGER",
+            "description": "Triggers a flow run with a given url",
+            "arn": null,
+            "configSchema": [
+              {
+                "position": 0,
+                "fieldId": "https-checkbox",
+                "label": "HTTPS",
+                "type": "checkbox",
+                "defaultValue": "true",
+                "required": 1
+              },
+              {
+                "position": 1,
+                "fieldId": "url-input",
+                "label": "URL",
+                "type": "input",
+                "defaultValue": "false",
+                "required": null
+              },
+              {
+                "position": 3,
+                "fieldId": "comment-textarea",
+                "label": "Comment",
+                "type": "textarea",
+                "defaultValue": "Sample comment",
+                "required": 0
+              },
+              {
+                "position": 2,
+                "fieldId": "method-input",
+                "label": "Method",
+                "type": "select",
+                "defaultValue": "GET",
+                "required": null
+              }
+            ],
+            "provider": {
+              "description": "RSS services.",
+              "group": "DKT native app",
+              "icon": "rss_feed",
+              "id": "dontDeleteMei0133gwr0g9i1",
+              "name": "RSS"
+            }
+          }
+        },
+        {
+          "id": "dontDeleteMet0133sqdy35e6",
+          "description": "Fetches an Article form a given url",
+          "tested": null,
+          "position": 1,
+          "configParams": null,
+          "service": {
+            "id": "dontDeleteMeh0133z9r38ljg",
+            "name": "Fetch Article",
+            "type": "ACTION",
+            "description": "Fetches an Article form a given url",
+            "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+            "configSchema": null,
+            "provider": {
+              "description": "RSS services.",
+              "group": "DKT native app",
+              "icon": "rss_feed",
+              "id": "dontDeleteMei0133gwr0g9i1",
+              "name": "RSS"
+            }
+          }
+        },
+        {
+          "id": "dontDeleteMe501332dveadqc",
+          "description": "Extracts the Article from a given HTML",
+          "tested": null,
+          "position": 2,
+          "configParams": null,
+          "service": {
+            "id": "dontDeleteMem01790ymkz7xl",
+            "name": "Extract Article",
+            "type": "ACTION",
+            "description": "Extracts the Article from a given HTML",
+            "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+            "configSchema": [
+              {
+                "position": 0,
+                "fieldId": "language-input",
+                "label": "Language",
+                "type": "radio",
+                "defaultValue": "en",
+                "required": null
+              }
+            ],
+            "provider": {
+              "description": "RSS services.",
+              "group": "DKT native app",
+              "icon": "rss_feed",
+              "id": "dontDeleteMei0133gwr0g9i1",
+              "name": "RSS"
+            }
+          }
+        },
+        {
+          "id": "dontDeleteMev013373puyuvy",
+          "description": "Capitalizes a given Text",
+          "tested": null,
+          "position": 3,
+          "configParams": null,
+          "service": {
+            "id": "dontDeleteMef01791a6o9kut",
+            "name": "Capitalize Text",
+            "type": "ACTION",
+            "description": "Capitalizes a given Text",
+            "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+            "configSchema": null,
+            "provider": {
+              "description": "RSS services.",
+              "group": "DKT native app",
+              "icon": "rss_feed",
+              "id": "dontDeleteMei0133gwr0g9i1",
+              "name": "RSS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Flow": {
+    "id": "dontDeleteMe20133m8gu0lju",
+    "name": "first flow",
+    "description": "This is a mocked flow object.",
+    "steps": [
+      {
+        "id": "dontDeleteMe101795ez58bzs",
+        "description": "Triggers a flow run with a given url",
+        "tested": null,
+        "position": 0,
+        "configParams": [
+          {
+            "fieldId": "url-input",
+            "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+          }
+        ],
+        "service": {
+          "id": "dontDeleteMel01791wvcejt5",
+          "name": "URL Input",
+          "type": "TRIGGER",
+          "description": "Triggers a flow run with a given url",
+          "arn": null,
+          "configSchema": [
+            {
+              "position": 0,
+              "fieldId": "https-checkbox",
+              "label": "HTTPS",
+              "type": "checkbox",
+              "defaultValue": "true",
+              "required": 1
+            },
+            {
+              "position": 1,
+              "fieldId": "url-input",
+              "label": "URL",
+              "type": "input",
+              "defaultValue": "false",
+              "required": null
+            },
+            {
+              "position": 3,
+              "fieldId": "comment-textarea",
+              "label": "Comment",
+              "type": "textarea",
+              "defaultValue": "Sample comment",
+              "required": 0
+            },
+            {
+              "position": 2,
+              "fieldId": "method-input",
+              "label": "Method",
+              "type": "select",
+              "defaultValue": "GET",
+              "required": null
+            }
+          ],
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        }
+      },
+      {
+        "id": "dontDeleteMev013373puyuvy",
+        "description": "Capitalizes a given Text",
+        "tested": null,
+        "position": 3,
+        "configParams": null,
+        "service": {
+          "id": "dontDeleteMef01791a6o9kut",
+          "name": "Capitalize Text",
+          "type": "ACTION",
+          "description": "Capitalizes a given Text",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+          "configSchema": null,
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        }
+      },
+      {
+        "id": "dontDeleteMe501332dveadqc",
+        "description": "Extracts the Article from a given HTML",
+        "tested": null,
+        "position": 2,
+        "configParams": null,
+        "service": {
+          "id": "dontDeleteMem01790ymkz7xl",
+          "name": "Extract Article",
+          "type": "ACTION",
+          "description": "Extracts the Article from a given HTML",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+          "configSchema": [
+            {
+              "position": 0,
+              "fieldId": "language-input",
+              "label": "Language",
+              "type": "radio",
+              "defaultValue": "en",
+              "required": null
+            }
+          ],
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        }
+      },
+      {
+        "id": "dontDeleteMet0133sqdy35e6",
+        "description": "Fetches an Article form a given url",
+        "tested": null,
+        "position": 1,
+        "configParams": null,
+        "service": {
+          "id": "dontDeleteMeh0133z9r38ljg",
+          "name": "Fetch Article",
+          "type": "ACTION",
+          "description": "Fetches an Article form a given url",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+          "configSchema": null,
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        }
+      }
+    ]
+  }
+}

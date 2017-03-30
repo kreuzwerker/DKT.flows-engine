@@ -1,5 +1,0 @@
-{
-  "body": {
-    "query": "{ allProviders { services { id } } }"
-  }
-}

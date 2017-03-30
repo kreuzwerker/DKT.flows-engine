@@ -1,5 +1,0 @@
-{
-  "body": {
-    "mutation": "mutation { updateFlow(flow: { id: \"asd0iehaj9re20143m8gu0lbv\" name: \"Foobar\" steps:[\"ciy0jidbmaivt0133sqdy35e6\"] }) { id name steps { id description } updatedAt createdAt } }"
-  }
-}

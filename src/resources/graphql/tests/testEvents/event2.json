@@ -1,5 +1,0 @@
-{
-  "body": {
-    "query": "{ allServices { id name provider { id } step { id flow { id steps { id } } } } }"
-  }
-}

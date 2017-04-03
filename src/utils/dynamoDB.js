@@ -67,7 +67,7 @@ function DynamoDB() {
       const { ConsumedCapacity } = await dynamoDB.putItem(merge(table, params)).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
-        throw new Error('createFlow failed. No units consumed by the operation')
+        throw new Error('putItem failed. No units consumed by the operation')
       }
 
       const query = { Key: { id: { S: item.id } } }
@@ -82,7 +82,7 @@ function DynamoDB() {
       const { ConsumedCapacity } = await dynamoDB.updateItem(updateParams).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
-        throw new Error('createFlow failed. No units consumed by the operation')
+        throw new Error('updateItem failed. No units consumed by the operation')
       }
 
       const updatedItem = await dynamoDB.getItem(merge(table, query)).promise()
@@ -94,7 +94,7 @@ function DynamoDB() {
       const { ConsumedCapacity } = await dynamoDB.deleteItem(merge(table, item)).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
-        throw new Error('deleteFlow failed. No units consumed by the operation')
+        throw new Error('deleteItem failed. No units consumed by the operation')
       }
 
       return 'success'

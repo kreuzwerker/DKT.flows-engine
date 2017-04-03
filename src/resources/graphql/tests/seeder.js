@@ -7,7 +7,7 @@ import services from './testData/services.json'
 import steps from './testData/steps.json'
 
 
-function seedTestdata() {
+export function seedTestdata() {
   const {
     DYNAMO_FLOWS,
     DYNAMO_FLOW_RUNS,
@@ -17,13 +17,37 @@ function seedTestdata() {
   } = process.env
 
   const seedFlows = flows.map(flow => dynDB.putItem(DYNAMO_FLOWS, flow))
-  const seedFlowRuns = flowRuns.map(flowRun => dynDB.putItem(DYNAMO_FLOW_RUNS, flowRun))
+  // const seedFlowRuns = flowRuns.map(flowRun => dynDB.putItem(DYNAMO_FLOW_RUNS, flowRun))
   const seedProviders = providers.map(provider => dynDB.putItem(DYNAMO_PROVIDERS, provider))
   const seedServices = services.map(service => dynDB.putItem(DYNAMO_SERVICES, service))
   const seedSteps = steps.map(step => dynDB.putItem(DYNAMO_STEPS, step))
 
-  return Promise.all(_flatten([seedFlows, seedFlowRuns, seedProviders, seedServices, seedSteps]))
+  return Promise.all(_flatten([seedFlows, seedProviders, seedServices, seedSteps]))
 }
 
 
-export default seedTestdata
+export function clearTestdata() {
+  const {
+    DYNAMO_FLOWS,
+    DYNAMO_FLOW_RUNS,
+    DYNAMO_PROVIDERS,
+    DYNAMO_SERVICES,
+    DYNAMO_STEPS
+  } = process.env
+
+  const seedFlows = flows.map((flow) => {
+    return dynDB.deleteItem(DYNAMO_FLOWS, { Key: { id: { S: flow.id } } })
+  })
+  // const seedFlowRuns = flowRuns.map(flowRun => dynDB.deleteItem(DYNAMO_FLOW_RUNS, flowRun))
+  const seedProviders = providers.map((provider) => {
+    return dynDB.deleteItem(DYNAMO_PROVIDERS, { Key: { id: { S: provider.id } } })
+  })
+  const seedServices = services.map((service) => {
+    return dynDB.deleteItem(DYNAMO_SERVICES, { Key: { id: { S: service.id } } })
+  })
+  const seedSteps = steps.map((step) => {
+    return dynDB.deleteItem(DYNAMO_STEPS, { Key: { id: { S: step.id } } })
+  })
+
+  return Promise.all(_flatten([seedFlows, seedProviders, seedServices, seedSteps]))
+}

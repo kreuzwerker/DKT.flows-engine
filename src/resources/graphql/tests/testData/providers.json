@@ -1,35 +1,31 @@
 [
   {
-    "id": "dontDeleteMel014323zlitjn",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "Filter",
-    "group": "DKT native app",
     "description": "Filter services.",
+    "group": "DKT native app",
     "icon": "filter_list",
+    "id": "dontDeleteMel014323zlitjn",
+    "name": "Filter",
     "services": []
   },
   {
-    "id": "dontDeleteMer0133xu1vlvyj",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "RSS",
-    "group": "DKT native app",
-    "description": "RSS services.",
-    "icon": "rss_feed",
-    "services": [
-      "dontDeleteMef01791a6o9kut",
-      "dontDeleteMem01790ymkz7xl"
-    ]
-  },
-  {
-    "id": "dontDeleteMei0133gwr0g9i1",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "Email",
-    "group": "DKT native app",
     "description": "Email services.",
+    "group": "DKT native app",
     "icon": "mail",
+    "id": "dontDeleteMer0133xu1vlvyj",
+    "name": "Email",
     "services": []
+  },
+  {
+    "description": "RSS services.",
+    "group": "DKT native app",
+    "icon": "rss_feed",
+    "id": "dontDeleteMei0133gwr0g9i1",
+    "name": "RSS",
+    "services": [
+      "dontDeleteMel01791wvcejt5",
+      "dontDeleteMeh0133z9r38ljg",
+      "dontDeleteMem01790ymkz7xl",
+      "dontDeleteMef01791a6o9kut"
+    ]
   }
 ]

@@ -1,0 +1,242 @@
+{
+  "allProviders": [
+    {
+      "id": "dontDeleteMei0133gwr0g9i1",
+      "name": "RSS",
+      "group": "DKT native app",
+      "description": "RSS services.",
+      "icon": "rss_feed",
+      "services": [
+        {
+          "id": "dontDeleteMeh0133z9r38ljg",
+          "name": "Fetch Article",
+          "type": "ACTION",
+          "description": "Fetches an Article form a given url",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+          "configSchema": null,
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        },
+        {
+          "id": "dontDeleteMem01790ymkz7xl",
+          "name": "Extract Article",
+          "type": "ACTION",
+          "description": "Extracts the Article from a given HTML",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+          "configSchema": [
+            {
+              "position": 0,
+              "fieldId": "language-input",
+              "label": "Language",
+              "type": "radio",
+              "defaultValue": "en",
+              "required": null
+            }
+          ],
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        },
+        {
+          "id": "dontDeleteMel01791wvcejt5",
+          "name": "URL Input",
+          "type": "TRIGGER",
+          "description": "Triggers a flow run with a given url",
+          "arn": null,
+          "configSchema": [
+            {
+              "position": 0,
+              "fieldId": "https-checkbox",
+              "label": "HTTPS",
+              "type": "checkbox",
+              "defaultValue": "true",
+              "required": 1
+            },
+            {
+              "position": 1,
+              "fieldId": "url-input",
+              "label": "URL",
+              "type": "input",
+              "defaultValue": "false",
+              "required": null
+            },
+            {
+              "position": 3,
+              "fieldId": "comment-textarea",
+              "label": "Comment",
+              "type": "textarea",
+              "defaultValue": "Sample comment",
+              "required": 0
+            },
+            {
+              "position": 2,
+              "fieldId": "method-input",
+              "label": "Method",
+              "type": "select",
+              "defaultValue": "GET",
+              "required": null
+            }
+          ],
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        },
+        {
+          "id": "dontDeleteMef01791a6o9kut",
+          "name": "Capitalize Text",
+          "type": "ACTION",
+          "description": "Capitalizes a given Text",
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+          "configSchema": null,
+          "provider": {
+            "description": "RSS services.",
+            "group": "DKT native app",
+            "icon": "rss_feed",
+            "id": "dontDeleteMei0133gwr0g9i1",
+            "name": "RSS"
+          }
+        }
+      ]
+    },
+    {
+      "id": "dontDeleteMel014323zlitjn",
+      "name": "Filter",
+      "group": "DKT native app",
+      "description": "Filter services.",
+      "icon": "filter_list",
+      "services": []
+    },
+    {
+      "id": "dontDeleteMer0133xu1vlvyj",
+      "name": "Email",
+      "group": "DKT native app",
+      "description": "Email services.",
+      "icon": "mail",
+      "services": []
+    }
+  ],
+  "Provider": {
+    "id": "dontDeleteMei0133gwr0g9i1",
+    "name": "RSS",
+    "description": "RSS services.",
+    "group": "DKT native app",
+    "icon": "rss_feed",
+    "services": [
+      {
+        "id": "dontDeleteMeh0133z9r38ljg",
+        "name": "Fetch Article",
+        "type": "ACTION",
+        "description": "Fetches an Article form a given url",
+        "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+        "configSchema": null,
+        "provider": {
+          "description": "RSS services.",
+          "group": "DKT native app",
+          "icon": "rss_feed",
+          "id": "dontDeleteMei0133gwr0g9i1",
+          "name": "RSS"
+        }
+      },
+      {
+        "id": "dontDeleteMef01791a6o9kut",
+        "name": "Capitalize Text",
+        "type": "ACTION",
+        "description": "Capitalizes a given Text",
+        "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+        "configSchema": null,
+        "provider": {
+          "description": "RSS services.",
+          "group": "DKT native app",
+          "icon": "rss_feed",
+          "id": "dontDeleteMei0133gwr0g9i1",
+          "name": "RSS"
+        }
+      },
+      {
+        "id": "dontDeleteMel01791wvcejt5",
+        "name": "URL Input",
+        "type": "TRIGGER",
+        "description": "Triggers a flow run with a given url",
+        "arn": null,
+        "configSchema": [
+          {
+            "position": 0,
+            "fieldId": "https-checkbox",
+            "label": "HTTPS",
+            "type": "checkbox",
+            "defaultValue": "true",
+            "required": 1
+          },
+          {
+            "position": 1,
+            "fieldId": "url-input",
+            "label": "URL",
+            "type": "input",
+            "defaultValue": "false",
+            "required": null
+          },
+          {
+            "position": 3,
+            "fieldId": "comment-textarea",
+            "label": "Comment",
+            "type": "textarea",
+            "defaultValue": "Sample comment",
+            "required": 0
+          },
+          {
+            "position": 2,
+            "fieldId": "method-input",
+            "label": "Method",
+            "type": "select",
+            "defaultValue": "GET",
+            "required": null
+          }
+        ],
+        "provider": {
+          "description": "RSS services.",
+          "group": "DKT native app",
+          "icon": "rss_feed",
+          "id": "dontDeleteMei0133gwr0g9i1",
+          "name": "RSS"
+        }
+      },
+      {
+        "id": "dontDeleteMem01790ymkz7xl",
+        "name": "Extract Article",
+        "type": "ACTION",
+        "description": "Extracts the Article from a given HTML",
+        "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+        "configSchema": [
+          {
+            "position": 0,
+            "fieldId": "language-input",
+            "label": "Language",
+            "type": "radio",
+            "defaultValue": "en",
+            "required": null
+          }
+        ],
+        "provider": {
+          "description": "RSS services.",
+          "group": "DKT native app",
+          "icon": "rss_feed",
+          "id": "dontDeleteMei0133gwr0g9i1",
+          "name": "RSS"
+        }
+      }
+    ]
+  }
+}

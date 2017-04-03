@@ -1,38 +1,36 @@
 [
   {
+    "description": "Triggers a flow run with a given url",
+    "flow": "dontDeleteMe20133m8gu0lju",
     "id": "dontDeleteMe101795ez58bzs",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "position": "1",
-    "description": "DKT native app",
-    "flow": "dontDeleteMe20133m8gu0lju",
-    "service": "dontDeleteMel01791wvcejt5"
+    "position": 0,
+    "service": "dontDeleteMel01791wvcejt5",
+    "configParams": [
+      {
+        "fieldId": "url-input",
+        "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+      }
+    ]
   },
   {
+    "description": "Fetches an Article form a given url",
+    "flow": "dontDeleteMe20133m8gu0lju",
     "id": "dontDeleteMet0133sqdy35e6",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "position": "0",
-    "description": "Makes a delicious freshly brewed organic coffee.",
-    "flow": "dontDeleteMe20133m8gu0lju",
-    "service": null
+    "position": 1,
+    "service": "dontDeleteMeh0133z9r38ljg"
   },
   {
+    "description": "Extracts the Article from a given HTML",
+    "flow": "dontDeleteMe20133m8gu0lju",
     "id": "dontDeleteMe501332dveadqc",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "position": "1",
-    "description": "Triggers on new RSS feed items which feature a kitten.",
-    "flow": "dontDeleteMel0179imlh0a73",
+    "position": 2,
     "service": "dontDeleteMem01790ymkz7xl"
   },
   {
+    "description": "Capitalizes a given Text",
+    "flow": "dontDeleteMe20133m8gu0lju",
     "id": "dontDeleteMev013373puyuvy",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "position": "0",
-    "description": "Triggers on new RSS feed items.",
-    "flow": "dontDeleteMel0179imlh0a73",
+    "position": 3,
     "service": "dontDeleteMef01791a6o9kut"
   }
 ]

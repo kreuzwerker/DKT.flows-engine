@@ -1,46 +1,93 @@
 [
   {
+    "description": "Triggers a flow run with a given url",
+    "icon": "mail",
     "id": "dontDeleteMel01791wvcejt5",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "Sing hallelujah",
-    "description": "DKT native app",
-    "type": "ACTION",
-    "icon": "filter_list",
-    "provider": null,
-    "step": "dontDeleteMe101795ez58bzs"
+    "name": "URL Input",
+    "provider": "dontDeleteMei0133gwr0g9i1",
+    "arn": null,
+    "type": "TRIGGER",
+    "configSchema": [
+      {
+        "position": 0,
+        "fieldId": "https-checkbox",
+        "label": "HTTPS",
+        "type": "checkbox",
+        "defaultValue": "true",
+        "required": true
+      },
+      {
+        "fieldId": "url-input",
+        "position": 1,
+        "label": "URL",
+        "defaultValue": "false",
+        "type": "input"
+      },
+      {
+        "position": 3,
+        "fieldId": "comment-textarea",
+        "label": "Comment",
+        "type": "textarea",
+        "defaultValue": "Sample comment",
+        "required": false
+      },
+      {
+        "fieldId": "method-input",
+        "position": 2,
+        "label": "Method",
+        "defaultValue": "GET",
+        "type": "select",
+        "options": [
+          { "label": "GET", "value": "GET" },
+          { "label": "PUT", "value": "PUT" }
+        ]
+      }
+    ],
+    "samplePayload": null
   },
   {
-    "id": "dontDeleteMeh0133z9r38ljg",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "Make coffee",
-    "description": "Makes a delicious freshly brewed organic coffee.",
-    "type": "ACTION",
+    "description": "Fetches an Article form a given url",
     "icon": "rss_feed",
-    "provider": null,
-    "step": null
+    "id": "dontDeleteMeh0133z9r38ljg",
+    "name": "Fetch Article",
+    "provider": "dontDeleteMei0133gwr0g9i1",
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-FetchArticleFunction-16SWWTDVOY61Y",
+    "type": "ACTION",
+    "configSchema": null,
+    "samplePayload": "http://www.spiegel.de/politik/ausland/brexit-schotten-sollen-ueber-unabhaengigkeit-abstimmen-a-1138530.html"
   },
   {
+    "description": "Extracts the Article from a given HTML",
+    "icon": "rss_feed",
     "id": "dontDeleteMem01790ymkz7xl",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "New kitten in RSS feed.",
-    "description": "Triggers on new RSS feed items which feature a kitten.",
-    "type": "TRIGGER",
-    "icon": "mail",
-    "provider": "dontDeleteMer0133xu1vlvyj",
-    "step": "dontDeleteMe501332dveadqc"
+    "name": "Extract Article",
+    "provider": "dontDeleteMei0133gwr0g9i1",
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-ExtractArticleTextFunction-IPZFVKD38N1E",
+    "type": "ACTION",
+    "configSchema": [
+      {
+        "fieldId": "language-input",
+        "position": 0,
+        "label": "Language",
+        "defaultValue": "en",
+        "type": "radio",
+        "options": [
+          { "label": "English", "value": "en" },
+          { "label": "German", "value": "de" }
+        ]
+      }
+    ],
+    "samplePayload": "<html><head></head><body><article>Lorem Ipsum</article></body></html>"
   },
   {
+    "description": "Capitalizes a given Text",
+    "icon": "rss_feed",
     "id": "dontDeleteMef01791a6o9kut",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "New item in RSS feed",
-    "description": "Triggers on new RSS feed items.",
-    "type": "TRIGGER",
-    "icon": "mail",
-    "provider": "dontDeleteMer0133xu1vlvyj",
-    "step": "dontDeleteMev013373puyuvy"
+    "name": "Capitalize Text",
+    "provider": "dontDeleteMei0133gwr0g9i1",
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-CapitalizeServiceFunction-KR885LG2C00P",
+    "type": "ACTION",
+    "configSchema": null,
+    "samplePayload": "Lorem Ipsum dolor sit amet."
   }
 ]

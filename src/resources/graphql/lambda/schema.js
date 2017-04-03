@@ -43,7 +43,11 @@ const QueryType = new GraphQLObjectType({
     },
     FlowRun: {
       type: FlowRunType,
-      args: { id: { type: GraphQLID } },
+      args: {
+        id: { type: GraphQLID },
+        limit: { type: GraphQLInt },
+        offset: { type: GraphQLInt }
+      },
       resolve: (_, { id }) => FlowRuns.getFlowRunById(id)
     },
 
@@ -183,36 +187,6 @@ const MutationType = new GraphQLObjectType({
       type: ProviderType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
       resolve: (_, { id }) => Providers.deleteProvider(id)
-    },
-
-    createService: {
-      type: ServiceType,
-      args: {
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        description: { type: GraphQLString },
-        type: { type: GraphQLString },
-        provider: { type: GraphQLID },
-        step: { type: GraphQLID }
-      },
-      resolve: (_, service) => Services.createService(service)
-    },
-    updateService: {
-      type: ServiceType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        name: { type: GraphQLString },
-        description: { type: GraphQLString },
-        type: { type: GraphQLString },
-        provider: { type: GraphQLID },
-        step: { type: GraphQLID }
-      },
-      resolve: (_, service) => Services.updateService(service)
-    },
-    deleteService: {
-      type: ServiceType,
-      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => Services.deleteService(id)
     },
 
     createStep: {

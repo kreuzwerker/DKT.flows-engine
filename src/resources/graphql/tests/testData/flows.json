@@ -1,32 +1,13 @@
 [
   {
+    "description": "This is a mocked flow object.",
     "id": "dontDeleteMe20133m8gu0lju",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "SecondFlow",
-    "description": "This, too, is a mocked flow object.",
+    "name": "first flow",
     "steps": [
       "dontDeleteMe101795ez58bzs",
-      "dontDeleteMet0133sqdy35e6"
-    ]
-  },
-  {
-    "id": "dontDeleteMel0179imlh0a73",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "first flow",
-    "description": "This is a mocked flow object.",
-    "steps": [
+      "dontDeleteMet0133sqdy35e6",
       "dontDeleteMe501332dveadqc",
       "dontDeleteMev013373puyuvy"
     ]
-  },
-  {
-    "id": "dontDeleteMe54132m8gu0lgr",
-    "createdAt": "2017-02-02T10:37:46.897Z",
-    "updatedAt": "2017-02-02T10:37:46.897Z",
-    "name": "SecondFlow",
-    "description": "this is a flow to for the delete mutation",
-    "steps": []
   }
 ]

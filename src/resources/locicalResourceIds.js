@@ -22,6 +22,8 @@ module.exports = {
 
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
+  URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
+
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
 
   FLOW_TRIGGER_API_FUNCTION: 'FlowTriggerApiFunction',

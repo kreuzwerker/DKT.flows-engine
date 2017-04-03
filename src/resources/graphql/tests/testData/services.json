@@ -3,9 +3,9 @@
     "description": "Triggers a flow run with a given url",
     "icon": "mail",
     "id": "dontDeleteMel01791wvcejt5",
-    "name": "URL Input",
+    "name": "URL Config",
     "provider": "dontDeleteMei0133gwr0g9i1",
-    "arn": null,
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-UrlConfigTriggerServiceFuncti-MDDQN07FGZ7F",
     "type": "TRIGGER",
     "configSchema": [
       {

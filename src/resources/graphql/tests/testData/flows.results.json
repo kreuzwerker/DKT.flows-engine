@@ -18,10 +18,10 @@
           ],
           "service": {
             "id": "dontDeleteMel01791wvcejt5",
-            "name": "URL Input",
+            "name": "URL Config",
             "type": "TRIGGER",
             "description": "Triggers a flow run with a given url",
-            "arn": null,
+            "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-UrlConfigTriggerServiceFuncti-MDDQN07FGZ7F",
             "configSchema": [
               {
                 "position": 0,
@@ -161,10 +161,10 @@
         ],
         "service": {
           "id": "dontDeleteMel01791wvcejt5",
-          "name": "URL Input",
+          "name": "URL Config",
           "type": "TRIGGER",
           "description": "Triggers a flow run with a given url",
-          "arn": null,
+          "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-UrlConfigTriggerServiceFuncti-MDDQN07FGZ7F",
           "configSchema": [
             {
               "position": 0,

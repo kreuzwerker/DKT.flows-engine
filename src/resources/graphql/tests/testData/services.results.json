@@ -51,69 +51,11 @@
       ]
     },
     {
-      "id": "ciy0jeruzbb5m01790ymkz7xl",
-      "name": "URL Input",
-      "description": "Triggers a flow run with a given url",
-      "type": "TRIGGER",
-      "arn": null,
-      "provider": {
-        "id": "ciy0ivuazabar0133xu1vlvyj",
-        "description": "RSS services.",
-        "name": "RSS",
-        "group": "DKT native app",
-        "icon": "rss_feed"
-      },
-      "samplePayload": null,
-      "configSchema": [
-        {
-          "fieldId": "https-checkbox",
-          "position": 0,
-          "label": "HTTPS",
-          "defaultValue": "true",
-          "type": "checkbox",
-          "options": null
-        },
-        {
-          "fieldId": "url-input",
-          "position": 1,
-          "label": "URL",
-          "defaultValue": "false",
-          "type": "input",
-          "options": null
-        },
-        {
-          "fieldId": "comment-textarea",
-          "position": 3,
-          "label": "Comment",
-          "defaultValue": "Sample comment",
-          "type": "textarea",
-          "options": null
-        },
-        {
-          "fieldId": "method-input",
-          "position": 2,
-          "label": "Method",
-          "defaultValue": "GET",
-          "type": "select",
-          "options": [
-            {
-              "label": "GET",
-              "value": "GET"
-            },
-            {
-              "label": "PUT",
-              "value": "PUT"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "dontDeleteMel01791wvcejt5",
-      "name": "URL Input",
+      "name": "URL Config",
       "description": "Triggers a flow run with a given url",
       "type": "TRIGGER",
-      "arn": null,
+      "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-UrlConfigTriggerServiceFuncti-MDDQN07FGZ7F",
       "provider": {
         "id": "dontDeleteMei0133gwr0g9i1",
         "description": "RSS services.",
@@ -161,72 +103,6 @@
             {
               "label": "PUT",
               "value": "PUT"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ciy0jfkvuahth0133z9r38ljg",
-      "name": "Fetch Article",
-      "description": "Fetches an Article form a given url",
-      "type": "ACTION",
-      "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Dev-FetchArticleFunction-1A458RGT357RY",
-      "provider": {
-        "id": "ciy0ivuazabar0133xu1vlvyj",
-        "description": "RSS services.",
-        "name": "RSS",
-        "group": "DKT native app",
-        "icon": "rss_feed"
-      },
-      "samplePayload": "http://www.spiegel.de/politik/ausland/brexit-schotten-sollen-ueber-unabhaengigkeit-abstimmen-a-1138530.html",
-      "configSchema": null
-    },
-    {
-      "id": "ciy4poibcrqth0133z4r56alz",
-      "name": "Capitalize Text",
-      "description": "Capitalizes a given Text",
-      "type": "ACTION",
-      "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Dev-CapitalizeServiceFunction-MUNUYVV92A1A",
-      "provider": {
-        "id": "ciy0ivuazabar0133xu1vlvyj",
-        "description": "RSS services.",
-        "name": "RSS",
-        "group": "DKT native app",
-        "icon": "rss_feed"
-      },
-      "samplePayload": "Lorem Ipsum dolor sit amet.",
-      "configSchema": null
-    },
-    {
-      "id": "ciy2jfkvufdsef0864z9r38opw",
-      "name": "Extract Article",
-      "description": "Extracts the Article from a given HTML",
-      "type": "ACTION",
-      "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Dev-ExtractArticleTextFunction-J5ABHC45EBR1",
-      "provider": {
-        "id": "ciy0ivuazabar0133xu1vlvyj",
-        "description": "RSS services.",
-        "name": "RSS",
-        "group": "DKT native app",
-        "icon": "rss_feed"
-      },
-      "samplePayload": "<html><head></head><body><article>Lorem Ipsum</article></body></html>",
-      "configSchema": [
-        {
-          "fieldId": "language-input",
-          "position": 0,
-          "label": "Language",
-          "defaultValue": "en",
-          "type": "radio",
-          "options": [
-            {
-              "label": "English",
-              "value": "en"
-            },
-            {
-              "label": "German",
-              "value": "de"
             }
           ]
         }
@@ -251,10 +127,10 @@
   ],
   "Service": {
     "id": "dontDeleteMel01791wvcejt5",
-    "name": "URL Input",
+    "name": "URL Config",
     "description": "Triggers a flow run with a given url",
     "type": "TRIGGER",
-    "arn": null,
+    "arn": "arn:aws:lambda:eu-west-1:855433257886:function:DKT-flow-engine-Test-UrlConfigTriggerServiceFuncti-MDDQN07FGZ7F",
     "provider": {
       "id": "dontDeleteMei0133gwr0g9i1",
       "description": "RSS services.",

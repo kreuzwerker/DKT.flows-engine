@@ -27,6 +27,8 @@ describe('ƛ GraphQL', () => {
   describe('Services', ServicesTests)
   describe('Steps', StepsTests)
 
+  // TODO test FlowRuns
+
   after(async function () {
     await clearTestdata()
   })

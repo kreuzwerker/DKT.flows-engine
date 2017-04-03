@@ -43,7 +43,11 @@ const QueryType = new GraphQLObjectType({
     },
     FlowRun: {
       type: FlowRunType,
-      args: { id: { type: GraphQLID } },
+      args: {
+        id: { type: GraphQLID },
+        limit: { type: GraphQLInt },
+        offset: { type: GraphQLInt }
+      },
       resolve: (_, { id }) => FlowRuns.getFlowRunById(id)
     },
 

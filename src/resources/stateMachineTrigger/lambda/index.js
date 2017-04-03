@@ -9,7 +9,7 @@ export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   input.currentStep = 0 // trigger is always 0
-  logger.log(`Starting StateMachine: '${input.stateMachineArn}'`)
+  console.log(`Starting StateMachine: '${input.stateMachineArn}'`)
 
   try {
     const response = await StepFunctions.startExecution(input.stateMachineArn, JSON.stringify(event))

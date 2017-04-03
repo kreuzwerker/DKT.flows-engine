@@ -133,9 +133,6 @@ export function updateFlowRun(flowRun) {
 
 
 export async function startFlowRun({ id, payload }, flowRunInstance) {
-  const s3 = S3(process.env.S3_BUCKET)
-  const status = 'running'
-  const message = null
   let flowRun = flowRunInstance
 
   try {
@@ -143,19 +140,16 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       flowRun = await getFlowRunById(id)
     }
 
-    const runId = `${timestamp()}_${uuid.v4()}`
-    flowRun.runs.push(runId)
+    const triggerStep = flowRun.flow.steps.reduce((a, step) => {
+      return step.service.type === 'TRIGGER' ? step : a
+    }, {})
 
-    const flowRunData = createFlowRunDataParams(flowRun, runId, payload, status)
-    const invokeParams = createFlowRunTriggerParams(flowRun, runId)
+    await Lambda.invoke({
+      FunctionName: triggerStep.service.arn,
+      Payload: JSON.stringify({ flowRun, payload })
+    })
 
-    return s3.putObject(flowRunData)
-      .then(() => Lambda.invoke(invokeParams))
-      .then(() => updateFlowRun({
-        id, status, message,
-        runs: flowRun.runs,
-        runsCount: flowRun.runs.length
-      }))
+    return getFlowRunById(id)
   } catch (err) {
     return updateFlowRun({ id,
       status: 'error',

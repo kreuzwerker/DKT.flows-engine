@@ -6,7 +6,7 @@ import { flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 
 
 export async function handler(event, context, callback) {
-  const logger = Logger()
+  const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   input.currentStep = 0 // trigger is always 0
   logger.log(`Starting StateMachine: '${input.stateMachineArn}'`)

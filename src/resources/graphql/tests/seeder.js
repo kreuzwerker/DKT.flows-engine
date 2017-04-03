@@ -1,7 +1,6 @@
 import _flatten from 'lodash/flatten'
 import dynDB from '../../../utils/dynamoDB'
 import flows from './testData/flows.json'
-import flowRuns from './testData/flowRuns.json'
 import providers from './testData/providers.json'
 import services from './testData/services.json'
 import steps from './testData/steps.json'
@@ -17,7 +16,6 @@ export function seedTestdata() {
   } = process.env
 
   const seedFlows = flows.map(flow => dynDB.putItem(DYNAMO_FLOWS, flow))
-  // const seedFlowRuns = flowRuns.map(flowRun => dynDB.putItem(DYNAMO_FLOW_RUNS, flowRun))
   const seedProviders = providers.map(provider => dynDB.putItem(DYNAMO_PROVIDERS, provider))
   const seedServices = services.map(service => dynDB.putItem(DYNAMO_SERVICES, service))
   const seedSteps = steps.map(step => dynDB.putItem(DYNAMO_STEPS, step))
@@ -38,7 +36,6 @@ export function clearTestdata() {
   const seedFlows = flows.map((flow) => {
     return dynDB.deleteItem(DYNAMO_FLOWS, { Key: { id: { S: flow.id } } })
   })
-  // const seedFlowRuns = flowRuns.map(flowRun => dynDB.deleteItem(DYNAMO_FLOW_RUNS, flowRun))
   const seedProviders = providers.map((provider) => {
     return dynDB.deleteItem(DYNAMO_PROVIDERS, { Key: { id: { S: provider.id } } })
   })

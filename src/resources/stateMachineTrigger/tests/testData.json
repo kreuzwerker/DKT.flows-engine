@@ -1,0 +1,11 @@
+{
+  "Comment": "A Hello World test of the Amazon States Language using a Pass state",
+  "StartAt": "HelloWorld",
+  "States": {
+    "HelloWorld": {
+      "Type": "Pass",
+      "Result": "Hello World Test!",
+      "End": true
+    }
+  }
+}

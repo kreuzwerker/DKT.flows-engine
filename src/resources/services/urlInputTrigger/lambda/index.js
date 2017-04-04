@@ -3,27 +3,32 @@ import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 
 
+function triggerStepReducer(a, step) {
+  return step.service.type === 'TRIGGER' ? step : a
+}
+
+
+function urlValueResuder(a, param) {
+  return param.fieldId === 'url-input' ? param.value : a
+}
+
+
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
-  logger.log('Input:', input)
+  const steps = input.flowRun.flow.steps || []
+  const currentStep = steps.reduce(triggerStepReducer, {})
+  const url = currentStep.configParams.reduce(urlValueResuder, '')
+
+  logger.log(`Trigger FlowRun '${input.flowRun.id}' with url: ${url}`)
 
   try {
-    const currentStep = input.flowRun.flow.steps.reduce((a, step) => {
-      return step.service.type === 'TRIGGER' ? step : a
-    }, {})
-
-    const url = currentStep.configParams.reduce((a, param) => {
-      if (param.fieldId === 'url-input') {
-        return param.value
-      }
-      return a
-    }, '')
-
-    triggerFlowRun(input.flowRun, url)
-      .then(result => callback(null, result))
+    const result = await triggerFlowRun(input.flowRun, url)
+    logger.log('Triggered FlowRun')
+    callback(null, result)
   } catch (err) {
+    const result = Object.assign({}, input, { error: err })
     logger.log('Error:', err)
-    callback(err)
+    callback(null, result)
   }
 }

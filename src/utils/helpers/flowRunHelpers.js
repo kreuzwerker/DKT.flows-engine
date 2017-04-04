@@ -61,34 +61,29 @@ export function createFlowRunTriggerParams(flowRun, runId) {
   }
 }
 
-export async function triggerFlowRun(flowRun, payload) {
+export function triggerFlowRun(flowRun, payload) {
   const s3 = S3(process.env.S3_BUCKET)
 
-  try {
-    const runId = `${timestamp()}_${uuid.v4()}`
+  const runId = `${timestamp()}_${uuid.v4()}`
 
-    if (!flowRun.runs) {
-      flowRun.runs = []
-    }
-
-    flowRun.runs.push(runId)
-
-    const flowRunData = createFlowRunDataParams(flowRun, runId, payload, 'running')
-    const invokeParams = createFlowRunTriggerParams(flowRun, runId)
-
-    return s3.putObject(flowRunData)
-      .then(() => Lambda.invoke(invokeParams))
-      .then(() => dbFlowRun.updateFlowRun({
-        id: flowRun.id,
-        status: 'running',
-        message: null,
-        runs: flowRun.runs,
-        runsCount: flowRun.runs.length
-      }))
-  } catch (err) {
-    console.log(err)
-    return Promise.reject(err)
+  if (!flowRun.runs) {
+    flowRun.runs = []
   }
+
+  flowRun.runs.push(runId)
+
+  const flowRunData = createFlowRunDataParams(flowRun, runId, payload, 'running')
+  const invokeParams = createFlowRunTriggerParams(flowRun, runId)
+
+  return s3.putObject(flowRunData)
+    .then(() => Lambda.invoke(invokeParams))
+    .then(() => dbFlowRun.updateFlowRun({
+      id: flowRun.id,
+      status: 'running',
+      message: null,
+      runs: flowRun.runs,
+      runsCount: flowRun.runs.length
+    }))
 }
 
 

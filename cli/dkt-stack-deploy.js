@@ -1,5 +1,6 @@
-const program = require('commander')
+const AWS = require('aws-sdk')
 const { marshalItem } = require('dynamodb-marshaler')
+const program = require('commander')
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
 const Lambda = require('../lib/aws/lambda')
@@ -43,6 +44,22 @@ logger.log('Build Lambdas')
 
 const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
+function putItem(table, item) {
+  const { apiVersion } = settings.aws.dynamoDB
+  const dynamoDB = new AWS.DynamoDB({ apiVersion })
+  const currentDate = new Date().toISOString()
+  const newItem = Object.assign({}, item, {
+    createdAt: currentDate, // TODO
+    updatedAt: currentDate
+  })
+  const params = {
+    Item: marshalItem(newItem),
+    ReturnConsumedCapacity: 'TOTAL'
+  }
+
+  return dynamoDB.putItem(Object.assign({}, params, { TableName: table })).promise()
+}
+
 return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(lambdas => bundleLambdas(lambdas, settings.fs.dist.resources))
   .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles, stage))
@@ -50,7 +67,6 @@ return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
   .then(() => CloudFormation.listStackResources(stage))
   .then(stack => getServicesResources(stack.StackResourceSummaries))
-  .then((res) => {
-    console.log(res)
-  })
+  .then(services => Promise.all(services.map(service => putItem('DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2', service))))
+  .then(res => console.log(res))
   .catch(err => logger.error(err))

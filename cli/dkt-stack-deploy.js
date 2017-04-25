@@ -1,7 +1,9 @@
 const program = require('commander')
+const { marshalItem } = require('dynamodb-marshaler')
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
 const Lambda = require('../lib/aws/lambda')
+const CloudFormation = require('../lib/aws/cloudFormation')
 const settings = require('../settings')
 const StackHelpers = require('./stackHelpers')
 
@@ -28,7 +30,8 @@ const {
   bundleLambdas,
   putLambdaBundlesToS3,
   createCloudFormationTmpl,
-  deployCloudFormationTmpl
+  deployCloudFormationTmpl,
+  getServicesResources
 } = StackHelpers(logger)
 
 
@@ -45,8 +48,9 @@ return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(lambdaBundles => putLambdaBundlesToS3(lambdaBundles, stage))
   .then(deployedBundles => createCloudFormationTmpl(deployedBundles, stage))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
-  .then((result) => {
-    console.log('deployCloudFormationTmpl', result)
-    logger.success('Deploy Stack')
+  .then(() => CloudFormation.listStackResources(stage))
+  .then(stack => getServicesResources(stack.StackResourceSummaries))
+  .then((res) => {
+    console.log(res)
   })
   .catch(err => logger.error(err))

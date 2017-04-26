@@ -108,5 +108,19 @@ module.exports = logger => ({
   deployCloudFormationTmpl: (tmpl, stage) => {
     logger.log('Deploy dkt-flow-engine-template.json')
     return CloudFormation.deploy(tmpl, stage)
+  },
+
+
+  getServicesResources: (stackResourceSummaries) => {
+    const resources = fsUtil.getServiceResources()
+
+    return Promise.all(resources.map((serviceResource) => {
+      const summary = stackResourceSummaries.filter((r) => {
+        return r.LogicalResourceId === serviceResource().locicalResourceId
+      })
+
+      return Lambda.getFunction(summary[0].PhysicalResourceId)
+        .then(fn => serviceResource(fn.Configuration.FunctionArn))
+    }))
   }
 })

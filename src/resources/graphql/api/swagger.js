@@ -11,10 +11,25 @@ module.exports = ({ stage }) => ({
   },
   'basePath': '/',
   'schemes': ['https'],
+  'securityDefinitions': {
+    'UserPool': {
+      'type': 'apiKey',
+      'name': 'Authorization',
+      'in': 'header',
+      'x-amazon-apigateway-authtype': 'cognito_user_pools',
+      'x-amazon-apigateway-authorizer': {
+        'type': 'cognito_user_pools',
+        'providerARNs': [
+          'arn:aws:cognito-idp:eu-west-1:855433257886:userpool/eu-west-1_Csei8EELA'
+        ]
+      }
+    }
+  },
   'paths': {
     '/': {
       'post': {
         'produces': ['application/json'],
+        'security': [{ 'UserPool': [] }],
         'responses': {
           '200': {
             'description': '200 response',

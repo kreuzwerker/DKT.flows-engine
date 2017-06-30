@@ -1,7 +1,6 @@
 import S3 from '../s3'
 import timestamp from '../timestamp'
 
-
 /*
  * ---- Path helpers -----------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -14,11 +13,9 @@ export function getTestStepInputKey(stepId, runId) {
   return `${getTestStepBase(stepId)}/in/${runId}.json`
 }
 
-
 export function getTestStepOutputKey(stepId, runId) {
   return `${getTestStepBase(stepId)}/out/${runId}.json`
 }
-
 
 /*
  * ---- Data Fetcher -----------------------------------------------------------
@@ -29,7 +26,6 @@ export function getStepData(input) {
   return s3.getObject({ Key: input.key }).then(data => JSON.parse(data.Body))
 }
 
-
 /*
  * ---- Payload generators -----------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -37,12 +33,17 @@ export function getStepData(input) {
 export function createTestStepDataParams(stepId, runId, payload) {
   return {
     Key: getTestStepInputKey(stepId, runId),
-    Body: JSON.stringify({
-      startedAt: timestamp(),
-      data: payload,
-      logs: { },
-      runId, stepId
-    }, null, 2)
+    Body: JSON.stringify(
+      {
+        startedAt: timestamp(),
+        data: payload,
+        logs: {},
+        runId,
+        stepId
+      },
+      null,
+      2
+    )
   }
 }
 
@@ -61,7 +62,6 @@ export function createTestStepTriggerParams(stepId, serviceArn, runId) {
     })
   }
 }
-
 
 /*
  * ---- Success / Error Handler ------------------------------------------------
@@ -90,7 +90,8 @@ export function testStepSuccessHandler(input, stepData, result) {
   stepData[input.contentKey] = result
   stepData.logs = updateLogs(stepData.logs, stepData, 'success')
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
+  return s3
+    .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
     .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
 }
 
@@ -106,6 +107,7 @@ export function testStepErrorHandler(input, stepData, error) {
   stepData.error = error.message
   stepData.logs = updateLogs(stepData.logs, stepData, 'error')
 
-  return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
+  return s3
+    .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
     .then(() => Object.assign({}, input, { key, contentKey: 'error' }))
 }

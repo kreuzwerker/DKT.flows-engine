@@ -1,7 +1,6 @@
 const settings = require('../../../settings')
 const { STATE_MACHINE_TRIGGER_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
 
-
 module.exports = ({ key }) => ({
   [STATE_MACHINE_TRIGGER_FUNCTION]: {
     Type: 'AWS::Serverless::Function',

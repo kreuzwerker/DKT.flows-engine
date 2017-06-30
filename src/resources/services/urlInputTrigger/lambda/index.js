@@ -2,16 +2,13 @@ import _isString from 'lodash/isString'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 
-
 function triggerStepReducer(a, step) {
   return step.service.type === 'TRIGGER' ? step : a
 }
 
-
 function urlValueResuder(a, param) {
   return param.fieldId === 'url-input' ? param.value : a
 }
-
 
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)

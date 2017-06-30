@@ -4,7 +4,6 @@ import S3 from '../../../utils/s3'
 import StepFunctions from '../../../utils/stepFunctions'
 import { flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 
-
 export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
@@ -12,7 +11,10 @@ export async function handler(event, context, callback) {
   console.log(`Starting StateMachine: '${input.stateMachineArn}'`)
 
   try {
-    const response = await StepFunctions.startExecution(input.stateMachineArn, JSON.stringify(event))
+    const response = await StepFunctions.startExecution(
+      input.stateMachineArn,
+      JSON.stringify(event)
+    )
 
     logger.log(`Started StateMachine: '${input.stateMachineArn}'`, response)
 

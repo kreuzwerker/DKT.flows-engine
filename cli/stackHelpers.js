@@ -12,29 +12,31 @@ const settings = require('../settings')
  */
 module.exports = logger => ({
   bundleLambdas: (resources, targetBase) => {
-    return Promise.all(resources.map((resourceFn) => {
-      logger.log(`Bundle Lambda ${resourceFn}`)
-      return Lambda.bundle(resourceFn, targetBase)
-    }))
+    return Promise.all(
+      resources.map((resourceFn) => {
+        logger.log(`Bundle Lambda ${resourceFn}`)
+        return Lambda.bundle(resourceFn, targetBase)
+      })
+    )
   },
-
 
   putLambdaBundlesToS3: (bundles, stage) => {
-    return Promise.all(bundles.map(({ fnName, bundlePath }) => {
-      const lambdaName = `${fnName}-${uuidV1()}`
-      const s3Key = `${stage}/${fnName}/${lambdaName}.zip`
+    return Promise.all(
+      bundles.map(({ fnName, bundlePath }) => {
+        const lambdaName = `${fnName}-${uuidV1()}`
+        const s3Key = `${stage}/${fnName}/${lambdaName}.zip`
 
-      logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
-      return S3.putObject({
-        Key: s3Key,
-        Body: fs.createReadStream(bundlePath)
-      }).then(() => ({
-        resource: fnName,
-        key: s3Key
-      }))
-    }))
+        logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
+        return S3.putObject({
+          Key: s3Key,
+          Body: fs.createReadStream(bundlePath)
+        }).then(() => ({
+          resource: fnName,
+          key: s3Key
+        }))
+      })
+    )
   },
-
 
   createCloudFormationTmpl: (deployedBundles, stage) => {
     logger.log('Create CloudFormation definition dkt-flow-engine-template.json')
@@ -58,7 +60,8 @@ module.exports = logger => ({
         )
       }
 
-      const updatedResource = Object.assign({},
+      const updatedResource = Object.assign(
+        {},
         cloudFormationTmpl.Resources,
         resourceTmpl({ stage, resource, key, swaggerKey })
       )
@@ -85,7 +88,8 @@ module.exports = logger => ({
         )
       }
 
-      const updatedResource = Object.assign({},
+      const updatedResource = Object.assign(
+        {},
         cloudFormationTmpl.Resources,
         resourceTmpl({ stage, resource, swaggerKey })
       )
@@ -98,29 +102,31 @@ module.exports = logger => ({
     fs.writeFileSync(resourceTmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
 
     if (swaggerDefinitionsUploadTasks.length >= 1) {
-      return Promise.all(swaggerDefinitionsUploadTasks)
-        .then(() => Promise.resolve(resourceTmplPath))
+      return Promise.all(swaggerDefinitionsUploadTasks).then(() =>
+        Promise.resolve(resourceTmplPath)
+      )
     }
     return Promise.resolve(resourceTmplPath)
   },
-
 
   deployCloudFormationTmpl: (tmpl, stage) => {
     logger.log('Deploy dkt-flow-engine-template.json')
     return CloudFormation.deploy(tmpl, stage)
   },
 
-
   getServicesResources: (stackResourceSummaries) => {
     const resources = fsUtil.getServiceResources()
 
-    return Promise.all(resources.map((serviceResource) => {
-      const summary = stackResourceSummaries.filter((r) => {
-        return r.LogicalResourceId === serviceResource().locicalResourceId
-      })
+    return Promise.all(
+      resources.map((serviceResource) => {
+        const summary = stackResourceSummaries.filter((r) => {
+          return r.LogicalResourceId === serviceResource().locicalResourceId
+        })
 
-      return Lambda.getFunction(summary[0].PhysicalResourceId)
-        .then(fn => serviceResource(fn.Configuration.FunctionArn))
-    }))
+        return Lambda.getFunction(summary[0].PhysicalResourceId).then(fn =>
+          serviceResource(fn.Configuration.FunctionArn)
+        )
+      })
+    )
   }
 })

@@ -14,7 +14,6 @@ import {
 } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 
-
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -23,11 +22,9 @@ export function allFlowRuns() {
   return dbFlowRuns.allFlowRuns()
 }
 
-
 export function getFlowRunById(id) {
   return dbFlowRuns.getFlowRunById(id)
 }
-
 
 export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
@@ -36,12 +33,13 @@ export async function getRuns(flowRun, args) {
 
   const pagination = {
     start: args.offset,
-    end: (args.offset + args.limit) || undefined
+    end: args.offset + args.limit || undefined
   }
 
-  const dataKeys = runs.reverse()
-                       .slice(pagination.start, pagination.end)
-                       .map(runId => getFlowRunOutputKey(flowRun, runId))
+  const dataKeys = runs
+    .reverse()
+    .slice(pagination.start, pagination.end)
+    .map(runId => getFlowRunOutputKey(flowRun, runId))
 
   if (dataKeys.length <= 0) {
     return null
@@ -49,11 +47,14 @@ export async function getRuns(flowRun, args) {
 
   try {
     const flowRunsData = []
-    await Promise.all(dataKeys.map((key) => {
-      return s3.getObject({ Key: key })
-        .then(data => flowRunsData.push(data))
-        .catch(() => Promise.resolve())
-    }))
+    await Promise.all(
+      dataKeys.map((key) => {
+        return s3
+          .getObject({ Key: key })
+          .then(data => flowRunsData.push(data))
+          .catch(() => Promise.resolve())
+      })
+    )
 
     return flowRunsData.map((data) => {
       const parsedData = JSON.parse(data.Body)
@@ -67,20 +68,19 @@ export async function getRuns(flowRun, args) {
         id: id
       }))
 
-      return ({
+      return {
         id: parsedData.runId,
         status: parsedData.status,
         logs: { steps },
         result: parsedData.data,
         startedAt: parsedData.startedAt,
         finishedAt: parsedData.finishedAt
-      })
+      }
     })
   } catch (err) {
     return err
   }
 }
-
 
 /**
  * ---- Mutations --------------------------------------------------------------
@@ -88,13 +88,15 @@ export async function getRuns(flowRun, args) {
  */
 export async function createFlowRun(params) {
   function getServicesIdsFromSteps(steps) {
-    return steps.filter(step => (step.service !== null)).map(step => step.service)
+    return steps.filter(step => step.service !== null).map(step => step.service)
   }
 
   function mergeServicesInSteps(steps, services) {
-    return steps.map(step => Object.assign({}, step, {
-      service: services.filter(service => (service.id === step.service))[0] || {}
-    }))
+    return steps.map(step =>
+      Object.assign({}, step, {
+        service: services.filter(service => service.id === step.service)[0] || {}
+      })
+    )
   }
 
   try {
@@ -116,7 +118,10 @@ export async function createFlowRun(params) {
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
-    const stateMachine = await StepFunctions.createStateMachine(stateMachineName, stateMachineDefinition)
+    const stateMachine = await StepFunctions.createStateMachine(
+      stateMachineName,
+      stateMachineDefinition
+    )
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
 
@@ -126,11 +131,9 @@ export async function createFlowRun(params) {
   }
 }
 
-
 export function updateFlowRun(flowRun) {
   return dbFlowRuns.updateFlowRun(flowRun)
 }
-
 
 export async function startFlowRun({ id, payload }, flowRunInstance) {
   let flowRun = flowRunInstance
@@ -151,7 +154,8 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
 
     return getFlowRunById(id)
   } catch (err) {
-    return updateFlowRun({ id,
+    return updateFlowRun({
+      id,
       status: 'error',
       message: err,
       runs: flowRun.runs,
@@ -160,20 +164,19 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
   }
 }
 
-
 export function createAndStartFlowRun(args) {
   const { payload } = args
   delete args.payload
-  return createFlowRun(args)
-    .then(flowRun => startFlowRun({ id: flowRun.id, payload }, flowRun))
+  return createFlowRun(args).then(flowRun => startFlowRun({ id: flowRun.id, payload }, flowRun))
 }
-
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then(flowRun => Promise.all([
-      StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
-      dbFlowRuns.deleteFlowRun(id)
-    ]))
+    .then(flowRun =>
+      Promise.all([
+        StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
+        dbFlowRuns.deleteFlowRun(id)
+      ])
+    )
     .then(() => ({ id }))
 }

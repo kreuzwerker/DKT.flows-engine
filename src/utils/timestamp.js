@@ -1,7 +1,6 @@
 import moment from 'moment-timezone'
 import settings from '../../settings'
 
-
 /**
  * Returns UNIX timestamp from specified timezone. This is needed because AWS Lambda
  * Functions can run in different locations with different Timezones.

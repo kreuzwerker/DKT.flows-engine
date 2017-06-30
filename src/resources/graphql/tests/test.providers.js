@@ -5,16 +5,15 @@ import { handler } from '../lambda/index'
 import testData from './testData/providers.json'
 import testResults from './testData/providers.results.json'
 
-
 const GraphQLLambda = promisifyLambda(handler)
-
 
 export default function () {
   describe('Querying', () => {
     it('all Providers returns all Providers with requested Data', async () => {
       const expectedResult = testResults.allProviders
       const payload = JSON.stringify({
-        query: 'query ProvidersQuery { allProviders { id name description icon group services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
+        query:
+          'query ProvidersQuery { allProviders { id name description icon group services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
         operationName: 'ProvidersQuery'
       })
 
@@ -39,7 +38,8 @@ export default function () {
     it('one Provider returns the correct provider', async () => {
       const testProvider = testResults.Provider
       const payload = JSON.stringify({
-        query: 'query ProviderQuery($id: ID!) { Provider(id: $id) { id name description icon group services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
+        query:
+          'query ProviderQuery($id: ID!) { Provider(id: $id) { id name description icon group services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
         operationName: 'ProviderQuery',
         variables: {
           id: 'dontDeleteMei0133gwr0g9i1'
@@ -64,9 +64,11 @@ export default function () {
     const deleteTestData = Object.assign({}, testData[0], { id: 'deleteTestProvider430lju' })
 
     before(async function () {
-      await Promise.all([updateTestData, deleteTestData].map((flow) => {
-        return dynDB.putItem(process.env.DYNAMO_PROVIDERS, flow)
-      }))
+      await Promise.all(
+        [updateTestData, deleteTestData].map((flow) => {
+          return dynDB.putItem(process.env.DYNAMO_PROVIDERS, flow)
+        })
+      )
     })
 
     it('creating a Provider creates a new Provider', async () => {
@@ -78,7 +80,8 @@ export default function () {
         icon: 'mail'
       })
       const payload = JSON.stringify({
-        query: 'mutation CreateProvider($id: ID, $name: String, $group: String, $description: String, $icon: String, $services: [ID]) { createProvider(id: $id, name: $name, group: $group, description: $description, icon: $icon, services: $services) { id name description group icon services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
+        query:
+          'mutation CreateProvider($id: ID, $name: String, $group: String, $description: String, $icon: String, $services: [ID]) { createProvider(id: $id, name: $name, group: $group, description: $description, icon: $icon, services: $services) { id name description group icon services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
         operationName: 'CreateProvider',
         variables: {
           id: 'createTestProvider430lju',
@@ -109,7 +112,8 @@ export default function () {
         icon: 'rss'
       })
       const payload = {
-        query: 'mutation UpdateProvider($id: ID!, $name: String, $group: String, $description: String, $icon: String, $services: [ID]) { updateProvider(id: $id, name: $name, group: $group, description: $description, icon: $icon, services: $services) { id name description group icon services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
+        query:
+          'mutation UpdateProvider($id: ID!, $name: String, $group: String, $description: String, $icon: String, $services: [ID]) { updateProvider(id: $id, name: $name, group: $group, description: $description, icon: $icon, services: $services) { id name description group icon services { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } }',
         operationName: 'UpdateProvider',
         variables: {
           id: 'updateTestProvider430lju',
@@ -148,9 +152,13 @@ export default function () {
     })
 
     after(async function () {
-      await Promise.all([createTestData, updateTestData].map((testProvider) => {
-        return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, { Key: { id: { S: testProvider.id } } })
-      }))
+      await Promise.all(
+        [createTestData, updateTestData].map((testProvider) => {
+          return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, {
+            Key: { id: { S: testProvider.id } }
+          })
+        })
+      )
     })
   })
 }

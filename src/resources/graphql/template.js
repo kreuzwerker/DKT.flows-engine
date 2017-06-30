@@ -14,7 +14,6 @@ const {
   S3_BUCKET
 } = require('../locicalResourceIds')
 
-
 /*
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -64,13 +63,7 @@ module.exports = ({ stage, key, swaggerKey }) => ({
         }
       }
     },
-    DependsOn: [
-      DYN_DB_FLOWS,
-      DYN_DB_FLOW_RUNS,
-      DYN_DB_PROVIDERS,
-      DYN_DB_SERVICES,
-      DYN_DB_STEPS
-    ]
+    DependsOn: [DYN_DB_FLOWS, DYN_DB_FLOW_RUNS, DYN_DB_PROVIDERS, DYN_DB_SERVICES, DYN_DB_STEPS]
   },
   [GRAPHQL_PERMISSIONS]: {
     Type: 'AWS::Lambda::Permission',
@@ -79,7 +72,8 @@ module.exports = ({ stage, key, swaggerKey }) => ({
       FunctionName: { 'Fn::GetAtt': [GRAPHQL_FUNCTION, 'Arn'] },
       Principal: 'apigateway.amazonaws.com',
       SourceArn: {
-        'Fn::Join': [ // we need to join the arn because AWS::Serverless::Api does not support Fn::GetAtt
+        'Fn::Join': [
+          // we need to join the arn because AWS::Serverless::Api does not support Fn::GetAtt
           '',
           [
             `arn:aws:execute-api:${settings.aws.apiGateway.region}:${settings.aws.account}:`,

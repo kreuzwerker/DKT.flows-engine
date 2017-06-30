@@ -1,13 +1,6 @@
-import {
-  GraphQLID,
-  GraphQLList,
-  GraphQLString,
-  GraphQLObjectType,
-  GraphQLNonNull
-} from 'graphql'
+import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull } from 'graphql'
 import { StepType, StepMirrorType } from './step'
 import * as Steps from '../resolvers/steps'
-
 
 export const FlowType = new GraphQLObjectType({
   name: 'Flow',
@@ -26,7 +19,6 @@ export const FlowType = new GraphQLObjectType({
     }
   })
 })
-
 
 export const FlowMirrorType = new GraphQLObjectType({
   name: 'FlowMirror',

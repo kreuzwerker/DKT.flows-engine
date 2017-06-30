@@ -1,8 +1,6 @@
 const Path = require('path')
 
-
 const ACCOUNT = 855433257886
-
 
 module.exports = {
   timezone: 'Europe/Berlin',

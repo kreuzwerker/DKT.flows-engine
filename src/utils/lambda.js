@@ -4,7 +4,6 @@
 import AWS from 'aws-sdk'
 import settings from '../../settings'
 
-
 function Lambda() {
   const { apiVersion } = settings.aws.lambda
   const lambda = new AWS.Lambda({ apiVersion })
@@ -15,6 +14,5 @@ function Lambda() {
     getFunction: params => lambda.getFunction(params).promise()
   }
 }
-
 
 export default Lambda()

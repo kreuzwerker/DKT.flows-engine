@@ -18,8 +18,6 @@ import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'
 import * as Steps from './resolvers/steps'
 
-
-
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -82,7 +80,6 @@ const QueryType = new GraphQLObjectType({
     }
   })
 })
-
 
 /**
  * ---- Mutations --------------------------------------------------------------
@@ -228,7 +225,6 @@ const MutationType = new GraphQLObjectType({
     }
   })
 })
-
 
 /**
  * ---- Actual Schema ----------------------------------------------------------

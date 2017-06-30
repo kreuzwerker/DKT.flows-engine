@@ -1,7 +1,6 @@
 const settings = require('../../../../settings')
 const { EXTRACT_ARTICLE_TEXT_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
 
-
 /*
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction

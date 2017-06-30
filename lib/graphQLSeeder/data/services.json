@@ -37,10 +37,7 @@
         "label": "Method",
         "defaultValue": "GET",
         "type": "select",
-        "options": [
-          { "label": "GET", "value": "GET" },
-          { "label": "PUT", "value": "PUT" }
-        ]
+        "options": [{ "label": "GET", "value": "GET" }, { "label": "PUT", "value": "PUT" }]
       }
     ],
     "samplePayload": null
@@ -71,10 +68,7 @@
         "label": "Language",
         "defaultValue": "en",
         "type": "radio",
-        "options": [
-          { "label": "English", "value": "en" },
-          { "label": "German", "value": "de" }
-        ]
+        "options": [{ "label": "English", "value": "en" }, { "label": "German", "value": "de" }]
       }
     ],
     "samplePayload": "<html><head></head><body><article>Lorem Ipsum</article></body></html>"

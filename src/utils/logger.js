@@ -14,5 +14,4 @@ function Logger(verbose = true) {
   }
 }
 
-
 module.exports = Logger

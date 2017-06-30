@@ -1,6 +1,5 @@
 const colors = require('colors')
 
-
 function Logger(name, verbose = false) {
   let _verbose = verbose
 
@@ -24,6 +23,5 @@ function Logger(name, verbose = false) {
     }
   }
 }
-
 
 module.exports = Logger

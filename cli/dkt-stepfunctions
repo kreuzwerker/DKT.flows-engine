@@ -3,6 +3,4 @@
 const program = require('commander')
 
 program._name = 'cli/dkt stepfunctions'
-program
-  .command('exec', 'execute Step Functions')
-  .parse(process.argv)
+program.command('exec', 'execute Step Functions').parse(process.argv)

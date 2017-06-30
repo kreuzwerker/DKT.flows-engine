@@ -6,16 +6,15 @@ import { handler } from '../lambda/index'
 import testData from './testData/flows.json'
 import testResult from './testData/flows.results.json'
 
-
 const GraphQLLambda = promisifyLambda(handler)
-
 
 export default function () {
   describe('Querying', () => {
     it('all Flows returns all Flows with requested Data', async () => {
       const expectedResult = testResult.allFlows
       const payload = JSON.stringify({
-        query: 'query FlowsQuery { allFlows { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+        query:
+          'query FlowsQuery { allFlows { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'FlowsQuery'
       })
 
@@ -41,7 +40,8 @@ export default function () {
     it('one Flow returns the correct flow', async () => {
       const testFlow = testResult.Flow
       const payload = JSON.stringify({
-        query: 'query FlowQuery($id: ID!) { Flow(id: $id) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+        query:
+          'query FlowQuery($id: ID!) { Flow(id: $id) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'FlowQuery',
         variables: {
           id: 'dontDeleteMe20133m8gu0lju'
@@ -63,15 +63,26 @@ export default function () {
   })
 
   describe('Mutating', () => {
-    const createTestData = Object.assign({}, testData[0], { id: 'createTestFlow133m8gu0lju', steps: [] })
-    const updateTestData = Object.assign({}, testData[0], { id: 'updateTestFlow133m8gu0lju', steps: [] })
-    const deleteTestData = Object.assign({}, testData[0], { id: 'deleteTestFlow133m8gu0lju', steps: [] })
+    const createTestData = Object.assign({}, testData[0], {
+      id: 'createTestFlow133m8gu0lju',
+      steps: []
+    })
+    const updateTestData = Object.assign({}, testData[0], {
+      id: 'updateTestFlow133m8gu0lju',
+      steps: []
+    })
+    const deleteTestData = Object.assign({}, testData[0], {
+      id: 'deleteTestFlow133m8gu0lju',
+      steps: []
+    })
     let stepToDelete = ''
 
     before(async () => {
-      await Promise.all([updateTestData, deleteTestData].map((flow) => {
-        return dynDB.putItem(process.env.DYNAMO_FLOWS, flow)
-      }))
+      await Promise.all(
+        [updateTestData, deleteTestData].map((flow) => {
+          return dynDB.putItem(process.env.DYNAMO_FLOWS, flow)
+        })
+      )
     })
 
     it('create a Flow is creating a new flow', async () => {
@@ -81,7 +92,8 @@ export default function () {
         id: 'createTestFlow133m8gu0lju'
       })
       const payload = JSON.stringify({
-        query: 'mutation CreateFlow($id: ID, $name: String, $description: String) { createFlow(id: $id, name: $name, description: $description) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+        query:
+          'mutation CreateFlow($id: ID, $name: String, $description: String) { createFlow(id: $id, name: $name, description: $description) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'CreateFlow',
         variables: {
           name: 'first flow',
@@ -108,7 +120,8 @@ export default function () {
         description: 'This is a updated flow object.'
       })
       const payload = JSON.stringify({
-        query: 'mutation UpdateFlow($id: ID!, $name: String, $description: String, $steps: [ID]) { updateFlow(id: $id, name: $name, description: $description, steps: $steps) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+        query:
+          'mutation UpdateFlow($id: ID!, $name: String, $description: String, $steps: [ID]) { updateFlow(id: $id, name: $name, description: $description, steps: $steps) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'UpdateFlow',
         variables: {
           name: 'updated flow',
@@ -143,9 +156,11 @@ export default function () {
     })
 
     after(async () => {
-      await Promise.all([createTestData, updateTestData].map((testFlow) => {
-        return dynDB.deleteItem(process.env.DYNAMO_FLOWS, { Key: { id: { S: testFlow.id } } })
-      }))
+      await Promise.all(
+        [createTestData, updateTestData].map((testFlow) => {
+          return dynDB.deleteItem(process.env.DYNAMO_FLOWS, { Key: { id: { S: testFlow.id } } })
+        })
+      )
 
       if (stepToDelete) {
         await dynDB.deleteItem(process.env.DYNAMO_STEPS, { Key: { id: { S: stepToDelete.id } } })

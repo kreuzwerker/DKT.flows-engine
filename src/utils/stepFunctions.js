@@ -4,24 +4,28 @@
 import AWS from 'aws-sdk'
 import settings from '../../settings'
 
-
 function StepFunctions() {
   AWS.config.apiVersions = { stepfunctions: settings.aws.stepFunctions.apiVersion }
   const stepFunctions = new AWS.StepFunctions()
 
   return {
     startExecution: (stateMachineArn, data) => {
-      return stepFunctions.startExecution({
-        stateMachineArn: stateMachineArn,
-        input: data
-      }).promise()
+      return stepFunctions
+        .startExecution({
+          stateMachineArn: stateMachineArn,
+          input: data
+        })
+        .promise()
     },
 
     createStateMachine: (name, definition) => {
-      return stepFunctions.createStateMachine({
-        name, definition,
-        roleArn: settings.aws.stepFunctions.arn
-      }).promise()
+      return stepFunctions
+        .createStateMachine({
+          name,
+          definition,
+          roleArn: settings.aws.stepFunctions.arn
+        })
+        .promise()
     },
 
     deleteStateMachine: (stateMachineArn) => {
@@ -29,6 +33,5 @@ function StepFunctions() {
     }
   }
 }
-
 
 export default StepFunctions()

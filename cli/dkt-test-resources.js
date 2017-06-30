@@ -6,7 +6,6 @@ const Mocha = require('mocha')
 const fsUtil = require('../lib/fsUtil')
 const settings = require('../settings.js')
 
-
 /*
  * ---- deploy description -----------------------------------------------------
  */

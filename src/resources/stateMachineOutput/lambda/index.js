@@ -3,7 +3,6 @@ import Logger from '../../../utils/logger'
 import { flowRunSuccessHandler, flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 import { getStepData } from '../../../utils/helpers/stepHelpers'
 
-
 export async function handler(event, context, callback) {
   const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event

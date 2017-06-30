@@ -2,7 +2,6 @@ import seeder from './seeder'
 import { handler } from '../lambda/index'
 import { promisifyLambda } from '../../../../lib/promisifier'
 
-
 const StateMachineTriggerLambda = promisifyLambda(handler)
 
 describe('ƛ StateMachineTrigger', () => {

@@ -1,9 +1,7 @@
 import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from '../lambda/index'
 
-
 const GraphQLLambda = promisifyLambda(handler)
-
 
 export default function () {
   describe('when passing a valid event body', () => {
@@ -31,8 +29,12 @@ export default function () {
         'Access-Control-Allow-Origin'
       ])
 
-      expect(response.headers['Access-Control-Allow-Methods']).to.equal('DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT')
-      expect(response.headers['Access-Control-Allow-Headers']).to.equal('Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token')
+      expect(response.headers['Access-Control-Allow-Methods']).to.equal(
+        'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'
+      )
+      expect(response.headers['Access-Control-Allow-Headers']).to.equal(
+        'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'
+      )
       expect(response.headers['Access-Control-Allow-Origin']).to.equal('*')
     })
 
@@ -68,8 +70,12 @@ export default function () {
         'Access-Control-Allow-Origin'
       ])
 
-      expect(response.headers['Access-Control-Allow-Methods']).to.equal('DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT')
-      expect(response.headers['Access-Control-Allow-Headers']).to.equal('Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token')
+      expect(response.headers['Access-Control-Allow-Methods']).to.equal(
+        'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'
+      )
+      expect(response.headers['Access-Control-Allow-Headers']).to.equal(
+        'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'
+      )
       expect(response.headers['Access-Control-Allow-Origin']).to.equal('*')
     })
 

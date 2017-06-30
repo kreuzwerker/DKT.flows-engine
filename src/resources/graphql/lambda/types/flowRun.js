@@ -9,7 +9,6 @@ import {
 import { FlowMirrorType } from './flow'
 import { getRuns } from '../resolvers/flowRuns'
 
-
 const StepLogType = new GraphQLObjectType({
   name: 'StepLogType',
   fields: () => ({
@@ -21,14 +20,12 @@ const StepLogType = new GraphQLObjectType({
   })
 })
 
-
 const LogsType = new GraphQLObjectType({
   name: 'LogsType',
   fields: () => ({
     steps: { type: new GraphQLList(StepLogType) }
   })
 })
-
 
 const RunsType = new GraphQLObjectType({
   name: 'RunsType',
@@ -41,7 +38,6 @@ const RunsType = new GraphQLObjectType({
     finishedAt: { type: GraphQLString }
   })
 })
-
 
 export const FlowRunType = new GraphQLObjectType({
   name: 'FlowRun',

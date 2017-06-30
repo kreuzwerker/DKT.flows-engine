@@ -4,7 +4,6 @@
 import AWS from 'aws-sdk'
 import settings from '../../settings'
 
-
 function S3(bucket) {
   if (!bucket) {
     throw new Error('Missing bucket parameter')
@@ -26,6 +25,5 @@ function S3(bucket) {
     listObjects: params => s3.listObjects(merge(params)).promise()
   }
 }
-
 
 export default S3

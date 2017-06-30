@@ -18,7 +18,6 @@ const logger = Logger(program._name, program.verbose)
 const workflow = program.workflow
 const data = program.data
 
-
 if (!workflow) {
   logger.setVerbose(true)
   return logger.error('Missing workflow option')

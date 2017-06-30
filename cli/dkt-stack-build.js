@@ -23,12 +23,7 @@ if (stage !== 'Dev' && stage !== 'Test' && stage !== 'Staging' && stage !== 'Pro
   console.log('                             e.g. cli/dkt stack deploy -s Dev')
   return
 }
-const {
-  bundleLambdas,
-  putLambdaBundlesToS3,
-  createCloudFormationTmpl
-} = StackHelpers(logger)
-
+const { bundleLambdas, putLambdaBundlesToS3, createCloudFormationTmpl } = StackHelpers(logger)
 
 /*
  * ---- task -------------------------------------------------------------------

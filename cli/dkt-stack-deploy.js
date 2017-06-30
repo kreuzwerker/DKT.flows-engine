@@ -35,7 +35,6 @@ const {
   getServicesResources
 } = StackHelpers(logger)
 
-
 /*
  * ---- task -------------------------------------------------------------------
  */
@@ -67,6 +66,12 @@ return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
   .then(() => CloudFormation.listStackResources(stage))
   .then(stack => getServicesResources(stack.StackResourceSummaries))
-  .then(services => Promise.all(services.map(service => putItem('DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2', service))))
+  .then(services =>
+    Promise.all(
+      services.map(service =>
+        putItem('DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2', service)
+      )
+    )
+  )
   .then(res => logger.log('Successfully deployed and updated Services'))
   .catch(err => logger.error(err))

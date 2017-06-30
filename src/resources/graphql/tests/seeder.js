@@ -5,7 +5,6 @@ import providers from './testData/providers.json'
 import services from './testData/services.json'
 import steps from './testData/steps.json'
 
-
 export function seedTestdata() {
   const {
     DYNAMO_FLOWS,
@@ -22,7 +21,6 @@ export function seedTestdata() {
 
   return Promise.all(_flatten([seedFlows, seedProviders, seedServices, seedSteps]))
 }
-
 
 export function clearTestdata() {
   const {

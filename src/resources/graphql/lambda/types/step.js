@@ -13,7 +13,6 @@ import { ServiceType, ServiceMirrorType } from './service'
 import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
 
-
 export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
   fields: () => ({
@@ -22,7 +21,6 @@ export const StepConfigParamsType = new GraphQLObjectType({
   })
 })
 
-
 export const StepConfigParamsInputType = new GraphQLInputObjectType({
   name: 'StepConfigParamsInput',
   fields: () => ({
@@ -30,7 +28,6 @@ export const StepConfigParamsInputType = new GraphQLInputObjectType({
     value: { type: GraphQLString }
   })
 })
-
 
 export const StepType = new GraphQLObjectType({
   name: 'Step',
@@ -59,7 +56,6 @@ export const StepType = new GraphQLObjectType({
   })
 })
 
-
 export const StepMirrorType = new GraphQLObjectType({
   name: 'StepMirrorType',
   fields: () => ({
@@ -74,7 +70,6 @@ export const StepMirrorType = new GraphQLObjectType({
     tested: { type: GraphQLBoolean }
   })
 })
-
 
 export const StepTestType = new GraphQLObjectType({
   name: 'StepTestType',

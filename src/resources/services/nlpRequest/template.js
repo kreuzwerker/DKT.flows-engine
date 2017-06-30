@@ -1,7 +1,6 @@
 const settings = require('../../../../settings')
 const { NLP_REQUEST_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
 
-
 /*
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -18,7 +17,8 @@ module.exports = ({ key }) => ({
       Environment: {
         Variables: {
           S3_BUCKET: S3_BUCKET,
-          NLP_URL: 'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'
+          NLP_URL:
+            'http://kreuzwerker-dkt-nlp-loadbalancer-1465345853.eu-west-1.elb.amazonaws.com/e-nlp/namedEntityRecognition'
         }
       }
     }

@@ -5,18 +5,15 @@ import AWS from 'aws-sdk'
 import { marshalItem, unmarshalItem } from 'dynamodb-marshaler'
 import settings from '../../settings'
 
-
 function DynamoDB() {
   const { apiVersion } = settings.aws.dynamoDB
   const dynamoDB = new AWS.DynamoDB({ apiVersion })
-
 
   function merge(table, params = {}) {
     return Object.assign({}, params, {
       TableName: table
     })
   }
-
 
   function buildUpdateParams(params, item, returnConsumedCapacity = 'TOTAL') {
     const marshal = key => marshalItem({ [key]: item[key] })
@@ -43,7 +40,6 @@ function DynamoDB() {
     return updatedParams
   }
 
-
   return {
     scan: (table, params) => dynamoDB.scan(merge(table, params)).promise(),
 
@@ -52,7 +48,6 @@ function DynamoDB() {
     getItem: (table, params) => dynamoDB.getItem(merge(table, params)).promise(),
 
     batchGetItem: params => dynamoDB.batchGetItem(params).promise(),
-
 
     putItem: async (table, item) => {
       const currentDate = new Date().toISOString()
@@ -76,7 +71,6 @@ function DynamoDB() {
       return unmarshalItem(createdInstance.Item)
     },
 
-
     updateItem: async (table, query, item) => {
       const updateParams = merge(table, buildUpdateParams(query, item))
       const { ConsumedCapacity } = await dynamoDB.updateItem(updateParams).promise()
@@ -89,7 +83,6 @@ function DynamoDB() {
       return unmarshalItem(updatedItem.Item)
     },
 
-
     deleteItem: async (table, item) => {
       const { ConsumedCapacity } = await dynamoDB.deleteItem(merge(table, item)).promise()
 
@@ -101,6 +94,5 @@ function DynamoDB() {
     }
   }
 }
-
 
 export default DynamoDB()

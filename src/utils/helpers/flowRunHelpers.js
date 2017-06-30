@@ -25,7 +25,6 @@ export function getFlowRunOutputKey(flowRun, runId) {
   return `${getFlowRunBase(flowRun)}/out/${runId}.json`
 }
 
-
 /*
  * ---- Payload generators -----------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -33,14 +32,19 @@ export function getFlowRunOutputKey(flowRun, runId) {
 export function createFlowRunDataParams(flowRun, runId, payload, status = 'running') {
   return {
     Key: getFlowRunInputKey(flowRun, runId),
-    Body: JSON.stringify({
-      flowRun: flowRun,
-      startedAt: timestamp(),
-      currentStep: 0,
-      data: payload,
-      logs: { },
-      status, runId
-    }, null, 2)
+    Body: JSON.stringify(
+      {
+        flowRun: flowRun,
+        startedAt: timestamp(),
+        currentStep: 0,
+        data: payload,
+        logs: {},
+        status,
+        runId
+      },
+      null,
+      2
+    )
   }
 }
 
@@ -75,17 +79,16 @@ export function triggerFlowRun(flowRun, payload) {
   const flowRunData = createFlowRunDataParams(flowRun, runId, payload, 'running')
   const invokeParams = createFlowRunTriggerParams(flowRun, runId)
 
-  return s3.putObject(flowRunData)
-    .then(() => Lambda.invoke(invokeParams))
-    .then(() => dbFlowRun.updateFlowRun({
+  return s3.putObject(flowRunData).then(() => Lambda.invoke(invokeParams)).then(() =>
+    dbFlowRun.updateFlowRun({
       id: flowRun.id,
       status: 'running',
       message: null,
       runs: flowRun.runs,
       runsCount: flowRun.runs.length
-    }))
+    })
+  )
 }
-
 
 /*
  * ---- Success / Error Handler ------------------------------------------------
@@ -93,7 +96,7 @@ export function triggerFlowRun(flowRun, payload) {
  */
 function getStepFromFlowRun(flowRun, currentStep) {
   const steps = flowRun.flow.steps || []
-  return steps.filter(s => (s.position === currentStep))[0]
+  return steps.filter(s => s.position === currentStep)[0]
 }
 
 function updateLogs(logs, step, status, message = '') {
@@ -107,7 +110,6 @@ function updateLogs(logs, step, status, message = '') {
   })
   return Object.assign({}, logs, { status, steps })
 }
-
 
 /*
  * ---- Success Handler --------------------------------------------------------
@@ -160,7 +162,6 @@ export async function flowRunSuccessHandler(input, flowRunData) {
     return err
   }
 }
-
 
 /*
  * ---- Error Handler ----------------------------------------------------------

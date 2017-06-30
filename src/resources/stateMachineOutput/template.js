@@ -1,6 +1,9 @@
 const settings = require('../../../settings')
-const { STATE_MACHINE_OUTPUT_FUNCTION, S3_BUCKET, DYN_DB_FLOW_RUNS } = require('../locicalResourceIds')
-
+const {
+  STATE_MACHINE_OUTPUT_FUNCTION,
+  S3_BUCKET,
+  DYN_DB_FLOW_RUNS
+} = require('../locicalResourceIds')
 
 module.exports = ({ key }) => ({
   [STATE_MACHINE_OUTPUT_FUNCTION]: {

@@ -5,16 +5,15 @@ import { handler } from '../lambda/index'
 import testData from './testData/providers.json'
 import testResults from './testData/steps.results.json'
 
-
 const GraphQLLambda = promisifyLambda(handler)
-
 
 export default function () {
   describe('Querying', () => {
     it('all Steps returns all Steps with requested Data', async () => {
       const expectedResult = testResults.allSteps
       const payload = JSON.stringify({
-        query: 'query StepsQuery { allSteps { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
+        query:
+          'query StepsQuery { allSteps { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
         operationName: 'StepsQuery'
       })
 
@@ -33,7 +32,8 @@ export default function () {
     it('one Step returns the correct step', async () => {
       const testStep = testResults.Step
       const payload = JSON.stringify({
-        query: 'query StepQuery($id: ID!) { Step(id: $id) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
+        query:
+          'query StepQuery($id: ID!) { Step(id: $id) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
         operationName: 'StepQuery',
         variables: {
           id: 'dontDeleteMe101795ez58bzs'
@@ -53,9 +53,11 @@ export default function () {
     const deleteTestData = Object.assign({}, testData[0], { id: 'deleteTestSteps8er430lju' })
 
     before(async function () {
-      await Promise.all([updateTestData, deleteTestData].map((flow) => {
-        return dynDB.putItem(process.env.DYNAMO_STEPS, flow)
-      }))
+      await Promise.all(
+        [updateTestData, deleteTestData].map((flow) => {
+          return dynDB.putItem(process.env.DYNAMO_STEPS, flow)
+        })
+      )
     })
 
     it('creating a Step creates a Step', async () => {
@@ -65,7 +67,8 @@ export default function () {
         position: 4
       })
       const payload = JSON.stringify({
-        query: 'mutation CreateStep($id: ID, $position: Int, $description: String, $flow: ID, $service: ID) { createStep(id: $id, position: $position, description: $description, flow: $flow, service: $service) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
+        query:
+          'mutation CreateStep($id: ID, $position: Int, $description: String, $flow: ID, $service: ID) { createStep(id: $id, position: $position, description: $description, flow: $flow, service: $service) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
         operationName: 'CreateStep',
         variables: {
           id: 'createTestSteps8er430lju',
@@ -94,7 +97,8 @@ export default function () {
         position: 5
       })
       const payload = JSON.stringify({
-        query: 'mutation UpdateStep($id: ID!, $position: Int, $description: String, $flow: ID, $service: ID) { updateStep(id: $id, position: $position, description: $description, flow: $flow, service: $service) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
+        query:
+          'mutation UpdateStep($id: ID!, $position: Int, $description: String, $flow: ID, $service: ID) { updateStep(id: $id, position: $position, description: $description, flow: $flow, service: $service) { id description position tested configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } flow { id name description } } }',
         operationName: 'UpdateStep',
         variables: {
           id: 'updateTestSteps8er430lju',
@@ -130,9 +134,11 @@ export default function () {
     })
 
     after(async function () {
-      await Promise.all([createTestData, updateTestData].map((testStep) => {
-        return dynDB.deleteItem(process.env.DYNAMO_STEPS, { Key: { id: { S: testStep.id } } })
-      }))
+      await Promise.all(
+        [createTestData, updateTestData].map((testStep) => {
+          return dynDB.deleteItem(process.env.DYNAMO_STEPS, { Key: { id: { S: testStep.id } } })
+        })
+      )
     })
   })
 }

@@ -4,12 +4,8 @@ require('babel-register') // remove this when testing a bundled lambda function
 require('../spec/config')
 const program = require('commander')
 
-
 /*
  * ---- test description -------------------------------------------------------
  */
 program._name = 'cli/dkt test'
-program
-  .command('all', 'test everything')
-  .command('resources', 'test Resources')
-  .parse(process.argv)
+program.command('all', 'test everything').command('resources', 'test Resources').parse(process.argv)

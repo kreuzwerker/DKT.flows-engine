@@ -10,7 +10,6 @@ import {
 } from '../../../../utils/helpers/stepHelpers'
 import * as dbSteps from '../../../dbSteps/resolvers'
 
-
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -19,16 +18,13 @@ export function allSteps() {
   return dbSteps.allSteps()
 }
 
-
 export function getStepById(stepId) {
   return dbSteps.getStepById(stepId)
 }
 
-
 export function batchGetStepByIds(stepsIds) {
   return dbSteps.batchGetStepByIds(stepsIds)
 }
-
 
 /**
  * ---- Mutations --------------------------------------------------------------
@@ -36,14 +32,18 @@ export function batchGetStepByIds(stepsIds) {
  */
 export async function createStep(step) {
   // set defaults
-  const newStep = Object.assign({}, {
-    id: uuid.v4(),
-    position: 0,
-    description: null,
-    flow: null,
-    service: null,
-    configParams: null
-  }, step)
+  const newStep = Object.assign(
+    {},
+    {
+      id: uuid.v4(),
+      position: 0,
+      description: null,
+      flow: null,
+      service: null,
+      configParams: null
+    },
+    step
+  )
 
   try {
     if (newStep.flow) {
@@ -62,11 +62,9 @@ export async function createStep(step) {
   }
 }
 
-
 export function updateStep(step) {
   return dbSteps.updateStep(step)
 }
-
 
 export async function testStep(stepId, payload) {
   const s3 = S3(process.env.S3_BUCKET)
@@ -95,12 +93,14 @@ export async function testStep(stepId, payload) {
 
     if (output.status === 'error') {
       testedStep.tested = false
-      result = Object.assign({}, testedStep, { service,
+      result = Object.assign({}, testedStep, {
+        service,
         error: output[parsedStepResult.contentKey]
       })
     } else {
       testedStep.tested = true
-      result = Object.assign({}, testedStep, { service,
+      result = Object.assign({}, testedStep, {
+        service,
         result: JSON.stringify(output[parsedStepResult.contentKey])
       })
     }
@@ -116,7 +116,6 @@ export async function testStep(stepId, payload) {
     return err
   }
 }
-
 
 export function deleteStep(id) {
   return dbSteps.deleteStep(id)

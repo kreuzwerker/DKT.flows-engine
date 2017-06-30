@@ -10,7 +10,6 @@ import {
 import { ProviderType } from './provider'
 import * as Providers from '../resolvers/providers'
 
-
 const SelectOptionsType = new GraphQLObjectType({
   name: 'OptionsType',
   fields: () => ({
@@ -18,7 +17,6 @@ const SelectOptionsType = new GraphQLObjectType({
     value: { type: GraphQLString }
   })
 })
-
 
 const ServiceConfigSchemaType = new GraphQLObjectType({
   name: 'ServiceConfigSchema',
@@ -32,7 +30,6 @@ const ServiceConfigSchemaType = new GraphQLObjectType({
     options: { type: new GraphQLList(SelectOptionsType) }
   })
 })
-
 
 export const ServiceType = new GraphQLObjectType({
   name: 'Service',
@@ -55,7 +52,6 @@ export const ServiceType = new GraphQLObjectType({
     samplePayload: { type: GraphQLString }
   })
 })
-
 
 export const ServiceMirrorType = new GraphQLObjectType({
   name: 'ServiceInput',

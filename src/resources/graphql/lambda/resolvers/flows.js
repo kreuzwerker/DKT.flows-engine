@@ -2,7 +2,6 @@ import uuid from 'uuid'
 import { createStep, deleteStep } from './steps'
 import * as dbFlows from '../../../dbFlows/resolvers'
 
-
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -11,23 +10,25 @@ export function allFlows() {
   return dbFlows.allFlows()
 }
 
-
 export function getFlowById(flowId) {
   return dbFlows.getFlowById(flowId)
 }
-
 
 /**
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
 export async function createFlow(flow) {
-  let newFlow = Object.assign({}, {
-    id: uuid.v4(),
-    name: null,
-    description: null,
-    steps: []
-  }, flow)
+  let newFlow = Object.assign(
+    {},
+    {
+      id: uuid.v4(),
+      name: null,
+      description: null,
+      steps: []
+    },
+    flow
+  )
 
   try {
     if (newFlow.steps.length === 0) {
@@ -41,11 +42,9 @@ export async function createFlow(flow) {
   }
 }
 
-
 export function updateFlow(flow) {
   return dbFlows.updateFlow(flow)
 }
-
 
 export function deleteFlow(id) {
   return getFlowById(id)

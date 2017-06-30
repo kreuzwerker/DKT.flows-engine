@@ -1,13 +1,6 @@
-import {
-  GraphQLID,
-  GraphQLList,
-  GraphQLString,
-  GraphQLObjectType,
-  GraphQLNonNull
-} from 'graphql'
+import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull } from 'graphql'
 import { ServiceType } from './service'
 import * as Services from '../resolvers/services'
-
 
 export const ProviderType = new GraphQLObjectType({
   name: 'Provider',

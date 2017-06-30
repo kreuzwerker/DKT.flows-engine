@@ -2,8 +2,11 @@ import extractor from 'unfluff'
 import _isString from 'lodash/isString'
 import Logger from '../../../../utils/logger'
 import { flowRunStepSuccessHandler } from '../../../../utils/helpers/flowRunHelpers'
-import { getStepData, testStepSuccessHandler, testStepErrorHandler } from '../../../../utils/helpers/stepHelpers'
-
+import {
+  getStepData,
+  testStepSuccessHandler,
+  testStepErrorHandler
+} from '../../../../utils/helpers/stepHelpers'
 
 /*
  * Extract article text with node unfluff
@@ -35,8 +38,7 @@ export async function handler(event, context, callback) {
     logger.log(err)
 
     if (input.testStep) {
-      testStepErrorHandler(input, stepData, err)
-        .then(errorOutput => callback(null, errorOutput))
+      testStepErrorHandler(input, stepData, err).then(errorOutput => callback(null, errorOutput))
     } else {
       output = Object.assign({}, input, { error: err })
       callback(null, output)

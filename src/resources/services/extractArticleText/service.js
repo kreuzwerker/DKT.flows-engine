@@ -15,10 +15,7 @@ module.exports = arn => ({
       label: 'Language',
       defaultValue: 'en',
       type: 'radio',
-      options: [
-        { label: 'English', value: 'en' },
-        { label: 'German', value: 'de' }
-      ]
+      options: [{ label: 'English', value: 'en' }, { label: 'German', value: 'de' }]
     }
   ],
   samplePayload: '<html><head></head><body><article>Lorem Ipsum</article></body></html>',

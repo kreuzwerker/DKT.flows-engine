@@ -26,7 +26,7 @@ module.exports = ({ stage }) => ({
     '/': {
       post: {
         'produces': ['application/json'],
-        'security': [{ UserPool: [] }],
+        // 'security': [{ UserPool: [] }], // TODO
         'responses': {
           '200': {
             description: '200 response',
@@ -43,8 +43,8 @@ module.exports = ({ stage }) => ({
               }
             }
           },
-          '500': {
-            description: '500 response',
+          'default': {
+            description: 'Unexpected error',
             schema: { $ref: '#/definitions/Empty' },
             headers: {
               'Access-Control-Allow-Origin': {
@@ -62,9 +62,9 @@ module.exports = ({ stage }) => ({
         'x-amazon-apigateway-integration': {
           responses: {
             'default': {
-              statusCode: '200'
+              statusCode: '500'
             },
-            '500': {
+            '200': {
               statusCode: '200'
             }
           },
@@ -83,9 +83,9 @@ module.exports = ({ stage }) => ({
         'produces': ['application/json'],
         'responses': {
           '200': {
-            'description': '200 response',
-            'schema': { $ref: '#/definitions/Empty' },
-            'headers': {
+            description: '200 response',
+            schema: { $ref: '#/definitions/Empty' },
+            headers: {
               'Access-Control-Allow-Origin': {
                 type: 'string'
               },
@@ -95,27 +95,27 @@ module.exports = ({ stage }) => ({
               'Access-Control-Allow-Headers': {
                 type: 'string'
               }
-            },
-            '500': {
-              description: '500 response',
-              schema: { $ref: '#/definitions/Empty' },
-              headers: {
-                'Access-Control-Allow-Origin': {
-                  type: 'string'
-                },
-                'Access-Control-Allow-Methods': {
-                  type: 'string'
-                },
-                'Access-Control-Allow-Headers': {
-                  type: 'string'
-                }
+            }
+          },
+          'default': {
+            description: 'Unexpected error',
+            schema: { $ref: '#/definitions/Empty' },
+            headers: {
+              'Access-Control-Allow-Origin': {
+                type: 'string'
+              },
+              'Access-Control-Allow-Methods': {
+                type: 'string'
+              },
+              'Access-Control-Allow-Headers': {
+                type: 'string'
               }
             }
           }
         },
         'x-amazon-apigateway-integration': {
           responses: {
-            'default': {
+            '200': {
               statusCode: '200',
               responseParameters: {
                 'method.response.header.Access-Control-Allow-Methods':
@@ -125,8 +125,15 @@ module.exports = ({ stage }) => ({
                 'method.response.header.Access-Control-Allow-Origin': "'*'"
               }
             },
-            '500': {
-              statusCode: '500'
+            'default': {
+              statusCode: '500',
+              responseParameters: {
+                'method.response.header.Access-Control-Allow-Methods':
+                  "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                'method.response.header.Access-Control-Allow-Headers':
+                  "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                'method.response.header.Access-Control-Allow-Origin': "'*'"
+              }
             }
           },
           passthroughBehavior: 'when_no_match',

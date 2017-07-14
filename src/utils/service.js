@@ -3,6 +3,10 @@ import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
 
+/*
+ * This function is a wrapper for service lambda function. It takes a service function as a parameter
+ * and returns a function lambda function handler which can be used in flow runs and as a step test
+ */
 export default function service(serviceFn) {
   return async (event, context, callback) => {
     const logger = Logger(event.verbose)

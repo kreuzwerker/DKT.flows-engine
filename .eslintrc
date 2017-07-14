@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb"],
+  "extends": ["airbnb-base"],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"
@@ -19,7 +19,7 @@
     "class-methods-use-this": 1,
     "func-names": 0,
     "global-require": 1,
-    "import/prefer-default-export": 1,
+    "import/prefer-default-export": 0,
     "indent": ["error", 2, {
       "VariableDeclarator": {
         "var": 2,
@@ -62,16 +62,7 @@
     "prefer-default-export": 0,
     "quote-props": [1, "consistent"],
     "semi": [2, "never"],
-    "strict": 0,
-    "react/forbid-prop-types": 0,
-    "react/sort-comp": 0,
-    "react/jsx-filename-extension": 0,
-    "react/jsx-closing-bracket-location": 0,
-    "react/jsx-first-prop-new-line": 0,
-    "react/jsx-indent-props": 0,
-    "react/prefer-es6-class": 0,
-    "react/prefer-stateless-function": 0,
-    "jsx-a11y/anchor-has-content": 0,
+    "strict": 0
   },
   "globals": {
     "describe": true,

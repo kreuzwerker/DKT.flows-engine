@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import _isString from 'lodash/isString'
 import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'

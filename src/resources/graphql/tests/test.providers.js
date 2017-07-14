@@ -20,7 +20,7 @@ export default function () {
       const response = await GraphQLLambda({ body: payload, verbose: false })
       const { allProviders } = JSON.parse(response.body).data
 
-      expect(allProviders).to.have.length.of.at.least(expectedResult.length)
+      expect(allProviders).to.have.lengthOf.at.least(expectedResult.length)
 
       expectedResult.forEach((testProvider) => {
         const provider = _find(allProviders, { id: testProvider.id })

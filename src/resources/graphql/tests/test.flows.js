@@ -21,7 +21,7 @@ export default function () {
       const response = await GraphQLLambda({ body: payload, verbose: false })
       const { allFlows } = JSON.parse(response.body).data
 
-      expect(allFlows).to.have.length.of.at.least(expectedResult.length)
+      expect(allFlows).to.have.lengthOf.at.least(expectedResult.length)
 
       expectedResult.forEach((testFlow) => {
         const flow = _find(allFlows, { id: testFlow.id })
@@ -109,7 +109,7 @@ export default function () {
       expect(createdFlow.name).to.equal(createTestResult.name)
       expect(createdFlow.description).to.equal(createTestResult.description)
 
-      expect(createdFlow.steps).to.have.length.of(1)
+      expect(createdFlow.steps).to.have.lengthOf(1)
       stepToDelete = createdFlow.steps[0]
     })
 

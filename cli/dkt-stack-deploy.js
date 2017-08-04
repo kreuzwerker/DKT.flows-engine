@@ -65,13 +65,17 @@ return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(deployedBundles => createCloudFormationTmpl(deployedBundles, stage))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
   .then(() => CloudFormation.listStackResources(stage))
-  .then(stack => getServicesResources(stack.StackResourceSummaries))
-  .then(services =>
-    Promise.all(
-      services.map(service =>
-        putItem('DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2', service)
-      )
-    )
+  .then(stack =>
+    getServicesResources(stack.StackResourceSummaries).then(services => [services, stack])
   )
+  .then(([services, stack]) => {
+    const serviceTableResource = stack.StackResourceSummaries.find(
+      resource => resource.LogicalResourceId === 'DynamoDBServices'
+    )
+
+    return Promise.all(
+      services.map(service => putItem(serviceTableResource.PhysicalResourceId, service))
+    )
+  })
   .then(res => logger.log('Successfully deployed and updated Services'))
   .catch(err => logger.error(err))

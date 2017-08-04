@@ -30,6 +30,18 @@ function StepFunctions() {
 
     deleteStateMachine: (stateMachineArn) => {
       return stepFunctions.deleteStateMachine({ stateMachineArn }).promise()
+    },
+
+    getActivityTask: (params) => {
+      return stepFunctions.getActivityTask(params).promise()
+    },
+
+    sendTaskFailure: (params) => {
+      return stepFunctions.sendTaskFailure(params).promise()
+    },
+
+    sendTaskSuccess: (params) => {
+      return stepFunctions.sendTaskSuccess(params).promise()
     }
   }
 }

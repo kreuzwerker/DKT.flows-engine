@@ -1,6 +1,7 @@
 import {
   GraphQLID,
   GraphQLInt,
+  GraphQLBoolean,
   GraphQLList,
   GraphQLString,
   GraphQLFloat,
@@ -38,6 +39,7 @@ export const ServiceType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     type: { type: GraphQLString },
+    task: { type: GraphQLBoolean },
     arn: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
@@ -60,6 +62,7 @@ export const ServiceMirrorType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     type: { type: GraphQLString },
+    task: { type: GraphQLBoolean },
     arn: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },

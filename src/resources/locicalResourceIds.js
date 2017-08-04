@@ -24,6 +24,8 @@ module.exports = {
 
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
+  APPROVE_TASK_SERVICE: 'ApproveTaskService',
+
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
 
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',

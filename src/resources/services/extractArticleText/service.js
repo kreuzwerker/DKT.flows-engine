@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Extract Article',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  task: false,
   configSchema: [
     {
       fieldId: 'language-input',

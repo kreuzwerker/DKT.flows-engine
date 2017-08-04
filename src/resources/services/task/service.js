@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Approve Task',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  task: true,
   configSchema: null,
   samplePayload: null,
   arn: arn

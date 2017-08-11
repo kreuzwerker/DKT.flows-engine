@@ -1,6 +1,14 @@
 {
-  "presets": ["latest"],
-  "plugins": [
-    "syntax-dynamic-import"
-  ]
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "6.10",
+          "uglify": true
+        }
+      }
+    ]
+  ],
+  "plugins": ["syntax-dynamic-import"]
 }

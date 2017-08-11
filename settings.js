@@ -32,7 +32,7 @@ module.exports = {
       arn: `arn:aws:iam::${ACCOUNT}:role/lambda_s3_exec_role`,
       region: 'eu-west-1',
       handler: 'index.handler',
-      runtime: 'nodejs4.3',
+      runtime: 'nodejs6.10',
       timeout: 20
     },
     s3: {

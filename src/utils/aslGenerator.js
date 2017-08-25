@@ -26,7 +26,7 @@ function createStates(sortedSteps, outputArn) {
       Object.assign(states, {
         [stepName(step)]: {
           Type: 'Task',
-          Resource: step.service.arn,
+          Resource: step.service.task ? step.service.activityArn : step.service.arn,
           Next: nextStepName(actions, i),
           Catch: [
             {

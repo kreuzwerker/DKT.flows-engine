@@ -32,6 +32,10 @@ function StepFunctions() {
       return stepFunctions.deleteStateMachine({ stateMachineArn }).promise()
     },
 
+    createActivity: (params) => {
+      return stepFunctions.createActivity(params).promise()
+    },
+
     getActivityTask: (params) => {
       return stepFunctions.getActivityTask(params).promise()
     },

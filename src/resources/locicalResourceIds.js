@@ -22,9 +22,11 @@ module.exports = {
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
 
+  TASK_HANDLER_FUNCTION: 'TaskHandlerFunction',
+
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
-  APPROVE_TASK_SERVICE: 'ApproveTaskService',
+  APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',
 
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
 

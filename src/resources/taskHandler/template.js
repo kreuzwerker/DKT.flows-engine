@@ -1,8 +1,8 @@
-const settings = require('../../../../settings')
-const { APPROVE_TASK_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const settings = require('../../../settings')
+const { TASK_HANDLER_FUNCTION, S3_BUCKET, DYN_DB_FLOW_RUNS } = require('../locicalResourceIds')
 
 module.exports = ({ key }) => ({
-  [APPROVE_TASK_FUNCTION]: {
+  [TASK_HANDLER_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
@@ -12,10 +12,11 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: { Ref: S3_BUCKET }
+          S3_BUCKET: { Ref: S3_BUCKET },
+          DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS }
         }
       }
     },
-    DependsOn: [S3_BUCKET]
+    DependsOn: [S3_BUCKET, DYN_DB_FLOW_RUNS]
   }
 })

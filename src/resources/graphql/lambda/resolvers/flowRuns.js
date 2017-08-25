@@ -99,11 +99,23 @@ export async function createFlowRun(params) {
     )
   }
 
+  function extendTasksWithActivities(services) {
+    return Promise.all(
+      services.map((service) => {
+        if (!service.task) return Promise.resolve(service)
+        return StepFunctions.createActivity({
+          name: `${service.id}-activity-${uuid.v4()}`
+        }).then(({ activityArn }) => Object.assign({}, service, { activityArn }))
+      })
+    )
+  }
+
   try {
     let flow = await getFlowById(params.flow)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
-    const services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    services = await extendTasksWithActivities(services, flow.id)
 
     flow = Object.assign({}, flow, { steps: mergeServicesInSteps(steps, services) })
 
@@ -114,9 +126,11 @@ export async function createFlowRun(params) {
       message: null,
       runs: [],
       runsCount: 0,
+      taskHandlerArn: process.env.TASK_HANDLER_FUNCTION,
       flow
     }
 
+    // TODO if the flow contains a ActivityTask (approve) then add the task handler lambda arn to the flowRun
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
@@ -151,6 +165,9 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       FunctionName: triggerStep.service.arn,
       Payload: JSON.stringify({ flowRun, payload })
     })
+
+    // TODO if the flowRun contains a ActivityTask then invoke the lambda here
+    // the lambda is polling
 
     return getFlowRunById(id)
   } catch (err) {

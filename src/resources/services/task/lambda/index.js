@@ -10,10 +10,9 @@ export async function handler(event, context, callback) {
 
   try {
     const { taskToken, input } = await StepFunctions.getActivityTask({ activityArn })
-    await StepFunctions.sendTaskSuccess({
-      taskToken,
-      output: input
-    })
+
+    await StepFunctions.sendTaskSuccess({ taskToken, output: input })
+
     callback(null, input)
   } catch (err) {
     callback(err)

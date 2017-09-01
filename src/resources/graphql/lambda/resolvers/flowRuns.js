@@ -126,7 +126,6 @@ export async function createFlowRun(params) {
       message: null,
       runs: [],
       runsCount: 0,
-      taskHandlerArn: process.env.TASK_HANDLER_FUNCTION,
       flow
     }
 

@@ -36,6 +36,15 @@ function StepFunctions() {
       return stepFunctions.createActivity(params).promise()
     },
 
+    deleteActivities: (activities) => {
+      return Promise.all(
+        activities.map((activity) => {
+          const { activityArn } = activity
+          return stepFunctions.deleteActivity({ activityArn }).promise()
+        })
+      )
+    },
+
     getActivityTask: (params) => {
       return stepFunctions.getActivityTask(params).promise()
     },

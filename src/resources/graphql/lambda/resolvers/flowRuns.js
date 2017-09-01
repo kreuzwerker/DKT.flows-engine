@@ -189,11 +189,15 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then(flowRun =>
-      Promise.all([
+    .then((flowRun) => {
+      const { steps } = flowRun.flow
+      const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
+      console.log(JSON.stringify(tasks, null, 2))
+      return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
+        StepFunctions.deleteActivities(tasks),
         dbFlowRuns.deleteFlowRun(id)
       ])
-    )
+    })
     .then(() => ({ id }))
 }

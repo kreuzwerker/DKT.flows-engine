@@ -50,5 +50,7 @@ module.exports = {
 
   FLOW_RUNNER_FUNCTION: 'FlowRunnerFunction',
 
-  MERGE_JSONS_FUNCTION: 'MergeJSONsFunction'
+  MERGE_JSONS_FUNCTION: 'MergeJSONsFunction',
+
+  SPACY_NER_FUNCTION: 'SpacyNerFunction'
 }

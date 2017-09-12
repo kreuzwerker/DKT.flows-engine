@@ -35,6 +35,8 @@ module.exports = {
 
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
 
+  SPACY_NER_FUNCTION: 'SpacyNerFunction',
+
   FLOW_TRIGGER_API_FUNCTION: 'FlowTriggerApiFunction',
   FLOW_TRIGGER_API_GATEWAY: 'FlowTriggerApiGateway',
   FLOW_TRIGGER_API_PERMISSIONS: 'FlowTriggerApiPermission',

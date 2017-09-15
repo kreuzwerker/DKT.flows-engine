@@ -92,11 +92,10 @@ export async function createFlowRun(params) {
   }
 
   function mergeServicesInSteps(steps, services) {
-    return steps.map(step =>
-      Object.assign({}, step, {
-        service: services.filter(service => service.id === step.service)[0] || {}
-      })
-    )
+    return steps.map(step => ({
+      ...step,
+      service: services.filter(service => service.id === step.service)[0] || {}
+    }))
   }
 
   function extendTasksWithActivities(services) {
@@ -105,7 +104,7 @@ export async function createFlowRun(params) {
         if (!service.task) return Promise.resolve(service)
         return StepFunctions.createActivity({
           name: `${service.id}-activity-${uuid.v4()}`
-        }).then(({ activityArn }) => Object.assign({}, service, { activityArn }))
+        }).then(({ activityArn }) => ({ ...service, activityArn }))
       })
     )
   }
@@ -117,7 +116,7 @@ export async function createFlowRun(params) {
     let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
     services = await extendTasksWithActivities(services, flow.id)
 
-    flow = Object.assign({}, flow, { steps: mergeServicesInSteps(steps, services) })
+    flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
 
     const stateMachineName = `${flow.name.replace(' ', '')}_${uuid.v4()}`
     const newFlowRun = {
@@ -129,8 +128,10 @@ export async function createFlowRun(params) {
       flow
     }
 
-    // TODO if the flow contains a ActivityTask (approve) then add the task handler lambda arn to the flowRun
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
+
+    console.log(stateMachineDefinition)
+
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
       stateMachineDefinition
@@ -191,7 +192,7 @@ export function deleteFlowRun(id) {
     .then((flowRun) => {
       const { steps } = flowRun.flow
       const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
-      console.log(JSON.stringify(tasks, null, 2))
+
       return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
         StepFunctions.deleteActivities(tasks),

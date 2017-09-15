@@ -5,6 +5,9 @@ import {
   GraphQLNonNull,
   GraphQLEnumType
 } from 'graphql'
+import { StepMirrorType } from './step'
+
+// TODO UPDATE TASK DATA
 
 const StateType = new GraphQLEnumType({
   name: 'State',
@@ -28,7 +31,8 @@ export const TaskType = new GraphQLObjectType({
     date: { type: GraphQLString },
     type: { type: GraphQLString },
     state: { type: StateType },
-    arn: { type: GraphQLString },
+    taskToken: { type: GraphQLString },
+    step: { type: StepMirrorType },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString }
   })
@@ -42,7 +46,8 @@ export const TaskMirrorType = new GraphQLObjectType({
     description: { type: GraphQLString },
     date: { type: GraphQLString },
     type: { type: GraphQLString },
-    arn: { type: GraphQLString },
+    taskToken: { type: GraphQLString },
+    step: { type: StepMirrorType },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: { type: GraphQLID }

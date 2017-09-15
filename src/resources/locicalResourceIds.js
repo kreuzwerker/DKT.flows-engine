@@ -22,6 +22,8 @@ module.exports = {
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
 
+  TASK_INITIALIZER_FUNCTION: 'TaskInitializerFunction',
+
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
   APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',

@@ -42,6 +42,7 @@ export const ServiceType = new GraphQLObjectType({
     task: { type: GraphQLBoolean },
     arn: { type: GraphQLString },
     activityArn: { type: GraphQLString },
+    taskToken: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: {
@@ -66,6 +67,7 @@ export const ServiceMirrorType = new GraphQLObjectType({
     task: { type: GraphQLBoolean },
     arn: { type: GraphQLString },
     activityArn: { type: GraphQLString },
+    taskToken: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     provider: { type: GraphQLID },

@@ -96,7 +96,7 @@ export function triggerFlowRun(flowRun, payload) {
  */
 function getStepFromFlowRun(flowRun, currentStep) {
   const steps = flowRun.flow.steps || []
-  return steps.filter(s => s.position === currentStep)[0]
+  return steps.find(s => parseInt(s.position, 10) === parseInt(currentStep, 10))
 }
 
 function updateLogs(logs, step, status, message = '') {
@@ -118,6 +118,7 @@ export async function flowRunStepSuccessHandler(input, flowRunData, serviceResul
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
+  const nextStep = getStepFromFlowRun(flowRunData.flowRun, position + 1)
   const stepOutputKey = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
   const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
@@ -132,6 +133,10 @@ export async function flowRunStepSuccessHandler(input, flowRunData, serviceResul
       s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) }),
       s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) })
     ])
+
+    if (nextStep.service.task) {
+      console.log(nextStep) // TODO call a seperate Lambda that gets the Activity and save the taskToken to flowRunData on S3
+    }
 
     return Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey })
   } catch (err) {

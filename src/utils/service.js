@@ -22,7 +22,7 @@ export default function service(serviceFn) {
       if (input.testStep) {
         testStepErrorHandler(input, stepData, err).then(errorOutput => callback(null, errorOutput))
       } else {
-        output = Object.assign({}, input, { error: err })
+        output = { ...input, error: err }
         callback(null, output)
       }
     }
@@ -38,7 +38,7 @@ export default function service(serviceFn) {
 
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(inputData, logger, { event, context })
+      serviceResult = await serviceFn(inputData, logger, { event, context, stepData })
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)

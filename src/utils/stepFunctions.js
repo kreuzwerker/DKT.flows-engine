@@ -46,7 +46,14 @@ function StepFunctions() {
     },
 
     getActivityTask: (params) => {
-      return stepFunctions.getActivityTask(params).promise()
+      console.log('params', params)
+      return stepFunctions
+        .getActivityTask(params)
+        .promise()
+        .then((res) => {
+          console.log(res)
+          return res
+        })
     },
 
     sendTaskFailure: (params) => {

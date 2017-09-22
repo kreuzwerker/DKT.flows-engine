@@ -6,6 +6,7 @@ module.exports = {
   S3_BUCKET: 's3Bucket',
 
   FETCH_ARTICLE_FUNCTION: 'FetchArticleFunction',
+  PARSE_JSON_FUNCTION: 'ParseJsonFunction',
 
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',

@@ -29,11 +29,11 @@ async function parseJson(params, logger) {
 export const handler = service(parseJson)
 
 // Test function locally
-parseJson({
-  'jsonString': '{"test": "Success"}',
-  'jsonPath': '$.test'
-}, console).then((res) => {
-  console.log(res);
-}).catch((err) => {
-  console.log("ERROR", err);  
-})
+// parseJson({
+//   'jsonString': '{"test": "Success"}',
+//   'jsonPath': '$.test'
+// }, console).then((res) => {
+//   console.log(res);
+// }).catch((err) => {
+//   console.log("ERROR", err);  
+// })

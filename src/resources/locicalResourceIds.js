@@ -23,6 +23,7 @@ module.exports = {
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
 
   TASK_INITIALIZER_FUNCTION: 'TaskInitializerFunction',
+  TASK_OUTPUT_HANDLER_FUNCTION: 'TaskOutputHandlerFunction',
 
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 

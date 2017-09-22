@@ -39,9 +39,16 @@ async function taskInitializer(event, context, callback) {
 
   const task = {
     id: uuid.v4(),
+    title: currentStep.service.name,
+    description: currentStep.description,
+    date: new Date().toISOString(),
+    type: 'APPROVE',
+    state: 'NOT_STARTED',
     taskToken: activityData.taskToken,
-    step: currentStep,
-    input: JSON.parse(activityData.input)
+    flow: stepData.flowRun,
+    currentStep: input.currentStep,
+    input: JSON.stringify(activityData.input),
+    comments: []
   }
 
   try {

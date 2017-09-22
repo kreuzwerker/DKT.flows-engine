@@ -9,9 +9,9 @@ module.exports = arn => ({
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
   configSchema: null,
-  samplePayload: [
-    '{"person": {"firstName": "John", "lastName": "Doe"}}',
-    '$.person.firstName'
-  ],
+  samplePayload: {
+    'jsonString': '{"person": {"firstName": "John", "lastName": "Doe"}}',
+    'jsonPath': '$.person.firstName'
+  },
   arn: arn
 })

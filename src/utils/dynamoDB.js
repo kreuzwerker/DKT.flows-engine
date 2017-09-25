@@ -6,8 +6,7 @@ import { marshalItem, unmarshalItem } from 'dynamodb-marshaler'
 import settings from '../../settings'
 
 function DynamoDB() {
-  const { apiVersion } = settings.aws.dynamoDB
-  const dynamoDB = new AWS.DynamoDB({ apiVersion })
+  const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
 
   function merge(table, params = {}) {
     return Object.assign({}, params, {

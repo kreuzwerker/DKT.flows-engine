@@ -24,6 +24,7 @@
     "dynamodb-marshaler": "^2.0.0",
     "graphql": "^0.10.3",
     "graphql-tag": "^2.0.0",
+    "jsonpath-plus": "^0.16.0",
     "lodash": "^4.17.4",
     "moment-timezone": "^0.5.13",
     "node-fetch": "^1.6.3",

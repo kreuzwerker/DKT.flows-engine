@@ -25,7 +25,8 @@ module.exports = {
       region: 'eu-west-1'
     },
     dynamoDB: {
-      apiVersion: '2012-08-10'
+      apiVersion: '2012-08-10',
+      region: 'eu-west-1'
     },
     lambda: {
       apiVersion: '2015-03-31',

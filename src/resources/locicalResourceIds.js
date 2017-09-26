@@ -7,6 +7,7 @@ module.exports = {
 
   FETCH_ARTICLE_FUNCTION: 'FetchArticleFunction',
   PARSE_JSON_FUNCTION: 'ParseJsonFunction',
+  NEW_FEED_ITEM_FUNCTION: 'NewFeedItemFunction',
 
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',

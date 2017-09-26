@@ -6,7 +6,7 @@ function triggerStepReducer(a, step) {
   return step.service.type === 'TRIGGER' ? step : a
 }
 
-function urlValueResuder(a, param) {
+function urlValueReducer(a, param) {
   return param.fieldId === 'url-input' ? param.value : a
 }
 
@@ -15,7 +15,7 @@ export async function handler(event, context, callback) {
   const input = _isString(event) ? JSON.parse(event) : event
   const steps = input.flowRun.flow.steps || []
   const currentStep = steps.reduce(triggerStepReducer, {})
-  const url = currentStep.configParams.reduce(urlValueResuder, '')
+  const url = currentStep.configParams.reduce(urlValueReducer, '')
 
   logger.log(`Trigger FlowRun '${input.flowRun.id}' with url: ${url}`)
 

@@ -18,6 +18,7 @@ module.exports = {
   DYN_DB_SERVICES: 'DynamoDBServices',
   DYN_DB_TASKS: 'DynamoDBTasks',
   DYN_DB_STEPS: 'DynamoDBSteps',
+  DYN_DB_SERVICE_FEEDS: 'DynamoDBServiceFeeds',
 
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',

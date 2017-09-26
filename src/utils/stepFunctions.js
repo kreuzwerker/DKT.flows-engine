@@ -6,7 +6,7 @@ import settings from '../../settings'
 
 function StepFunctions() {
   AWS.config.apiVersions = { stepfunctions: settings.aws.stepFunctions.apiVersion }
-  const stepFunctions = new AWS.StepFunctions()
+  const stepFunctions = new AWS.StepFunctions(settings.aws.stepFunctions)
 
   return {
     startExecution: (stateMachineArn, data) => {

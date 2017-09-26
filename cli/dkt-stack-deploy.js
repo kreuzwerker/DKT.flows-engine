@@ -44,8 +44,7 @@ logger.log('Build Lambdas')
 const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
 function putItem(table, item) {
-  const { apiVersion } = settings.aws.dynamoDB
-  const dynamoDB = new AWS.DynamoDB({ apiVersion })
+  const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
   const currentDate = new Date().toISOString()
   const newItem = Object.assign({}, item, {
     createdAt: currentDate, // TODO

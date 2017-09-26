@@ -6,6 +6,7 @@ module.exports = {
   timezone: 'Europe/Berlin',
   aws: {
     account: ACCOUNT,
+    region: 'eu-west-1',
     credentials: {
       profile: 'DKT'
     },
@@ -38,11 +39,13 @@ module.exports = {
     },
     s3: {
       apiVersion: '2006-03-01',
-      bucket: 'dkt.flow-engine.resources'
+      bucket: 'dkt.flow-engine.resources',
+      region: 'eu-west-1'
     },
     stepFunctions: {
       apiVersion: '2016-11-23',
-      arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`
+      arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`,
+      region: 'eu-west-1'
     }
   },
   fs: {

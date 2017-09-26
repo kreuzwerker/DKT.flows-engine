@@ -6,7 +6,7 @@ import testData from './testData.json'
 export default function testdata() {
   AWS.config.apiVersions = { stepfunctions: settings.aws.stepFunctions.apiVersion }
   const { arn } = settings.aws.stepFunctions
-  const stepFunctions = new AWS.StepFunctions()
+  const stepFunctions = new AWS.StepFunctions(settings.aws.stepFunctions)
 
   return {
     seed: () =>

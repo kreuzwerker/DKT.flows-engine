@@ -6,7 +6,7 @@ import settings from '../../settings'
 
 function Lambda() {
   const { apiVersion } = settings.aws.lambda
-  const lambda = new AWS.Lambda({ apiVersion })
+  const lambda = new AWS.Lambda(settings.aws.lambda)
 
   return {
     invoke: params => lambda.invoke(params).promise(),

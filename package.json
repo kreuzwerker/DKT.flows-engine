@@ -12,7 +12,7 @@
   "author": "Johannes Dirr <johannes.dirr@kreuzwerker.de>",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.122.0",
+    "aws-sdk": "^2.46.0",
     "babel-polyfill": "^6.23.0",
     "babel-register": "^6.24.1",
     "bluebird": "^3.5.0",

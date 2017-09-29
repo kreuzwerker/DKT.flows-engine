@@ -45,5 +45,5 @@ export function deleteFeed(flowId) {
   const query = {
     Key: { flowId: { S: flowId } }
   }
-  return dynDB.deleteItem(table, query).then(() => ({ id }))
+  return dynDB.deleteItem(table, query).then(() => ({ flowId }))
 }

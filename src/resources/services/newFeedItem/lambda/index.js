@@ -3,8 +3,7 @@ import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbServiceFeeds from '../../../dbServiceFeeds/resolvers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
-
-const feedparser = require('feedparser-promised');
+import feedparser from 'feedparser-promised'
 
 /*
  * Check for new items in given feed
@@ -127,6 +126,7 @@ export async function handler(event, context, callback) {
 }
 
 // Test function locally
+// process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'
 // getNewFeedItems({
 //   'flowId': '1',
 //   'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',

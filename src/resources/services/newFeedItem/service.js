@@ -8,9 +8,32 @@ module.exports = arn => ({
   name: 'New Item in Feed',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'TRIGGER',
-  configSchema: null,
+  configSchema: [
+    {
+      fieldId: 'url',
+      position: 0,
+      label: 'Feed URL',
+      defaultValue: 'rss://',
+      type: 'input'
+    },
+    {
+      fieldId: 'idType',
+      position: 1,
+      label: 'ID type',
+      defaultValue: 'guid',
+      type: 'input'
+    },
+    {
+      fieldId: 'interval',
+      position: 2,
+      label: 'Polling interval (in minutes)',
+      defaultValue: '15',
+      type: 'input'
+    }
+  ],
   samplePayload: {
     'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+    'idType': 'guid',
     'interval': '15'
   },
   arn: arn

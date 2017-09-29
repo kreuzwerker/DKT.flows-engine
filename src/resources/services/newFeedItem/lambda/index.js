@@ -2,6 +2,7 @@ import _isString from 'lodash/isString'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbServiceFeeds from '../../../dbServiceFeeds/resolvers'
+import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 
 const feedparser = require('feedparser-promised');
 
@@ -13,7 +14,7 @@ async function getNewFeedItems(params, logger) {
   const url    = params.url;
   const idType = params.idType;
   
-  let newItems = [], feedItems = [];
+  let newItems = [], feedItems = [], feed = null;
 
   // Fetch feed items
   try {
@@ -24,7 +25,12 @@ async function getNewFeedItems(params, logger) {
   }
 
   // Get feed items from cache
-  let feed = await dbServiceFeeds.getFeedByFLowId(flowId);
+  try {
+    feed = await dbServiceFeeds.getOrCreateFeed(flowId, url);
+  } catch (err) {
+    logger.log('Error getting/creating the feed db entry', err);
+    throw new Error(err);
+  }
 
   // Detect new items
   feedItems.forEach((item) => {
@@ -51,40 +57,72 @@ function triggerStepReducer(a, step) {
   return step.service.type === 'TRIGGER' ? step : a
 }
 
-function urlValueReducer(a, param) {
-  return param.fieldId === 'url-input' ? param.value : a
-}
-
 export async function handler(event, context, callback) {
+  event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   const steps = input.flowRun.flow.steps || []
   const currentStep = steps.reduce(triggerStepReducer, {})
-  const url = currentStep.configParams.reduce(urlValueReducer, '')
+  // TODO payload = url ?
+  const payload = null;
+  
+  const flowId = input.flowRun.flow.id;
 
-  // TODO
-  console.log('DEBUG input', input);
-  const flowId = '1';
-  // TODO take from configParams
-  const idType = 'guid';
-
-  let items = getNewFeedItems({flowId: flowId, url: url, idType: idType});
-  if (items.length == 0) {
-    const result = Object.assign({}, input, { message: 'No new feed items.' });
+  console.log('DEBUG currentStep.configParams', currentStep.configParams);
+  const idType = currentStep.configParams.reduce((a, param) => {
+    return param.fieldId === 'idType' ? param.value : a
+  }, '')
+  const url = currentStep.configParams.reduce((a, param) => {
+    return param.fieldId === 'url' ? param.value : a
+  }, '')
+  
+  function err(err) {
+    const result = Object.assign({}, input, { error: err });
+    logger.log('Error:', err);
     callback(null, result);
+  }
+
+  let items = [];
+  try {
+    items = await getNewFeedItems({flowId: flowId, url: url, idType: idType});
+  } catch (err) {
+    err(err);
     return;
   }
 
-  logger.log(`Trigger FlowRun '${input.flowRun.id}' with items: ${items}`)
+  logger.log('DEBUG feed items', items);
+  if (!items.length) {
+    const msg = `No new feed items to process.`;
+    logger.log(msg);
+
+    try {
+      const result = await dbFlowRuns.updateFlowRun({
+        id: input.flowRun.id,
+        status: 'success',
+        message: msg
+      })
+  
+      logger.log(`Trigger FlowRun '${input.flowRun.id}'`);
+      callback(null, result);
+      return;
+    } catch (err) {
+      err(err);
+      return;
+    }
+  }
+
+  logger.log(`Trigger FlowRun '${input.flowRun.id}'`)
 
   try {
-    const result = await triggerFlowRun(input.flowRun, url)
-    logger.log('Triggered FlowRun')
-    callback(null, result)
+    const params = {
+      json: items[0],
+      path: '$.title'
+    };
+    const result = await triggerFlowRun(input.flowRun, params);
+    logger.log('Triggered FlowRun', result);
+    callback(null, result);
   } catch (err) {
-    const result = Object.assign({}, input, { error: err })
-    logger.log('Error:', err)
-    callback(null, result)
+    err(err);
   }
 }
 

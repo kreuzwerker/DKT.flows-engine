@@ -3,7 +3,8 @@ const {
   NEW_FEED_ITEM_FUNCTION,
   S3_BUCKET,
   STATE_MACHINE_TRIGGER_FUNCTION,
-  DYN_DB_FLOW_RUNS
+  DYN_DB_FLOW_RUNS,
+  DYN_DB_SERVICE_FEEDS
 } = require('../../locicalResourceIds')
 
 /*
@@ -22,11 +23,12 @@ module.exports = ({ key }) => ({
       Environment: {
         Variables: {
           DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
+          DYNAMO_SERVICE_FEEDS: { Ref: DYN_DB_SERVICE_FEEDS },
           S3_BUCKET: { Ref: S3_BUCKET },
           STATE_MACHINE_TRIGGER_FUNCTION: { Ref: STATE_MACHINE_TRIGGER_FUNCTION }
         }
       }
     },
-    dependsOn: [S3_BUCKET, STATE_MACHINE_TRIGGER_FUNCTION, DYN_DB_FLOW_RUNS]
+    dependsOn: [S3_BUCKET, STATE_MACHINE_TRIGGER_FUNCTION, DYN_DB_FLOW_RUNS, DYN_DB_SERVICE_FEEDS]
   }
 })

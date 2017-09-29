@@ -1,4 +1,4 @@
-const { URL_CONFIG_TRIGGER_SERVICE_FUNCTION } = require('../../locicalResourceIds')
+const { URL_CONFIG_TRIGGER_SERVICE_FUNCTION } = require('../../logicalResourceIds')
 
 module.exports = arn => ({
   description: 'Triggers a flow run with a given url',
@@ -6,7 +6,7 @@ module.exports = arn => ({
   id: 'ciy0jeruzbb5m01790ymkz7xl',
   name: 'URL Config',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
-  locicalResourceId: URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
+  logicalResourceId: URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   arn: arn,
   type: 'TRIGGER',
   configSchema: [

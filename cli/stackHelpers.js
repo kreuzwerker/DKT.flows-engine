@@ -120,7 +120,7 @@ module.exports = logger => ({
     return Promise.all(
       resources.map((serviceResource) => {
         const summary = stackResourceSummaries.find((r) => {
-          return r.LogicalResourceId === serviceResource().locicalResourceId
+          return r.LogicalResourceId === serviceResource().logicalResourceId
         })
 
         if (summary.ResourceType === 'AWS::Lambda::Function') {

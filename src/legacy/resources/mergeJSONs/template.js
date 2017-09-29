@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { MERGE_JSONS_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { MERGE_JSONS_FUNCTION, S3_BUCKET } = require('../logicalResourceIds')
 
 
 /*

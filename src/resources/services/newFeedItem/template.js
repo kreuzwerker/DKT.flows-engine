@@ -5,7 +5,7 @@ const {
   STATE_MACHINE_TRIGGER_FUNCTION,
   DYN_DB_FLOW_RUNS,
   DYN_DB_SERVICE_FEEDS
-} = require('../../locicalResourceIds')
+} = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

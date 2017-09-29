@@ -20,7 +20,7 @@ async function taskInitializer(event, context, callback) {
     )
   }
 
-  const currentStep = stepData.flowRun.flow.steps[input.currentStep]
+  const currentStep = stepData.flowRun.flow.steps[stepData.currentStep]
 
   try {
     activityData = await StepFunctions.getActivityTask({

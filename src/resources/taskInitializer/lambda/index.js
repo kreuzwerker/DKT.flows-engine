@@ -35,8 +35,6 @@ async function taskInitializer(event, context, callback) {
     callback(null, { ...input, error: err })
   }
 
-  // TODO SAVE REQUIRED TASK DATA AND UPDATE GRAPHQL
-
   const task = {
     id: uuid.v4(),
     title: currentStep.service.name,

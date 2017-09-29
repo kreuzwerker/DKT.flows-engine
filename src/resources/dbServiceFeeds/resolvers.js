@@ -1,9 +1,6 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
-// TEMP
-process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'
-
 export async function getFeed(flowId, url) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {

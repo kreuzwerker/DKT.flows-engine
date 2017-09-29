@@ -9,6 +9,7 @@ module.exports = arn => ({
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
   configSchema: null,
+  task: false,
   samplePayload:
     'http://www.spiegel.de/politik/ausland/brexit-schotten-sollen-ueber-unabhaengigkeit-abstimmen-a-1138530.html',
   arn: arn

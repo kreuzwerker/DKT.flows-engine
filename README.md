@@ -4,10 +4,10 @@
 
 #### [Node](https://nodejs.org/en/)
 
-All the tools and Scripts are written in JavaScript (>ES6). This means you have to install Node. We Support every **Node Version >= 6.9.4.** (since this is the latest [Long-term Support Version](https://github.com/nodejs/LTS)).  
+All the tools and Scripts are written in JavaScript (>ES6). This means you have to install Node. We Support every **Node Version >= 6.10.3.** (since this is the latest [Long-term Support Version](https://github.com/nodejs/LTS)).  
 You can install node via [NVM](https://github.com/creationix/nvm), [Homebrew](http://brew.sh/) (on macOS) or you download a installer from [nodejs.org/](https://nodejs.org/).
 
-- NVM: `nvm install 6.9.4` *(recommended)*
+- NVM: `nvm install 6.10.3` *(recommended)*
 - brew: `brew install node`
 
 When you have to change the node version from time to time (e.g. for different projects) then you can run `$ nvm use` when entering the project directory. This will select the node version defined within the `.nvmrc` file. Or you add [this code snipped (link)](https://github.com/creationix/nvm#zsh) to your `.zshrc`.

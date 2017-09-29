@@ -30,6 +30,38 @@ function StepFunctions() {
 
     deleteStateMachine: (stateMachineArn) => {
       return stepFunctions.deleteStateMachine({ stateMachineArn }).promise()
+    },
+
+    createActivity: (params) => {
+      return stepFunctions.createActivity(params).promise()
+    },
+
+    deleteActivities: (activities) => {
+      return Promise.all(
+        activities.map((activity) => {
+          const { activityArn } = activity
+          return stepFunctions.deleteActivity({ activityArn }).promise()
+        })
+      )
+    },
+
+    getActivityTask: (params) => {
+      console.log('params', params)
+      return stepFunctions
+        .getActivityTask(params)
+        .promise()
+        .then((res) => {
+          console.log(res)
+          return res
+        })
+    },
+
+    sendTaskFailure: (params) => {
+      return stepFunctions.sendTaskFailure(params).promise()
+    },
+
+    sendTaskSuccess: (params) => {
+      return stepFunctions.sendTaskSuccess(params).promise()
     }
   }
 }

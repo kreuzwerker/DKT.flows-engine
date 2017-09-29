@@ -1,12 +1,8 @@
 const settings = require('../../../settings')
-const { EXTRACT_ARTICLE_DATE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { TASK_OUTPUT_HANDLER_FUNCTION } = require('../locicalResourceIds')
 
-/*
- * AWS SAM Resource Template
- * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
- */
 module.exports = ({ key }) => ({
-  [EXTRACT_ARTICLE_DATE_FUNCTION]: {
+  [TASK_OUTPUT_HANDLER_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
@@ -15,10 +11,9 @@ module.exports = ({ key }) => ({
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,
       Environment: {
-        Variables: {
-          S3_BUCKET: { Ref: S3_BUCKET }
-        }
+        Variables: {}
       }
-    }
+    },
+    DependsOn: []
   }
 })

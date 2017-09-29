@@ -17,13 +17,19 @@ module.exports = {
   DYN_DB_FLOW_RUNS: 'DynamoDBFlowRuns',
   DYN_DB_PROVIDERS: 'DynamoDBProviders',
   DYN_DB_SERVICES: 'DynamoDBServices',
+  DYN_DB_TASKS: 'DynamoDBTasks',
   DYN_DB_STEPS: 'DynamoDBSteps',
   DYN_DB_SERVICE_FEEDS: 'DynamoDBServiceFeeds',
 
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',
 
+  TASK_INITIALIZER_FUNCTION: 'TaskInitializerFunction',
+  TASK_OUTPUT_HANDLER_FUNCTION: 'TaskOutputHandlerFunction',
+
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
+
+  APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',
 
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
 

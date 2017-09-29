@@ -11,11 +11,13 @@ import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
+import { TaskType } from './types/task'
 import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'
+import * as Tasks from './resolvers/tasks'
 import * as Steps from './resolvers/steps'
 
 /**
@@ -67,6 +69,11 @@ const QueryType = new GraphQLObjectType({
       type: ServiceType,
       args: { id: { type: GraphQLID } },
       resolve: (_, { id }) => Services.getServiceById(id)
+    },
+
+    allTasks: {
+      type: new GraphQLList(TaskType),
+      resolve: Tasks.allTasks
     },
 
     allSteps: {
@@ -222,6 +229,15 @@ const MutationType = new GraphQLObjectType({
       type: StepType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
       resolve: (_, { id }) => Steps.deleteStep(id)
+    },
+
+    updateTask: {
+      type: TaskType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        state: { type: GraphQLString }
+      },
+      resolve: (_, task) => Tasks.updateTask(task)
     }
   })
 })

@@ -92,9 +92,19 @@ export async function createFlowRun(params) {
   }
 
   function mergeServicesInSteps(steps, services) {
-    return steps.map(step =>
-      Object.assign({}, step, {
-        service: services.filter(service => service.id === step.service)[0] || {}
+    return steps.map(step => ({
+      ...step,
+      service: services.filter(service => service.id === step.service)[0] || {}
+    }))
+  }
+
+  function extendTasksWithActivities(services) {
+    return Promise.all(
+      services.map((service) => {
+        if (!service.task) return Promise.resolve(service)
+        return StepFunctions.createActivity({
+          name: `${service.id}-activity-${uuid.v4()}`
+        }).then(({ activityArn }) => ({ ...service, activityArn }))
       })
     )
   }
@@ -103,9 +113,10 @@ export async function createFlowRun(params) {
     let flow = await getFlowById(params.flow)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
-    const services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    services = await extendTasksWithActivities(services, flow.id)
 
-    flow = Object.assign({}, flow, { steps: mergeServicesInSteps(steps, services) })
+    flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
 
     const stateMachineName = `${flow.name.replace(' ', '')}_${uuid.v4()}`
     const newFlowRun = {
@@ -118,6 +129,9 @@ export async function createFlowRun(params) {
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
+
+    console.log(stateMachineDefinition)
+
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
       stateMachineDefinition
@@ -152,6 +166,9 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({ flowRun, payload })
     })
 
+    // TODO if the flowRun contains a ActivityTask then invoke the lambda here
+    // the lambda is polling
+
     return getFlowRunById(id)
   } catch (err) {
     return updateFlowRun({
@@ -172,11 +189,15 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then(flowRun =>
-      Promise.all([
+    .then((flowRun) => {
+      const { steps } = flowRun.flow
+      const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
+
+      return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
+        StepFunctions.deleteActivities(tasks),
         dbFlowRuns.deleteFlowRun(id)
       ])
-    )
+    })
     .then(() => ({ id }))
 }

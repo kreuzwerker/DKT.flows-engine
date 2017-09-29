@@ -1,4 +1,4 @@
-const { DYN_DB_STEPS } = require('../locicalResourceIds')
+const { DYN_DB_STEPS } = require('../logicalResourceIds')
 
 module.exports = () => ({
   [DYN_DB_STEPS]: {

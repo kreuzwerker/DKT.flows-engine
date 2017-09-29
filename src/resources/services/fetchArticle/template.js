@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

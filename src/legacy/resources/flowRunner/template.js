@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { FLOW_RUNNER_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { FLOW_RUNNER_FUNCTION, S3_BUCKET } = require('../logicalResourceIds')
 
 
 /*

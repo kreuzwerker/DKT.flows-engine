@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { APPROVE_TASK_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { APPROVE_TASK_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [APPROVE_TASK_FUNCTION]: {

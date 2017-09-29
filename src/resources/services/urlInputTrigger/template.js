@@ -4,7 +4,7 @@ const {
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   STATE_MACHINE_TRIGGER_FUNCTION,
   S3_BUCKET
-} = require('../../locicalResourceIds')
+} = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

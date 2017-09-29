@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { NLP_REQUEST_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { NLP_REQUEST_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

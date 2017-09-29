@@ -3,7 +3,7 @@ const {
   FLOW_TRIGGER_API_FUNCTION,
   FLOW_TRIGGER_API_GATEWAY,
   FLOW_TRIGGER_API_PERMISSIONS
-} = require('../locicalResourceIds')
+} = require('../logicalResourceIds')
 
 
 module.exports = ({ stage, key, swaggerKey }) => ({

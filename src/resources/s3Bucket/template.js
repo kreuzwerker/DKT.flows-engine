@@ -1,4 +1,4 @@
-const { S3_BUCKET } = require('../locicalResourceIds')
+const { S3_BUCKET } = require('../logicalResourceIds')
 
 module.exports = ({ stage }) => ({
   [S3_BUCKET]: {

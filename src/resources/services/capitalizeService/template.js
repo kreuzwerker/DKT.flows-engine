@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [CAPITALIZE_SERVICE_FUNCTION]: {

@@ -1,4 +1,4 @@
-const { DYN_DB_TASKS } = require('../locicalResourceIds')
+const { DYN_DB_TASKS } = require('../logicalResourceIds')
 
 module.exports = () => ({
   [DYN_DB_TASKS]: {

@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { TASK_INITIALIZER_FUNCTION, S3_BUCKET, DYN_DB_TASKS } = require('../locicalResourceIds')
+const { TASK_INITIALIZER_FUNCTION, S3_BUCKET, DYN_DB_TASKS } = require('../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [TASK_INITIALIZER_FUNCTION]: {

@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { TASK_OUTPUT_HANDLER_FUNCTION } = require('../locicalResourceIds')
+const { TASK_OUTPUT_HANDLER_FUNCTION } = require('../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [TASK_OUTPUT_HANDLER_FUNCTION]: {

@@ -3,7 +3,7 @@ const {
   STATE_MACHINE_OUTPUT_FUNCTION,
   S3_BUCKET,
   DYN_DB_FLOW_RUNS
-} = require('../locicalResourceIds')
+} = require('../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [STATE_MACHINE_OUTPUT_FUNCTION]: {

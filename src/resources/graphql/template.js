@@ -15,7 +15,7 @@ const {
   STATE_MACHINE_OUTPUT_FUNCTION,
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   S3_BUCKET
-} = require('../locicalResourceIds')
+} = require('../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

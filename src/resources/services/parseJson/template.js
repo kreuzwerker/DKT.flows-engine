@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { PARSE_JSON_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { PARSE_JSON_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

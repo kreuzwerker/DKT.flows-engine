@@ -1,5 +1,10 @@
 const settings = require('../../../../settings')
-const { NEW_FEED_ITEM_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const {
+  NEW_FEED_ITEM_FUNCTION,
+  S3_BUCKET,
+  STATE_MACHINE_TRIGGER_FUNCTION,
+  DYN_DB_FLOW_RUNS
+} = require('../../locicalResourceIds')
 
 /*
  * AWS SAM Resource Template
@@ -16,10 +21,12 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: { Ref: S3_BUCKET }
+          DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
+          S3_BUCKET: { Ref: S3_BUCKET },
+          STATE_MACHINE_TRIGGER_FUNCTION: { Ref: STATE_MACHINE_TRIGGER_FUNCTION }
         }
       }
     },
-    DependsOn: [S3_BUCKET]
+    dependsOn: [S3_BUCKET, STATE_MACHINE_TRIGGER_FUNCTION, DYN_DB_FLOW_RUNS]
   }
 })

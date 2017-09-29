@@ -40,7 +40,7 @@ async function getNewFeedItems(params, logger) {
 
   // Update feed cache
   try {
-    dbServiceFeeds.updateFeed(flowId, {
+    await dbServiceFeeds.updateFeed(flowId, {
       url: url,
       items: feedItems.map(item => item[idType])
     });

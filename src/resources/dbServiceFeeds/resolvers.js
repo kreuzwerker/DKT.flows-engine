@@ -1,7 +1,7 @@
 import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
-export async function getFeed(flowId, url) {
+export async function getFeed(flowId) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
     Key: { flowId: { S: flowId } }
@@ -12,7 +12,7 @@ export async function getFeed(flowId, url) {
 
 export async function getOrCreateFeed(flowId, url) {
   // Find feed
-  let feed = await getFeed(flowId, url);
+  let feed = await getFeed(flowId);
  
   // Or create feed
   if (!feed) {

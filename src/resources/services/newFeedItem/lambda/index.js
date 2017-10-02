@@ -113,11 +113,9 @@ export async function handler(event, context, callback) {
   logger.log(`Trigger FlowRun '${input.flowRun.id}'`)
 
   try {
-    const params = {
-      json: items[0],
-      path: '$.title'
-    };
-    const result = await triggerFlowRun(input.flowRun, params);
+    const result = await triggerFlowRun(input.flowRun, {
+      json: items[0]
+    });
     logger.log('Triggered FlowRun', result);
     callback(null, result);
   } catch (err) {

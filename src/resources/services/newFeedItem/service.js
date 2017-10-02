@@ -17,13 +17,6 @@ module.exports = arn => ({
       type: 'input'
     },
     {
-      fieldId: 'idType',
-      position: 1,
-      label: 'ID type',
-      defaultValue: 'guid',
-      type: 'input'
-    },
-    {
       fieldId: 'interval',
       position: 2,
       label: 'Polling interval (in minutes)',

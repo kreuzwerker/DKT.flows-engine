@@ -11,9 +11,8 @@ import feedparser from 'feedparser-promised'
 async function getNewFeedItems(params, logger) {
   const flowId = params.flowId;
   const url    = params.url;
-  const idType = params.idType;
-  
-  let newItems = [], feedItems = [], feed = null;
+
+  let newItems = [], feedItems = [], feed = null, itemIds = [];
 
   // Fetch feed items
   try {
@@ -31,18 +30,28 @@ async function getNewFeedItems(params, logger) {
     throw new Error(err);
   }
 
-  // Detect new items
-  feedItems.forEach((item) => {
-    if (!feed.items.includes(item[idType])) {
-      newItems.push(item);
+  if (feedItems.length) {
+    // Detect id type
+    const idType = getFeedIdType(feedItems);
+    if (!idType) {
+      throw new Error('Error detecting the unique feed item identifier.');
     }
-  });
+    
+    // Detect new items
+    feedItems.forEach((item) => {
+      if (!feed.items.includes(item[idType])) {
+        newItems.push(item);
+      }
+    });
+
+    itemIds = feedItems.map(item => item[idType]);
+  }
 
   // Update feed cache
   try {
     await dbServiceFeeds.updateFeed(flowId, {
       url: url,
-      items: feedItems.map(item => item[idType])
+      items: itemIds
     });
   } catch (err) {
     logger.log('Error fetching the feed', err);
@@ -50,6 +59,18 @@ async function getNewFeedItems(params, logger) {
   }
 
   return newItems;
+}
+
+function getFeedIdType(items) {
+  if (items[0].guid) {
+    return 'guid';
+  } else if (items[0].id) {
+    return 'id';
+  } else if (items[0].url) {
+    return 'url';
+  } else {
+    return false;
+  }
 }
 
 function triggerStepReducer(a, step) {
@@ -68,9 +89,6 @@ export async function handler(event, context, callback) {
   const flowId = input.flowRun.flow.id;
 
   console.log('DEBUG currentStep.configParams', currentStep.configParams);
-  const idType = currentStep.configParams.reduce((a, param) => {
-    return param.fieldId === 'idType' ? param.value : a
-  }, '')
   const url = currentStep.configParams.reduce((a, param) => {
     return param.fieldId === 'url' ? param.value : a
   }, '')
@@ -83,7 +101,7 @@ export async function handler(event, context, callback) {
 
   let items = [];
   try {
-    items = await getNewFeedItems({flowId: flowId, url: url, idType: idType});
+    items = await getNewFeedItems({flowId: flowId, url: url});
   } catch (err) {
     err(err);
     return;
@@ -128,8 +146,7 @@ export async function handler(event, context, callback) {
 // getNewFeedItems({
 //   'flowId': '1',
 //   'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-//   'idType': 'guid'
-// }, console).then((res) => {
+// }, logger).then((res) => {
 //   console.log(res);
 // }).catch((err) => {
 //   console.log(err);

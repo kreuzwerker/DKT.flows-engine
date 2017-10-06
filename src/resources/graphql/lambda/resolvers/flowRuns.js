@@ -130,8 +130,6 @@ export async function createFlowRun(params) {
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 
-    console.log(stateMachineDefinition)
-
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
       stateMachineDefinition
@@ -165,9 +163,6 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       FunctionName: triggerStep.service.arn,
       Payload: JSON.stringify({ flowRun, payload })
     })
-
-    // TODO if the flowRun contains a ActivityTask then invoke the lambda here
-    // the lambda is polling
 
     return getFlowRunById(id)
   } catch (err) {

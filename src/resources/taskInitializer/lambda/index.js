@@ -20,7 +20,9 @@ async function taskInitializer(event, context, callback) {
     )
   }
 
-  const currentStep = stepData.flowRun.flow.steps[stepData.currentStep]
+  const currentStep = stepData.flowRun.flow.steps.find(
+    step => step.position === stepData.currentStep + 1
+  )
 
   try {
     activityData = await StepFunctions.getActivityTask({
@@ -42,6 +44,7 @@ async function taskInitializer(event, context, callback) {
     date: new Date().toISOString(),
     type: 'APPROVE',
     state: 'NOT_STARTED',
+    activityArn: currentStep.service.activityArn,
     taskToken: activityData.taskToken,
     flow: stepData.flowRun,
     currentStep: input.currentStep,

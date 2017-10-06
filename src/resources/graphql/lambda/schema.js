@@ -239,6 +239,11 @@ const MutationType = new GraphQLObjectType({
         state: { type: GraphQLString }
       },
       resolve: (_, task) => Tasks.updateTask(task)
+    },
+    deleteTask: {
+      type: TaskType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Tasks.deleteTask(id)
     }
   })
 })

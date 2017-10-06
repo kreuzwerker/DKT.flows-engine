@@ -43,3 +43,12 @@ export async function updateTask(task) {
 
   return dbTasks.updateTask(task)
 }
+
+export async function deleteTask(id) {
+  const task = await getTaskById(id)
+  if (task.step !== 'REJECTED' && task.step !== 'APPROVED') {
+    await StepFunctions.sendTaskFailure({ taskToken: task.taskToken, output: JSON.stringify({}) })
+  }
+  console.log(task)
+  return true
+}

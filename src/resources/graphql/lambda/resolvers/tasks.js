@@ -44,11 +44,8 @@ export async function updateTask(task) {
   return dbTasks.updateTask(task)
 }
 
-export async function deleteTask(id) {
-  const task = await getTaskById(id)
-  if (task.step !== 'REJECTED' && task.step !== 'APPROVED') {
-    await StepFunctions.sendTaskFailure({ taskToken: task.taskToken, cause: 'REJECTED' })
-  }
-  console.log(task)
-  return true
+export function deleteTask(id) {
+  return getTaskById(id)
+    .then(task => StepFunctions.deleteActivity({ activityArn: task.activityArn }))
+    .then(() => dbTasks.deleteTask(id))
 }

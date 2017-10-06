@@ -62,6 +62,10 @@ function StepFunctions() {
 
     sendTaskSuccess: (params) => {
       return stepFunctions.sendTaskSuccess(params).promise()
+    },
+
+    deleteActivity: (params) => {
+      return stepFunctions.deleteActivity(params).promise()
     }
   }
 }

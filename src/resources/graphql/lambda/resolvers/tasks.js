@@ -33,7 +33,7 @@ export async function updateTask(task) {
         break
       }
       case 'REJECTED': {
-        await StepFunctions.sendTaskFailure({ taskToken, output: JSON.stringify({}) })
+        await StepFunctions.sendTaskFailure({ taskToken, cause: 'REJECTED' })
         break
       }
       default:
@@ -47,7 +47,7 @@ export async function updateTask(task) {
 export async function deleteTask(id) {
   const task = await getTaskById(id)
   if (task.step !== 'REJECTED' && task.step !== 'APPROVED') {
-    await StepFunctions.sendTaskFailure({ taskToken: task.taskToken, output: JSON.stringify({}) })
+    await StepFunctions.sendTaskFailure({ taskToken: task.taskToken, cause: 'REJECTED' })
   }
   console.log(task)
   return true

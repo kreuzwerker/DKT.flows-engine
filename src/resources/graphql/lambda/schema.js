@@ -221,9 +221,10 @@ const MutationType = new GraphQLObjectType({
       type: StepTestType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
-        payload: { type: new GraphQLNonNull(GraphQLString) }
+        payload: { type: new GraphQLNonNull(GraphQLString) },
+        configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
-      resolve: (_, { id, payload }) => Steps.testStep(id, payload)
+      resolve: (_, { id, payload, configParams }) => Steps.testStep(id, payload, configParams)
     },
     deleteStep: {
       type: StepType,

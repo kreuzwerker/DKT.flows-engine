@@ -46,12 +46,10 @@ function StepFunctions() {
     },
 
     getActivityTask: (params) => {
-      console.log('params', params)
       return stepFunctions
         .getActivityTask(params)
         .promise()
         .then((res) => {
-          console.log(res)
           return res
         })
     },

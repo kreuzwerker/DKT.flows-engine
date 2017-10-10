@@ -2,8 +2,20 @@ import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allTasks() {
+  // Retrieves all unfinished tasks
   const table = process.env.DYNAMO_TASKS
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  const params = {
+    FilterExpression: "#state IN (:not_started, :started, :paused)",
+    ExpressionAttributeNames: {
+      "#state": "state",
+    },
+    ExpressionAttributeValues: {
+      ":not_started": {S: 'NOT_STARTED'},
+      ":started": {S: 'STARTED'},
+      ":paused": {S: 'PAUSED'},
+    }
+  }
+  return dynDB.scan(table, params).then(r => r.Items.map(unmarshalItem))
 }
 
 export function getTaskById(taskId) {

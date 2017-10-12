@@ -11,7 +11,7 @@ import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
-import { TaskType } from './types/task'
+import { TaskType, TaskItemType } from './types/task'
 import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
@@ -74,6 +74,11 @@ const QueryType = new GraphQLObjectType({
     allTasks: {
       type: new GraphQLList(TaskType),
       resolve: Tasks.allTasks
+    },
+    TaskItem: {
+      type: TaskItemType,
+      args: { id: { type: GraphQLID } },
+      resolve: (_, { id }) => Tasks.getTaskItemById(id)
     },
 
     allSteps: {

@@ -80,3 +80,12 @@ export const TaskMirrorType = new GraphQLObjectType({
     createdAt: { type: GraphQLString }
   })
 })
+
+export const TaskItemType = new GraphQLObjectType({
+  name: 'TaskItemType',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    data: { type: GraphQLString },
+    type: { type: GraphQLString },
+  })
+})

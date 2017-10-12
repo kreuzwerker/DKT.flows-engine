@@ -1,6 +1,7 @@
 import uuid from 'uuid'
 import * as dbTasks from '../../../dbTasks/resolvers'
 import StepFunctions from '../../../../utils/stepFunctions'
+import { getRuns } from './flowRuns'
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -12,6 +13,30 @@ export function allTasks() {
 
 export function getTaskById(taskId) {
   return dbTasks.getTaskById(taskId)
+}
+
+export async function getTaskItemById(taskId) {
+  const task = await getTaskById(taskId);
+  if (!task) {
+    return new Promise((resolve, reject) => {
+      reject('Task not found.');
+    })
+  }
+
+  const runs = await getRuns(task.flow, { offset:0 });
+  if (!runs) {
+    return new Promise((resolve, reject) => {
+      reject('No flow runs available for this task.');
+    })
+  }
+
+  return new Promise((resolve, reject) => {
+    resolve({
+      id: taskId,
+      data: runs[0].result,
+      type: 'html'
+    });
+  })
 }
 
 export function batchGetTasksByIds(tasksIds) {

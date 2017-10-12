@@ -7,6 +7,7 @@ module.exports = {
 
   FETCH_ARTICLE_FUNCTION: 'FetchArticleFunction',
   PARSE_JSON_FUNCTION: 'ParseJsonFunction',
+  NEW_FEED_ITEM_FUNCTION: 'NewFeedItemFunction',
 
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_API_GATEWAY: 'GraphQLApiGateway',
@@ -18,6 +19,7 @@ module.exports = {
   DYN_DB_SERVICES: 'DynamoDBServices',
   DYN_DB_TASKS: 'DynamoDBTasks',
   DYN_DB_STEPS: 'DynamoDBSteps',
+  DYN_DB_SERVICE_FEEDS: 'DynamoDBServiceFeeds',
 
   STATE_MACHINE_TRIGGER_FUNCTION: 'StateMachineTriggerFunction',
   STATE_MACHINE_OUTPUT_FUNCTION: 'StateMachineOutputFunction',

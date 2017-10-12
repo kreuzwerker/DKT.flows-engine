@@ -6,8 +6,7 @@ import { marshalItem, unmarshalItem } from 'dynamodb-marshaler'
 import settings from '../../settings'
 
 function DynamoDB() {
-  const { apiVersion } = settings.aws.dynamoDB
-  const dynamoDB = new AWS.DynamoDB({ apiVersion })
+  const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
 
   function merge(table, params = {}) {
     return Object.assign({}, params, {
@@ -15,7 +14,7 @@ function DynamoDB() {
     })
   }
 
-  function buildUpdateParams(params, item, returnConsumedCapacity = 'TOTAL') {
+  function buildUpdateParams(params, item, primaryKey = 'id', returnConsumedCapacity = 'TOTAL') {
     const marshal = key => marshalItem({ [key]: item[key] })
     const updatedParams = Object.assign({}, params, {
       ExpressionAttributeNames: {
@@ -29,7 +28,7 @@ function DynamoDB() {
     })
 
     Object.keys(item).forEach((key) => {
-      if (key === 'id') return
+      if (key === primaryKey) return
       if (key === 'updatedAt') return
       if (key === 'createdAt') return
       updatedParams.ExpressionAttributeNames[`#${key}`] = key
@@ -49,7 +48,7 @@ function DynamoDB() {
 
     batchGetItem: params => dynamoDB.batchGetItem(params).promise(),
 
-    putItem: async (table, item) => {
+    putItem: async (table, item, primaryKey = 'id') => {
       const currentDate = new Date().toISOString()
       const newItem = Object.assign({}, item, {
         createdAt: currentDate,
@@ -65,14 +64,14 @@ function DynamoDB() {
         throw new Error('putItem failed. No units consumed by the operation')
       }
 
-      const query = { Key: { id: { S: item.id } } }
+      const query = { Key: { [primaryKey]: { S: item[primaryKey] } } }
       const createdInstance = await dynamoDB.getItem(merge(table, query)).promise()
 
       return unmarshalItem(createdInstance.Item)
     },
 
-    updateItem: async (table, query, item) => {
-      const updateParams = merge(table, buildUpdateParams(query, item))
+    updateItem: async (table, query, item, primaryKey = 'id') => {
+      const updateParams = merge(table, buildUpdateParams(query, item, primaryKey))
       const { ConsumedCapacity } = await dynamoDB.updateItem(updateParams).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {

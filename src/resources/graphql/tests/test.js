@@ -10,6 +10,7 @@ process.env.DYNAMO_FLOWS = 'DKT-flow-engine-Test-DynamoDBFlows-1VLWJ5E7JM9T0'
 process.env.DYNAMO_PROVIDERS = 'DKT-flow-engine-Test-DynamoDBProviders-6UD13CDNTONI'
 process.env.DYNAMO_SERVICES = 'DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2'
 process.env.DYNAMO_STEPS = 'DKT-flow-engine-Test-DynamoDBSteps-9LFCAR2Q3GTI'
+process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'
 
 process.env.S3_BUCKET = 'dkt.flow-engine.test'
 process.env.STATE_MACHINE_TRIGGER_FUNCTION =

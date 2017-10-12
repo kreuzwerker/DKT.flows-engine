@@ -6,6 +6,7 @@ module.exports = {
   timezone: 'Europe/Berlin',
   aws: {
     account: ACCOUNT,
+    region: 'eu-west-1',
     credentials: {
       profile: 'DKT'
     },
@@ -25,7 +26,8 @@ module.exports = {
       region: 'eu-west-1'
     },
     dynamoDB: {
-      apiVersion: '2012-08-10'
+      apiVersion: '2012-08-10',
+      region: 'eu-west-1'
     },
     lambda: {
       apiVersion: '2015-03-31',
@@ -37,11 +39,13 @@ module.exports = {
     },
     s3: {
       apiVersion: '2006-03-01',
-      bucket: 'dkt.flow-engine.resources'
+      bucket: 'dkt.flow-engine.resources',
+      region: 'eu-west-1'
     },
     stepFunctions: {
       apiVersion: '2016-11-23',
-      arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`
+      arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`,
+      region: 'eu-west-1'
     }
   },
   fs: {

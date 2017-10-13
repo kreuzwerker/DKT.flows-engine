@@ -3,14 +3,10 @@ import StepFunctions from '../../../../utils/stepFunctions'
 import service from '../../../../utils/service'
 import task from '../../../../utils/taskWorker'
 
-// THIS IS A TASK WORKER. NOT A REGULAR SERVICE LAMBDA.
-// A TASK WORKER CANNOT BE PART OF A STATEMACHINE
+// THIS FUNCTION IS NOT IN USE ANYMORE
+// TODO WE NEED TO UPDATE THE DEPLOYMENT TOOL TO IGNORE THIS
 
 async function approveWorker(inputData) {
-  // logger.log(JSON.stringify(inputData, null, 2))
-  // logger.log('')
-  // logger.log(JSON.stringify(stepData, null, 2))
-  // return Promise.resolve('')
   const { activityArn } = inputData
 
   try {

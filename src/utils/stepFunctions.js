@@ -9,6 +9,8 @@ function StepFunctions() {
   const stepFunctions = new AWS.StepFunctions(settings.aws.stepFunctions)
 
   return {
+    listStateMachines: () => stepFunctions.listStateMachines().promise(),
+
     startExecution: (stateMachineArn, data) => {
       return stepFunctions
         .startExecution({

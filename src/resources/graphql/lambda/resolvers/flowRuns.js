@@ -122,7 +122,7 @@ export async function createFlowRun(params) {
 
     flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
 
-    const stateMachineName = `${flow.name.replace(' ', '')}_${uuid.v4()}`
+    const stateMachineName = `${flow.name.replace(/\s/g, '')}_${uuid.v4()}`
     const newFlowRun = {
       id: uuid.v4(),
       status: 'pending',

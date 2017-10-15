@@ -14,7 +14,7 @@ export default function () {
       const expectedResult = testResult.allFlows
       const payload = JSON.stringify({
         query:
-          'query FlowsQuery { allFlows { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+          'query FlowsQuery { allFlows { id name description draft steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'FlowsQuery'
       })
 
@@ -29,6 +29,7 @@ export default function () {
         expect(flow.id).to.equal(testFlow.id)
         expect(flow.name).to.equal(testFlow.name)
         expect(flow.description).to.equal(testFlow.description)
+        expect(flow.draft).to.equal(testFlow.draft)
 
         const sortedFlowSteps = _sortBy(flow.steps, ['position'])
         const sortedTestFlowSteps = _sortBy(testFlow.steps, ['position'])
@@ -41,7 +42,7 @@ export default function () {
       const testFlow = testResult.Flow
       const payload = JSON.stringify({
         query:
-          'query FlowQuery($id: ID!) { Flow(id: $id) { id name description steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
+          'query FlowQuery($id: ID!) { Flow(id: $id) { id name description draft steps { id description tested position configParams { fieldId value } service { id name type description arn configSchema { position fieldId label type defaultValue required } provider { description group icon id name } } } } }',
         operationName: 'FlowQuery',
         variables: {
           id: 'dontDeleteMe20133m8gu0lju'
@@ -54,6 +55,7 @@ export default function () {
       expect(Flow.id).to.equal(testFlow.id)
       expect(Flow.name).to.equal(testFlow.name)
       expect(Flow.description).to.equal(testFlow.description)
+      expect(Flow.draft).to.equal(testFlow.draft)
 
       const sortedFlowSteps = _sortBy(Flow.steps, ['position'])
       const sortedTestFlowSteps = _sortBy(testFlow.steps, ['position'])
@@ -108,6 +110,7 @@ export default function () {
       expect(createdFlow.id).to.equal(createTestResult.id)
       expect(createdFlow.name).to.equal(createTestResult.name)
       expect(createdFlow.description).to.equal(createTestResult.description)
+      expect(createdFlow.draft).to.equal(createTestResult.draft)
 
       expect(createdFlow.steps).to.have.lengthOf(1)
       stepToDelete = createdFlow.steps[0]

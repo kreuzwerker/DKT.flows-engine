@@ -3,6 +3,7 @@
     "description": "This is a mocked flow object.",
     "id": "dontDeleteMe20133m8gu0lju",
     "name": "first flow",
+    "draft": true,
     "steps": [
       "dontDeleteMe101795ez58bzs",
       "dontDeleteMet0133sqdy35e6",

@@ -25,6 +25,7 @@ export async function createFlow(flow) {
       id: uuid.v4(),
       name: null,
       description: null,
+      draft: true,
       steps: []
     },
     flow

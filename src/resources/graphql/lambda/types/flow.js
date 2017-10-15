@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull } from 'graphql'
+import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull, GraphQLBoolean } from 'graphql'
 import { StepType, StepMirrorType } from './step'
 import * as Steps from '../resolvers/steps'
 
@@ -8,6 +8,7 @@ export const FlowType = new GraphQLObjectType({
     id: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
+    draft: { type: GraphQLBoolean },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     steps: {
@@ -26,6 +27,7 @@ export const FlowMirrorType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
+    draft: { type: GraphQLBoolean },
     steps: { type: new GraphQLList(StepMirrorType) }
   })
 })

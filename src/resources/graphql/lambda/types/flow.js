@@ -1,6 +1,8 @@
 import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull, GraphQLBoolean } from 'graphql'
 import { StepType, StepMirrorType } from './step'
 import * as Steps from '../resolvers/steps'
+import { FlowRunType } from './flowRun'
+import * as FlowRun from '../resolvers/flowRuns'
 
 export const FlowType = new GraphQLObjectType({
   name: 'Flow',
@@ -17,7 +19,13 @@ export const FlowType = new GraphQLObjectType({
         if (!flow.steps || flow.steps.length === 0) return []
         return Steps.batchGetStepByIds(flow.steps)
       }
-    }
+    },
+    flowRun: {
+      type: FlowRunType,
+      resolve: (flow) => {
+        return FlowRun.getFlowRunByFlowId(flow.id);
+      }
+    },
   })
 })
 

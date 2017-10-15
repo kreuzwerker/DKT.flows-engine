@@ -26,6 +26,10 @@ export function getFlowRunById(id) {
   return dbFlowRuns.getFlowRunById(id)
 }
 
+export async function getFlowRunByFlowId(flowId) {
+  return dbFlowRuns.getFlowRunByFlowId(flowId)
+}
+
 export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
   const { runs } = flowRun

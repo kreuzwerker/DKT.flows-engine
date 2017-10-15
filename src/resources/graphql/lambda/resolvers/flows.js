@@ -53,3 +53,10 @@ export function deleteFlow(id) {
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
 }
+
+export function setFlowDraftState(flow, state) {
+  return dbFlows.updateFlow({
+    id: flow.id,
+    draft: state
+  });
+}

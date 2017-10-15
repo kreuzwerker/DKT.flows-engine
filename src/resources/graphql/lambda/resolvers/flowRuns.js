@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import { getFlowById } from './flows'
+import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
 import S3 from '../../../../utils/s3'
@@ -141,7 +141,12 @@ export async function createFlowRun(params) {
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
 
-    return dbFlowRuns.createFlowRun(newFlowRun)
+    const flowRun = await dbFlowRuns.createFlowRun(newFlowRun)
+
+    // Take flow out of draft state
+    flowRun.flow = await setFlowDraftState(flow, false);
+
+    return flowRun
   } catch (err) {
     return Promise.reject(err)
   }

@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import { getFlowById, updateFlow } from './flows'
+import { getFlowById, updateFlow, setFlowDraftState } from './flows'
 import { getServiceById } from './services'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
@@ -51,6 +51,7 @@ export async function createStep(step) {
       if (flow) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
+        await setFlowDraftState(flow, true)
       } else {
         newStep.flow = null
       }
@@ -62,7 +63,8 @@ export async function createStep(step) {
   }
 }
 
-export function updateStep(step) {
+export async function updateStep(step) {
+  await updateFlowDraftState(step)
   return dbSteps.updateStep(step)
 }
 
@@ -116,6 +118,22 @@ export async function testStep(stepId, payload, configParams) {
   }
 }
 
-export function deleteStep(id) {
+export async function deleteStep(id) {
+  const step = getStepById(id)
+  await updateFlowDraftState(step)
   return dbSteps.deleteStep(id)
+}
+
+async function updateFlowDraftState(step) {
+  if (!step.flow) {
+    // Load step with flow object
+    step = await getStepById(step.id)
+  }
+
+  if (step.flow) {
+    const flow = await getFlowById(step.flow)
+    if (flow) {
+      await setFlowDraftState(flow, true)
+    }
+  }
 }

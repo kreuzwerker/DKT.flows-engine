@@ -1,6 +1,7 @@
 import uuid from 'uuid'
-import { createStep, deleteStep } from './steps'
+import { createStep, deleteStep, restoreStep } from './steps'
 import * as dbFlows from '../../../dbFlows/resolvers'
+import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -44,7 +45,7 @@ export async function createFlow(flow) {
 }
 
 export function updateFlow(flow) {
-  return dbFlows.updateFlow(flow)
+  return dbFlows.updateFlow(flow).then(flow => setFlowDraftState(flow, true))
 }
 
 export function deleteFlow(id) {
@@ -54,7 +55,7 @@ export function deleteFlow(id) {
     .then(() => ({ id }))
 }
 
-export function setFlowDraftState(flow, state) {
+export async function setFlowDraftState(flow, state) {
   return dbFlows.updateFlow({
     id: flow.id,
     draft: state

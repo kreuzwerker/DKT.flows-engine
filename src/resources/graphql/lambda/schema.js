@@ -120,6 +120,11 @@ const MutationType = new GraphQLObjectType({
       },
       resolve: (_, flow) => Flows.updateFlow(flow)
     },
+    restoreFlow: {
+      type: FlowType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Flows.restoreFlow(id)
+    },
     deleteFlow: {
       type: FlowType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },

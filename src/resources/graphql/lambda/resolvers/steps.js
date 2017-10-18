@@ -52,8 +52,6 @@ export async function createStep(step) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
         await setFlowDraftState(flow, true)
-      } else {
-        newStep.flow = null
       }
     }
 
@@ -64,8 +62,17 @@ export async function createStep(step) {
 }
 
 export async function updateStep(step) {
-  await updateFlowDraftState(step)
+  await updateFlowDraftState(Object.assign({}, step))
   return dbSteps.updateStep(step)
+}
+
+export function restoreStep(step) {
+  const restoredStep = Object.assign({}, step, {
+    service: step.service.id,
+    flow: step.flow
+  });
+
+  return dbSteps.updateStep(restoredStep);
 }
 
 export async function testStep(stepId, payload, configParams) {
@@ -119,7 +126,7 @@ export async function testStep(stepId, payload, configParams) {
 }
 
 export async function deleteStep(id) {
-  const step = getStepById(id)
+  const step = await getStepById(id)
   await updateFlowDraftState(step)
   return dbSteps.deleteStep(id)
 }
@@ -130,7 +137,7 @@ async function updateFlowDraftState(step) {
     step = await getStepById(step.id)
   }
 
-  if (step.flow) {
+  if (step && step.flow) {
     const flow = await getFlowById(step.flow)
     if (flow) {
       await setFlowDraftState(flow, true)

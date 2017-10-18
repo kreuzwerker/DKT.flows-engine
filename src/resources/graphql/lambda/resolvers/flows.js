@@ -48,6 +48,18 @@ export function updateFlow(flow) {
   return dbFlows.updateFlow(flow).then(flow => setFlowDraftState(flow, true))
 }
 
+export async function restoreFlow(id) {
+  // Restore flow steps from previous model stored in flowRun
+  const flowRun = await dbFlowRuns.getFlowRunByFlowId(id);
+  // TODO
+  // - current: step, prev: no step -> delete step
+  // - current: no step, prev: step -> add step
+  await Promise.all(flowRun.flow.steps.map(step => restoreStep(step)));
+
+  // Take flow out of draft state
+  return setFlowDraftState(flowRun.flow, false);
+}
+
 export function deleteFlow(id) {
   return getFlowById(id)
     .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId))))

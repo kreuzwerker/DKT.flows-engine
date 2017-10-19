@@ -66,15 +66,6 @@ export async function updateStep(step) {
   return dbSteps.updateStep(step)
 }
 
-export function restoreStep(step) {
-  const restoredStep = Object.assign({}, step, {
-    service: step.service.id,
-    flow: step.flow
-  });
-
-  return dbSteps.updateStep(restoredStep);
-}
-
 export async function testStep(stepId, payload, configParams) {
   const s3 = S3(process.env.S3_BUCKET)
   try {

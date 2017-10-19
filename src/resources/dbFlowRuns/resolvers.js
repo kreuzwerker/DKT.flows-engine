@@ -31,8 +31,8 @@ export async function getFlowRunByFlowId(flowId) {
   const items = await dynDB.scan(table, params).then(r => r.Items.map(unmarshalItem));
 
   // Return the last created flow run
-  const sortedItems = _sortBy(items, item => item.updatedAt)
-  return sortedItems && sortedItems[sortedItems.length - 1] || null;
+  const sortedItems = _sortBy(items, item => item.updatedAt).reverse()
+  return sortedItems && sortedItems[0] || null;
 }
 
 export function createFlowRun(flowRun) {

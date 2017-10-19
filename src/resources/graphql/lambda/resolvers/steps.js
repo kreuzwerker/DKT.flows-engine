@@ -127,8 +127,30 @@ export async function testStep(stepId, payload, configParams) {
 
 export async function deleteStep(id) {
   const step = await getStepById(id)
-  await updateFlowDraftState(step)
-  return dbSteps.deleteStep(id)
+
+  try {
+    if (step.flow) {
+      const flow = await getFlowById(step.flow)
+      if (flow) {
+        flow.steps = flow.steps.filter(id => id != step.id)
+        await updateFlow(flow)
+        await setFlowDraftState(flow, true)
+      }
+    }
+
+    await dbSteps.deleteStep(id)
+
+    return {
+      id: id,
+      // NB after deleting the step from the DB, GraphQL won't be able to retrieve
+      // the related flow entity anymore. Hence we manually include it in the
+      // response so the client will be able to e.g. request the current 
+      // flow.draft state within the deleteStep mutation.
+      flow: step.flow || null
+    }
+  } catch (err) {
+    return Promise.reject(err)
+  }
 }
 
 async function updateFlowDraftState(step) {

@@ -9,7 +9,24 @@ module.exports = arn => ({
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
   task: true,
-  configSchema: null,
+  configSchema: [
+    {
+      fieldId: 'title',
+      position: 0,
+      label: 'Title',
+      defaultValue: '[FIXME no empty default values possibile]',
+      type: 'input',
+      required: true
+    },
+    {
+      position: 1,
+      fieldId: 'description',
+      label: 'Description',
+      type: 'textarea',
+      defaultValue: '[FIXME no empty default values possibile]',
+      required: true
+    }
+  ],
   samplePayload: null,
   arn: arn
 })

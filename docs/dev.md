@@ -6,6 +6,8 @@ The flow-engine stack is defined with [AWS SAM (Serverless Application Model)](h
 
 The whole stack is basically a list of resources. All resources are defined in `src/resources/`. Every single resource **requires** a `template.js` file which exports a [AWS SAM resource definition](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#resource-types)! If the resource is a AWS Lambda function then there should be a `lambda` directory containing the lambda function itself and all other modules, assets, etc. that are **only** required by the function. E.g. `src/resources/<myResource>/lambda/index.js`. Please check the [AWS Lambda Getting Started Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) for more details about Lambda functions.
 
+To create a unique ID for the `template.js` file you can use the command `openssl rand -base64 14`.
+
 Lambdas can be written in ES6 including [async](https://github.com/tc39/ecmascript-asyncawait) functions. We Transform and bundle the Lambda function with [webpack](https://webpack.github.io/) and [babel](https://babeljs.io/) using the [latest preset](https://babeljs.io/docs/plugins/preset-latest/). See the `.babelrc` file for details.  
 Check the [compat-table](https://kangax.github.io/compat-table/es6/) for more details about which ES6/ES7 features are supported or not.
 

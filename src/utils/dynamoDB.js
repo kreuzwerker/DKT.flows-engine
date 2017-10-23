@@ -44,14 +44,7 @@ function DynamoDB() {
 
     query: (table, params) => dynamoDB.query(merge(table, params)).promise(),
 
-    getItem: (table, params) => {
-      // return dynamoDB.getItem(merge(table, params)).promise()
-      const mergedParams = merge(table, params)
-
-      console.log(JSON.stringify(mergedParams, null, 2))
-
-      return documentClient.get(mergedParams).promise()
-    },
+    getItem: (table, params) => documentClient.get(merge(table, params)).promise(),
 
     batchGetItem: params => dynamoDB.batchGetItem(params).promise(),
 

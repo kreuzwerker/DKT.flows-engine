@@ -62,7 +62,7 @@ export async function createStep(step) {
 }
 
 export async function updateStep(step) {
-  await updateFlowDraftState(Object.assign({}, step))
+  await updateFlowDraftState(step)
   return dbSteps.updateStep(step)
 }
 
@@ -145,15 +145,13 @@ export async function deleteStep(id) {
 }
 
 async function updateFlowDraftState(step) {
-  if (!step.flow) {
-    // Load step with flow object
-    step = await getStepById(step.id)
-  }
+  // Load step with flow object
+  const stepObj = !step.flow ? await getStepById(step.id) : step;
 
-  if (step && step.flow) {
-    const flow = await getFlowById(step.flow)
+  if (stepObj && stepObj.flow) {
+    const flow = await getFlowById(stepObj.flow)
     if (flow) {
-      await setFlowDraftState(flow, true)
+      return await setFlowDraftState(flow, true)
     }
   }
 }

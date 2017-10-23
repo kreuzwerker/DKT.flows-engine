@@ -2,7 +2,6 @@
  * Lambda Utitlity which can be used in lambda functions
  */
 import AWS from 'aws-sdk'
-import { marshalItem, unmarshalItem } from 'dynamodb-marshaler'
 import settings from '../../settings'
 
 function DynamoDB() {
@@ -14,14 +13,13 @@ function DynamoDB() {
   }
 
   function buildUpdateParams(params, item, primaryKey = 'id', returnConsumedCapacity = 'TOTAL') {
-    const marshal = key => marshalItem({ [key]: item[key] })
     const updatedParams = {
       ...params,
       ExpressionAttributeNames: {
         '#updatedAt': 'updatedAt'
       },
       ExpressionAttributeValues: {
-        ':updatedAt': { S: new Date().toISOString() }
+        ':updatedAt': new Date().toISOString()
       },
       UpdateExpression: 'SET #updatedAt = :updatedAt',
       ReturnConsumedCapacity: returnConsumedCapacity
@@ -32,7 +30,7 @@ function DynamoDB() {
       if (key === 'updatedAt') return
       if (key === 'createdAt') return
       updatedParams.ExpressionAttributeNames[`#${key}`] = key
-      updatedParams.ExpressionAttributeValues[`:${key}`] = marshal(key)[key]
+      updatedParams.ExpressionAttributeValues[`:${key}`] = item[key]
       updatedParams.UpdateExpression = `${updatedParams.UpdateExpression}, #${key} = :${key}`
     })
 
@@ -42,11 +40,11 @@ function DynamoDB() {
   return {
     scan: (table, params) => documentClient.scan(merge(table, params)).promise(),
 
-    query: (table, params) => dynamoDB.query(merge(table, params)).promise(),
+    query: (table, params) => dynamoDB.query(merge(table, params)).promise(), // TODO we can remove this
 
     getItem: (table, params) => documentClient.get(merge(table, params)).promise(),
 
-    batchGetItem: params => dynamoDB.batchGetItem(params).promise(),
+    batchGetItem: params => documentClient.batchGet(params).promise(),
 
     putItem: async (table, item, primaryKey = 'id') => {
       const currentDate = new Date().toISOString()
@@ -54,7 +52,7 @@ function DynamoDB() {
         Item: { ...item, createdAt: currentDate, updatedAt: currentDate },
         ReturnConsumedCapacity: 'TOTAL'
       }
-      const { ConsumedCapacity } = await documentClient.putItem(merge(table, params)).promise()
+      const { ConsumedCapacity } = await documentClient.put(merge(table, params)).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
         throw new Error('putItem failed. No units consumed by the operation')
@@ -69,18 +67,20 @@ function DynamoDB() {
 
     updateItem: async (table, query, item, primaryKey = 'id') => {
       const updateParams = merge(table, buildUpdateParams(query, item, primaryKey))
-      const { ConsumedCapacity } = await dynamoDB.updateItem(updateParams).promise()
+      const { ConsumedCapacity } = await documentClient.update(updateParams).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
         throw new Error('updateItem failed. No units consumed by the operation')
       }
 
-      const updatedItem = await dynamoDB.getItem(merge(table, query)).promise()
-      return unmarshalItem(updatedItem.Item)
+      return documentClient
+        .get(merge(table, query))
+        .promise()
+        .then(res => res.Item)
     },
 
     deleteItem: async (table, item) => {
-      const { ConsumedCapacity } = await dynamoDB.deleteItem(merge(table, item)).promise()
+      const { ConsumedCapacity } = await documentClient.delete(merge(table, item)).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
         throw new Error('deleteItem failed. No units consumed by the operation')

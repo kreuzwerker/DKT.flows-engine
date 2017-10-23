@@ -22,7 +22,7 @@ export function createProvider(provider) {
 export function updateProvider(provider) {
   const table = process.env.DYNAMO_PROVIDERS
   const query = {
-    Key: { id: { S: provider.id } }
+    Key: { id: provider.id }
   }
 
   return dynDB.updateItem(table, query, provider)
@@ -31,7 +31,7 @@ export function updateProvider(provider) {
 export function deleteProvider(id) {
   const table = process.env.DYNAMO_PROVIDERS
   const query = {
-    Key: { id: { S: id } }
+    Key: { id }
   }
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

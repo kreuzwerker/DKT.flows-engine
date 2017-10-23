@@ -1,4 +1,3 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allSteps() {
@@ -20,12 +19,12 @@ export function batchGetStepByIds(stepsIds) {
   const query = {
     RequestItems: {
       [table]: {
-        Keys: stepsIds.map(id => ({ id: { S: id } }))
+        Keys: stepsIds.map(id => ({ id }))
       }
     }
   }
 
-  return dynDB.batchGetItem(query).then(res => res.Responses[table].map(unmarshalItem))
+  return dynDB.batchGetItem(query).then(res => res.Responses[table])
 }
 
 export function createStep(step) {
@@ -36,7 +35,7 @@ export function createStep(step) {
 export function updateStep(step) {
   const table = process.env.DYNAMO_STEPS
   const query = {
-    Key: { id: { S: step.id } }
+    Key: { id: step.id }
   }
 
   return dynDB.updateItem(table, query, step)
@@ -45,7 +44,7 @@ export function updateStep(step) {
 export function deleteStep(id) {
   const table = process.env.DYNAMO_STEPS
   const query = {
-    Key: { id: { S: id } }
+    Key: { id }
   }
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

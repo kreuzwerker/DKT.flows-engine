@@ -22,7 +22,7 @@ export function createFlow(flow) {
 export function updateFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
   const query = {
-    Key: { id: { S: flow.id } }
+    Key: { id: flow.id }
   }
 
   return dynDB.updateItem(table, query, flow)
@@ -30,7 +30,7 @@ export function updateFlow(flow) {
 
 export function deleteFlow(id) {
   const table = process.env.DYNAMO_FLOWS
-  const query = { Key: { id: { S: id } } }
+  const query = { Key: id }
 
   return dynDB.deleteItem(table, query)
 }

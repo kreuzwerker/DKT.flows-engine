@@ -33,7 +33,7 @@ export async function getOrCreateFeed(flowId, url) {
 export function updateFeed(flowId, feed) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
-    Key: { flowId: { S: flowId } }
+    Key: { flowId: flowId }
   }
 
   return dynDB.updateItem(table, query, feed, 'flowId')
@@ -42,7 +42,7 @@ export function updateFeed(flowId, feed) {
 export function deleteFeed(flowId) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
-    Key: { flowId: { S: flowId } }
+    Key: { flowId }
   }
   return dynDB.deleteItem(table, query).then(() => ({ flowId }))
 }

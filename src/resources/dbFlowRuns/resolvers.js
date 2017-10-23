@@ -42,7 +42,7 @@ export function createFlowRun(flowRun) {
 export function updateFlowRun(flowRun) {
   const table = process.env.DYNAMO_FLOW_RUNS
   const query = {
-    Key: { id: { S: flowRun.id } }
+    Key: { id: flowRun.id }
   }
 
   return dynDB.updateItem(table, query, flowRun)
@@ -50,7 +50,7 @@ export function updateFlowRun(flowRun) {
 
 export function deleteFlowRun(id) {
   const table = process.env.DYNAMO_FLOW_RUNS
-  const deleteQuery = { Key: { id: { S: id } } }
+  const deleteQuery = { Key: { id: id } }
 
   dynDB.deleteItem(table, deleteQuery)
 }

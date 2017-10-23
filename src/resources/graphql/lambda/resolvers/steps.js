@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import { getFlowById, updateFlow } from './flows'
+import { getFlowById, updateFlow, setFlowDraftState } from './flows'
 import { getServiceById } from './services'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
@@ -51,8 +51,7 @@ export async function createStep(step) {
       if (flow) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
-      } else {
-        newStep.flow = null
+        await setFlowDraftState(flow, true)
       }
     }
 
@@ -62,7 +61,8 @@ export async function createStep(step) {
   }
 }
 
-export function updateStep(step) {
+export async function updateStep(step) {
+  await updateFlowDraftState(step)
   return dbSteps.updateStep(step)
 }
 
@@ -116,6 +116,42 @@ export async function testStep(stepId, payload, configParams) {
   }
 }
 
-export function deleteStep(id) {
-  return dbSteps.deleteStep(id)
+export async function deleteStep(id) {
+  const step = await getStepById(id)
+
+  try {
+    if (step.flow) {
+      const flow = await getFlowById(step.flow)
+      if (flow) {
+        flow.steps = flow.steps.filter(id => id != step.id)
+        await updateFlow(flow)
+        await setFlowDraftState(flow, true)
+      }
+    }
+
+    await dbSteps.deleteStep(id)
+
+    return {
+      id: id,
+      // NB after deleting the step from the DB, GraphQL won't be able to retrieve
+      // the related flow entity anymore. Hence we manually include it in the
+      // response so the client will be able to e.g. request the current 
+      // flow.draft state within the deleteStep mutation.
+      flow: step.flow || null
+    }
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+async function updateFlowDraftState(step) {
+  // Load step with flow object
+  const stepObj = !step.flow ? await getStepById(step.id) : step;
+
+  if (stepObj && stepObj.flow) {
+    const flow = await getFlowById(stepObj.flow)
+    if (flow) {
+      return await setFlowDraftState(flow, true)
+    }
+  }
 }

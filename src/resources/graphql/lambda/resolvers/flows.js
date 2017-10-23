@@ -53,37 +53,43 @@ export async function restoreFlow(id) {
   // Restore flow steps from previous model stored in flowRun
   const [flow, flowRun] = await Promise.all([getFlowById(id), dbFlowRuns.getFlowRunByFlowId(id)])
   if (!flowRun) {
-    return Promise.reject('No previous flow run found.');
+    return Promise.reject('No previous flow run found.')
   }
 
   // Delete all current flow steps
-  await Promise.all(flow.steps.map(id => deleteStep(id)));
+  await Promise.all(flow.steps.map(id => deleteStep(id)))
 
   // Restore all steps from the previous flow
-  await Promise.all(flowRun.flow.steps.map(step => dbSteps.createStep(
-    Object.assign({}, step, {
-      service: step.service.id,
-      flow: step.flow
-    }
-  ))));
+  await Promise.all(
+    flowRun.flow.steps.map(step =>
+      dbSteps.createStep(
+        Object.assign({}, step, {
+          service: step.service.id,
+          flow: step.flow
+        })
+      )
+    )
+  )
 
   // Restore old flow steps relations and take flow out of draft state
-  return dbFlows.updateFlow(Object.assign({}, flow, {
-    steps: flowRun.flow.steps.map(step => step.id),
-    draft: false
-  }));
+  return dbFlows.updateFlow(
+    Object.assign({}, flow, {
+      steps: flowRun.flow.steps.map(step => step.id),
+      draft: false
+    })
+  )
 }
 
 export function deleteFlow(id) {
   return getFlowById(id)
     .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId))))
     .then(() => dbFlows.deleteFlow(id))
-    .then(() => ({ id }))
+    .then(res => ({ id }))
 }
 
 export async function setFlowDraftState(flow, state) {
   return dbFlows.updateFlow({
     id: flow.id,
     draft: state
-  });
+  })
 }

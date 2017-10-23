@@ -30,7 +30,7 @@ export function updateFlow(flow) {
 
 export function deleteFlow(id) {
   const table = process.env.DYNAMO_FLOWS
-  const query = { Key: id }
+  const query = { Key: { id } }
 
   return dynDB.deleteItem(table, query)
 }

@@ -123,7 +123,7 @@ export async function deleteStep(id) {
     if (step.flow) {
       const flow = await getFlowById(step.flow)
       if (flow) {
-        flow.steps = flow.steps.filter(id => id != step.id)
+        flow.steps = flow.steps.filter(stepId => stepId !== step.id)
         await updateFlow(flow)
         await setFlowDraftState(flow, true)
       }
@@ -135,7 +135,7 @@ export async function deleteStep(id) {
       id: id,
       // NB after deleting the step from the DB, GraphQL won't be able to retrieve
       // the related flow entity anymore. Hence we manually include it in the
-      // response so the client will be able to e.g. request the current 
+      // response so the client will be able to e.g. request the current
       // flow.draft state within the deleteStep mutation.
       flow: step.flow || null
     }
@@ -146,7 +146,7 @@ export async function deleteStep(id) {
 
 async function updateFlowDraftState(step) {
   // Load step with flow object
-  const stepObj = !step.flow ? await getStepById(step.id) : step;
+  const stepObj = !step.flow ? await getStepById(step.id) : step
 
   if (stepObj && stepObj.flow) {
     const flow = await getFlowById(stepObj.flow)

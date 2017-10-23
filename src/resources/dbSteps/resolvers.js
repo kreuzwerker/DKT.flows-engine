@@ -3,7 +3,7 @@ import dynDB from '../../utils/dynamoDB'
 
 export function allSteps() {
   const table = process.env.DYNAMO_STEPS
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getStepById(stepId) {

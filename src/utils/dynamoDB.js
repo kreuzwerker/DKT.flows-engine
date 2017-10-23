@@ -40,7 +40,7 @@ function DynamoDB() {
   }
 
   return {
-    scan: (table, params) => dynamoDB.scan(merge(table, params)).promise(),
+    scan: (table, params) => documentClient.scan(merge(table, params)).promise(),
 
     query: (table, params) => dynamoDB.query(merge(table, params)).promise(),
 

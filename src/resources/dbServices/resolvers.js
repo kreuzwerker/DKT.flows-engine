@@ -3,7 +3,7 @@ import dynDB from '../../utils/dynamoDB'
 
 export function allServices() {
   const table = process.env.DYNAMO_SERVICES
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getServiceById(serviceId) {

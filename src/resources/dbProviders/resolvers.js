@@ -1,9 +1,8 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allProviders() {
   const table = process.env.DYNAMO_PROVIDERS
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getProviderById(providerId) {

@@ -1,9 +1,8 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allFlows() {
   const table = process.env.DYNAMO_FLOWS
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getFlowById(flowId) {

@@ -10,12 +10,12 @@ export function allTasks() {
       '#state': 'state'
     },
     ExpressionAttributeValues: {
-      ':not_started': { S: 'NOT_STARTED' },
-      ':started': { S: 'STARTED' },
-      ':paused': { S: 'PAUSED' }
+      ':not_started': 'NOT_STARTED',
+      ':started': 'STARTED',
+      ':paused': 'PAUSED'
     }
   }
-  return dynDB.scan(table, params).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table, params).then(r => r.Items)
 }
 
 export function getTaskById(taskId) {

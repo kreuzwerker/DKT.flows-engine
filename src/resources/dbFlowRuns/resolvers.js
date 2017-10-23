@@ -1,10 +1,9 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 import _sortBy from 'lodash/sortBy'
 
 export function allFlowRuns() {
   const table = process.env.DYNAMO_FLOW_RUNS
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getFlowRunById(id) {

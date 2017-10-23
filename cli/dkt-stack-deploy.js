@@ -44,6 +44,8 @@ const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
 function putItem(table, item) {
   const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
+  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
+
   const currentDate = new Date().toISOString()
   const newItem = Object.assign({}, item, {
     createdAt: currentDate, // TODO
@@ -54,7 +56,7 @@ function putItem(table, item) {
     ReturnConsumedCapacity: 'TOTAL'
   }
 
-  return dynamoDB.putItem(Object.assign({}, params, { TableName: table })).promise()
+  return documentClient.put(Object.assign({}, params, { TableName: table })).promise()
 }
 
 return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))

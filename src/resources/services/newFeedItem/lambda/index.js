@@ -13,7 +13,6 @@ export async function handler(event, context, callback) {
   const currentStep = steps.reduce(triggerStepReducer, {})
   const flowId = input.flowRun.flow.id;
 
-  logger.log('DEBUG currentStep.configParams', currentStep.configParams);
   const url = currentStep.configParams.reduce((a, param) => {
     return param.fieldId === 'url' ? param.value : a
   }, '');

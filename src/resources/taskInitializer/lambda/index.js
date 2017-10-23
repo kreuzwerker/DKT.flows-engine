@@ -39,8 +39,8 @@ async function taskInitializer(event, context, callback) {
 
   const task = {
     id: uuid.v4(),
-    title: currentStep.service.name,
-    description: currentStep.description,
+    title: currentStep.configParams[0].value || currentStep.service.name,
+    description: currentStep.configParams[1].value || currentStep.description,
     date: new Date().toISOString(),
     type: 'APPROVE',
     state: 'NOT_STARTED',

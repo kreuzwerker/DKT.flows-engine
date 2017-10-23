@@ -1,30 +1,29 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allTasks() {
   // Retrieves all unfinished tasks
   const table = process.env.DYNAMO_TASKS
   const params = {
-    FilterExpression: "#state IN (:not_started, :started, :paused)",
+    FilterExpression: '#state IN (:not_started, :started, :paused)',
     ExpressionAttributeNames: {
-      "#state": "state",
+      '#state': 'state'
     },
     ExpressionAttributeValues: {
-      ":not_started": {S: 'NOT_STARTED'},
-      ":started": {S: 'STARTED'},
-      ":paused": {S: 'PAUSED'},
+      ':not_started': 'NOT_STARTED',
+      ':started': 'STARTED',
+      ':paused': 'PAUSED'
     }
   }
-  return dynDB.scan(table, params).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table, params).then(r => r.Items)
 }
 
 export function getTaskById(taskId) {
   const table = process.env.DYNAMO_TASKS
   const query = {
-    Key: { id: { S: taskId } }
+    Key: { id: taskId }
   }
 
-  return dynDB.getItem(table, query).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, query).then(r => r.Item || null)
 }
 
 export function batchGetTasksByIds(tasksIds) {
@@ -32,12 +31,12 @@ export function batchGetTasksByIds(tasksIds) {
   const query = {
     RequestItems: {
       [table]: {
-        Keys: tasksIds.map(id => ({ id: { S: id } }))
+        Keys: tasksIds.map(id => ({ id }))
       }
     }
   }
 
-  return dynDB.batchGetItem(query).then(res => res.Responses[table].map(unmarshalItem))
+  return dynDB.batchGetItem(query).then(res => res.Responses[table])
 }
 
 export function createTask(task) {
@@ -48,7 +47,7 @@ export function createTask(task) {
 export function updateTask(task) {
   const table = process.env.DYNAMO_TASKS
   const query = {
-    Key: { id: { S: task.id } }
+    Key: { id: task.id }
   }
 
   return dynDB.updateItem(table, query, task)
@@ -57,7 +56,7 @@ export function updateTask(task) {
 export function deleteTask(id) {
   const table = process.env.DYNAMO_TASKS
   const query = {
-    Key: { id: { S: id } }
+    Key: { id }
   }
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

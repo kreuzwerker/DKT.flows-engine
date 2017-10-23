@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-const { marshalItem } = require('dynamodb-marshaler')
 const program = require('commander')
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
@@ -45,17 +44,19 @@ const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
 function putItem(table, item) {
   const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
+  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
+
   const currentDate = new Date().toISOString()
   const newItem = Object.assign({}, item, {
     createdAt: currentDate, // TODO
     updatedAt: currentDate
   })
   const params = {
-    Item: marshalItem(newItem),
+    Item: newItem,
     ReturnConsumedCapacity: 'TOTAL'
   }
 
-  return dynamoDB.putItem(Object.assign({}, params, { TableName: table })).promise()
+  return documentClient.put(Object.assign({}, params, { TableName: table })).promise()
 }
 
 return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))

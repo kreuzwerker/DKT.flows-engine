@@ -1,18 +1,17 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
 export function allServices() {
   const table = process.env.DYNAMO_SERVICES
-  return dynDB.scan(table).then(r => r.Items.map(unmarshalItem))
+  return dynDB.scan(table).then(r => r.Items)
 }
 
 export function getServiceById(serviceId) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
-    Key: { id: { S: serviceId } }
+    Key: { id: serviceId }
   }
 
-  return dynDB.getItem(table, query).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, query).then(res => res.Item || null)
 }
 
 export function batchGetServicesByIds(servicesIds) {
@@ -20,12 +19,12 @@ export function batchGetServicesByIds(servicesIds) {
   const query = {
     RequestItems: {
       [table]: {
-        Keys: servicesIds.map(id => ({ id: { S: id } }))
+        Keys: servicesIds.map(id => ({ id }))
       }
     }
   }
 
-  return dynDB.batchGetItem(query).then(res => res.Responses[table].map(unmarshalItem))
+  return dynDB.batchGetItem(query).then(res => res.Responses[table])
 }
 
 export function createService(service) {
@@ -36,7 +35,7 @@ export function createService(service) {
 export function updateService(service) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
-    Key: { id: { S: service.id } }
+    Key: { id: service.id }
   }
 
   return dynDB.updateItem(table, query, service)
@@ -45,7 +44,7 @@ export function updateService(service) {
 export function deleteService(id) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
-    Key: { id: { S: id } }
+    Key: { id }
   }
   return dynDB.deleteItem(table, query).then(() => ({ id }))
 }

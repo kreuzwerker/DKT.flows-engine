@@ -1,13 +1,12 @@
-import { unmarshalItem } from 'dynamodb-marshaler'
 import dynDB from '../../utils/dynamoDB'
 
-export async function getFeed(flowId) {
+export function getFeed(flowId) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
-    Key: { flowId: { S: flowId } }
+    Key: { flowId: flowId }
   }
-  const r = await dynDB.getItem(table, query)
-  return r.Item ? unmarshalItem(r.Item) : null
+
+  return dynDB.getItem(table, query).then(res => res.Item || null)
 }
 
 export function createFeed(feed) {
@@ -34,7 +33,7 @@ export async function getOrCreateFeed(flowId, url) {
 export function updateFeed(flowId, feed) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
-    Key: { flowId: { S: flowId } }
+    Key: { flowId: flowId }
   }
 
   return dynDB.updateItem(table, query, feed, 'flowId')
@@ -43,7 +42,7 @@ export function updateFeed(flowId, feed) {
 export function deleteFeed(flowId) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
   const query = {
-    Key: { flowId: { S: flowId } }
+    Key: { flowId }
   }
   return dynDB.deleteItem(table, query).then(() => ({ flowId }))
 }

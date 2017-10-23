@@ -21,7 +21,6 @@
     "commander": "^2.9.0",
     "csv": "^1.1.1",
     "del": "^3.0.0",
-    "dynamodb-marshaler": "^2.0.0",
     "feedparser-promised": "^1.4.2",
     "graphql": "^0.10.3",
     "graphql-tag": "^2.0.0",

@@ -153,7 +153,7 @@ export async function createFlowRun(params) {
     const flowRun = await dbFlowRuns.createFlowRun(newFlowRun)
 
     // Take flow out of draft state
-    flowRun.flow = await setFlowDraftState(flow, false);
+    flowRun.flow = await setFlowDraftState(flow, false)
 
     return flowRun
   } catch (err) {

@@ -59,6 +59,7 @@ function DynamoDB() {
       }
 
       const query = { Key: { [primaryKey]: item[primaryKey] } }
+
       return documentClient
         .get(merge(table, query))
         .promise()

@@ -1,5 +1,12 @@
-import { GraphQLID, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLNonNull, GraphQLBoolean } from 'graphql'
-import { StepType, StepMirrorType } from './step'
+import {
+  GraphQLID,
+  GraphQLList,
+  GraphQLString,
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLBoolean
+} from 'graphql'
+import { StepType } from './step'
 import * as Steps from '../resolvers/steps'
 import { FlowRunType } from './flowRun'
 import * as FlowRun from '../resolvers/flowRuns'
@@ -13,6 +20,7 @@ export const FlowType = new GraphQLObjectType({
     draft: { type: GraphQLBoolean },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
+    stateMachineArn: { type: GraphQLString },
     steps: {
       type: new GraphQLList(StepType),
       resolve: (flow) => {
@@ -20,22 +28,11 @@ export const FlowType = new GraphQLObjectType({
         return Steps.batchGetStepByIds(flow.steps)
       }
     },
-    flowRun: {
-      type: FlowRunType,
+    flowRuns: {
+      type: new GraphQLList(FlowRunType),
       resolve: (flow) => {
-        return FlowRun.getFlowRunByFlowId(flow.id);
+        return FlowRun.getFlowRunsByFlowId(flow.id)
       }
-    },
-  })
-})
-
-export const FlowMirrorType = new GraphQLObjectType({
-  name: 'FlowMirror',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    draft: { type: GraphQLBoolean },
-    steps: { type: new GraphQLList(StepMirrorType) }
+    }
   })
 })

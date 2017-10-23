@@ -7,7 +7,8 @@ import {
   GraphQLNonNull,
   GraphQLEnumType
 } from 'graphql'
-import { FlowRunMirrorType } from './flowRun'
+import { FlowType } from './flow'
+import { getFlowById } from '../resolvers/flows'
 
 // TODO UPDATE TASK DATA
 
@@ -52,27 +53,12 @@ export const TaskType = new GraphQLObjectType({
     state: { type: TaskState },
     activityArn: { type: GraphQLString },
     taskToken: { type: GraphQLString },
-    flow: { type: FlowRunMirrorType },
-    currentStep: { type: GraphQLInt },
-    input: { type: GraphQLString },
-    comments: { type: new GraphQLList(CommentsType) },
-    updatedAt: { type: GraphQLString },
-    createdAt: { type: GraphQLString }
-  })
-})
-
-export const TaskMirrorType = new GraphQLObjectType({
-  name: 'TaskMirrorType',
-  fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
-    title: { type: GraphQLString },
-    description: { type: GraphQLString },
-    date: { type: GraphQLString },
-    type: { type: TaskTypeType },
-    state: { type: TaskState },
-    activityArn: { type: GraphQLString },
-    taskToken: { type: GraphQLString },
-    flow: { type: FlowRunMirrorType },
+    flow: {
+      type: FlowType,
+      resolve: (task) => {
+        return getFlowById(task.flow)
+      }
+    },
     currentStep: { type: GraphQLInt },
     input: { type: GraphQLString },
     comments: { type: new GraphQLList(CommentsType) },
@@ -86,6 +72,6 @@ export const TaskItemType = new GraphQLObjectType({
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
     data: { type: GraphQLString },
-    type: { type: GraphQLString },
+    type: { type: GraphQLString }
   })
 })

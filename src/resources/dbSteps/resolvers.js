@@ -24,7 +24,9 @@ export function batchGetStepByIds(stepsIds) {
     }
   }
 
-  return dynDB.batchGetItem(query).then(res => res.Responses[table])
+  return dynDB.batchGetItem(query).then((res) => {
+    return res.Responses[table]
+  })
 }
 
 export function createStep(step) {

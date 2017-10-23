@@ -9,7 +9,7 @@ import {
   GraphQLInputObjectType
 } from 'graphql'
 import { FlowType } from './flow'
-import { ServiceType, ServiceMirrorType } from './service'
+import { ServiceType } from './service'
 import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
 
@@ -56,21 +56,6 @@ export const StepType = new GraphQLObjectType({
   })
 })
 
-export const StepMirrorType = new GraphQLObjectType({
-  name: 'StepMirrorType',
-  fields: () => ({
-    id: { type: GraphQLID },
-    position: { type: GraphQLInt },
-    description: { type: GraphQLString },
-    updatedAt: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
-    flow: { type: GraphQLID },
-    service: { type: ServiceMirrorType },
-    configParams: { type: new GraphQLList(StepConfigParamsType) },
-    tested: { type: GraphQLBoolean }
-  })
-})
-
 export const StepTestType = new GraphQLObjectType({
   name: 'StepTestType',
   fields: () => ({
@@ -80,7 +65,13 @@ export const StepTestType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     flow: { type: GraphQLID },
-    service: { type: ServiceMirrorType },
+    service: {
+      type: ServiceType,
+      resolve: (step) => {
+        if (!step.service) return null
+        return Services.getServiceById(step.service)
+      }
+    },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     result: { type: GraphQLString },
     error: { type: GraphQLString },

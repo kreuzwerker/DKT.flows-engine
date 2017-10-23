@@ -8,29 +8,34 @@
     "configParams": [
       {
         "fieldId": "url-input",
-        "value": "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+        "value":
+          "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
       }
-    ]
+    ],
+    "tested": false
   },
   {
     "description": "Fetches an Article form a given url",
     "flow": "ciy0ie2q1aoul0179imlh0a73",
     "id": "ciy0jgybhai7v013373puyuvy",
     "position": 1,
-    "service": "ciy0jfkvuahth0133z9r38ljg"
+    "service": "ciy0jfkvuahth0133z9r38ljg",
+    "tested": false
   },
   {
     "description": "Extracts the Article from a given HTML",
     "flow": "ciy0ie2q1aoul0179imlh0a73",
     "id": "ciy0jgybhai7v013373fdsafad",
     "position": 2,
-    "service": "ciy2jfkvufdsef0864z9r38opw"
+    "service": "ciy2jfkvufdsef0864z9r38opw",
+    "tested": false
   },
   {
     "description": "Capitalizes a given Text",
     "flow": "ciy0ie2q1aoul0179imlh0a73",
     "id": "ciy0jgybhai7v01dsda887ahw",
     "position": 3,
-    "service": "ciy4poibcrqth0133z4r56alz"
+    "service": "ciy4poibcrqth0133z4r56alz",
+    "tested": false
   }
 ]

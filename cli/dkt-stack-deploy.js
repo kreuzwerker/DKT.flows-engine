@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-const { marshalItem } = require('dynamodb-marshaler')
 const program = require('commander')
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
@@ -51,7 +50,7 @@ function putItem(table, item) {
     updatedAt: currentDate
   })
   const params = {
-    Item: marshalItem(newItem),
+    Item: newItem,
     ReturnConsumedCapacity: 'TOTAL'
   }
 

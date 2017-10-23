@@ -7,16 +7,16 @@ import settings from '../../settings'
 
 function DynamoDB() {
   const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
+  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
 
   function merge(table, params = {}) {
-    return Object.assign({}, params, {
-      TableName: table
-    })
+    return { ...params, TableName: table }
   }
 
   function buildUpdateParams(params, item, primaryKey = 'id', returnConsumedCapacity = 'TOTAL') {
     const marshal = key => marshalItem({ [key]: item[key] })
-    const updatedParams = Object.assign({}, params, {
+    const updatedParams = {
+      ...params,
       ExpressionAttributeNames: {
         '#updatedAt': 'updatedAt'
       },
@@ -25,7 +25,7 @@ function DynamoDB() {
       },
       UpdateExpression: 'SET #updatedAt = :updatedAt',
       ReturnConsumedCapacity: returnConsumedCapacity
-    })
+    }
 
     Object.keys(item).forEach((key) => {
       if (key === primaryKey) return
@@ -44,7 +44,14 @@ function DynamoDB() {
 
     query: (table, params) => dynamoDB.query(merge(table, params)).promise(),
 
-    getItem: (table, params) => dynamoDB.getItem(merge(table, params)).promise(),
+    getItem: (table, params) => {
+      // return dynamoDB.getItem(merge(table, params)).promise()
+      const mergedParams = merge(table, params)
+
+      console.log(JSON.stringify(mergedParams, null, 2))
+
+      return documentClient.get(mergedParams).promise()
+    },
 
     batchGetItem: params => dynamoDB.batchGetItem(params).promise(),
 

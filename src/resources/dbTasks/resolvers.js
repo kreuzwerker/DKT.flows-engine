@@ -5,14 +5,14 @@ export function allTasks() {
   // Retrieves all unfinished tasks
   const table = process.env.DYNAMO_TASKS
   const params = {
-    FilterExpression: "#state IN (:not_started, :started, :paused)",
+    FilterExpression: '#state IN (:not_started, :started, :paused)',
     ExpressionAttributeNames: {
-      "#state": "state",
+      '#state': 'state'
     },
     ExpressionAttributeValues: {
-      ":not_started": {S: 'NOT_STARTED'},
-      ":started": {S: 'STARTED'},
-      ":paused": {S: 'PAUSED'},
+      ':not_started': { S: 'NOT_STARTED' },
+      ':started': { S: 'STARTED' },
+      ':paused': { S: 'PAUSED' }
     }
   }
   return dynDB.scan(table, params).then(r => r.Items.map(unmarshalItem))
@@ -21,10 +21,10 @@ export function allTasks() {
 export function getTaskById(taskId) {
   const table = process.env.DYNAMO_TASKS
   const query = {
-    Key: { id: { S: taskId } }
+    Key: { id: taskId }
   }
 
-  return dynDB.getItem(table, query).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, query).then(r => r.Item || null)
 }
 
 export function batchGetTasksByIds(tasksIds) {

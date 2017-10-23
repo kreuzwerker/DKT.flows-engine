@@ -9,10 +9,10 @@ export function allServices() {
 export function getServiceById(serviceId) {
   const table = process.env.DYNAMO_SERVICES
   const query = {
-    Key: { id: { S: serviceId } }
+    Key: { id: serviceId }
   }
 
-  return dynDB.getItem(table, query).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, query).then(res => res.Item || null)
 }
 
 export function batchGetServicesByIds(servicesIds) {

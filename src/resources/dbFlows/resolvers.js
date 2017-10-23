@@ -9,10 +9,10 @@ export function allFlows() {
 export function getFlowById(flowId) {
   const table = process.env.DYNAMO_FLOWS
   const query = {
-    Key: { id: { S: flowId } }
+    Key: { id: flowId }
   }
 
-  return dynDB.getItem(table, query).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, query).then(r => r.Item || null)
 }
 
 export function createFlow(flow) {

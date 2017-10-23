@@ -9,10 +9,10 @@ export function allProviders() {
 export function getProviderById(providerId) {
   const table = process.env.DYNAMO_PROVIDERS
   const params = {
-    Key: { id: { S: providerId } }
+    Key: { id: providerId }
   }
 
-  return dynDB.getItem(table, params).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, params).then(r => r.Item || null)
 }
 
 export function createProvider(provider) {

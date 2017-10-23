@@ -9,10 +9,10 @@ export function allSteps() {
 export function getStepById(stepId) {
   const table = process.env.DYNAMO_STEPS
   const params = {
-    Key: { id: { S: stepId } }
+    Key: { id: stepId }
   }
 
-  return dynDB.getItem(table, params).then(r => (r.Item ? unmarshalItem(r.Item) : null))
+  return dynDB.getItem(table, params).then(r => r.Item || null)
 }
 
 export function batchGetStepByIds(stepsIds) {

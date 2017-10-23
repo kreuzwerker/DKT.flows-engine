@@ -37,5 +37,13 @@
     "position": 3,
     "service": "ciy4poibcrqth0133z4r56alz",
     "tested": false
+  },
+  {
+    "description": "Manual Approve Task",
+    "flow": "ciy0ie2q1aoul0179imlh0a73",
+    "id": "ArPY5hKQkzyqWBvURRubo5edbAFIervg",
+    "position": 4,
+    "service": "ciy0jfkvjfmbh0133z9rkg83",
+    "tested": false
   }
 ]

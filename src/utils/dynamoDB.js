@@ -50,24 +50,21 @@ function DynamoDB() {
 
     putItem: async (table, item, primaryKey = 'id') => {
       const currentDate = new Date().toISOString()
-      const newItem = Object.assign({}, item, {
-        createdAt: currentDate,
-        updatedAt: currentDate
-      })
       const params = {
-        Item: marshalItem(newItem),
+        Item: { ...item, createdAt: currentDate, updatedAt: currentDate },
         ReturnConsumedCapacity: 'TOTAL'
       }
-      const { ConsumedCapacity } = await dynamoDB.putItem(merge(table, params)).promise()
+      const { ConsumedCapacity } = await documentClient.putItem(merge(table, params)).promise()
 
       if (ConsumedCapacity && ConsumedCapacity.CapacityUnits === 0) {
         throw new Error('putItem failed. No units consumed by the operation')
       }
 
-      const query = { Key: { [primaryKey]: { S: item[primaryKey] } } }
-      const createdInstance = await dynamoDB.getItem(merge(table, query)).promise()
-
-      return unmarshalItem(createdInstance.Item)
+      const query = { Key: { [primaryKey]: item[primaryKey] } }
+      return documentClient
+        .get(merge(table, query))
+        .promise()
+        .then(r => r.Item)
     },
 
     updateItem: async (table, query, item, primaryKey = 'id') => {

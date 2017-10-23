@@ -1,4 +1,5 @@
 import uuid from 'uuid'
+import _sortBy from 'lodash/sortBy'
 import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
@@ -26,8 +27,16 @@ export function getFlowRunById(id) {
   return dbFlowRuns.getFlowRunById(id)
 }
 
-export async function getFlowRunByFlowId(flowId) {
-  return dbFlowRuns.getFlowRunByFlowId(flowId)
+export function getFlowRunsByFlowId(flowId) {
+  return dbFlowRuns.getFlowRunsByFlowId(flowId)
+}
+
+export async function getLatestFlowRunById(flowId) {
+  const items = await dbFlowRuns.getFlowRunsByFlowId(flowId)
+
+  // Return the last created flow run
+  const sortedItems = _sortBy(items, item => item.updatedAt).reverse()
+  return (sortedItems && sortedItems[0]) || null
 }
 
 export async function getRuns(flowRun, args) {

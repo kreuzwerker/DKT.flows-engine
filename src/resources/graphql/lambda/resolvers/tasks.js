@@ -16,26 +16,20 @@ export function getTaskById(taskId) {
 }
 
 export async function getTaskItemById(taskId) {
-  const task = await getTaskById(taskId);
+  const task = await getTaskById(taskId)
   if (!task) {
-    return new Promise((resolve, reject) => {
-      reject('Task not found.');
-    })
+    return Promise.reject('Task not found.')
   }
 
-  const runs = await getRuns(task.flow, { offset:0 });
+  const runs = await getRuns(task.flow, { offset: 0 })
   if (!runs) {
-    return new Promise((resolve, reject) => {
-      reject('No flow runs available for this task.');
-    })
+    return Promise.reject('No flow runs available for this task.')
   }
 
-  return new Promise((resolve, reject) => {
-    resolve({
-      id: taskId,
-      data: runs[0].result,
-      type: 'html'
-    });
+  return Promise.resolve({
+    id: taskId,
+    data: runs[0].result,
+    type: 'html'
   })
 }
 

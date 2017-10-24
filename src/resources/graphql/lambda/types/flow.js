@@ -33,6 +33,12 @@ export const FlowType = new GraphQLObjectType({
       resolve: (flow) => {
         return FlowRun.getFlowRunsByFlowId(flow.id)
       }
+    },
+    lastFlowRun: {
+      type: FlowRunType,
+      resolve: (flow) => {
+        return FlowRun.getLastFlowRunByFlowId(flow.id)
+      }
     }
   })
 })

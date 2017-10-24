@@ -31,7 +31,7 @@ export function getFlowRunsByFlowId(flowId) {
   return dbFlowRuns.getFlowRunsByFlowId(flowId)
 }
 
-export async function getLatestFlowRunById(flowId) {
+export async function getLastFlowRunByFlowId(flowId) {
   const items = await dbFlowRuns.getFlowRunsByFlowId(flowId)
 
   // Return the last created flow run

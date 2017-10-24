@@ -1,6 +1,6 @@
 import _isString from 'lodash/isString'
+import JSONPath from 'jsonpath-plus'
 import service from '../../../../utils/service'
-const JSONPath = require('jsonpath-plus');
 
 /*
  * Parse JSON from given string or object

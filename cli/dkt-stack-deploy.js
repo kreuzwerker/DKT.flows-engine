@@ -44,7 +44,10 @@ const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
 function putItem(table, item) {
   const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
-  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
+  const documentClient = new AWS.DynamoDB.DocumentClient({
+    service: dynamoDB,
+    convertEmptyValues: true
+  })
 
   const currentDate = new Date().toISOString()
   const newItem = Object.assign({}, item, {

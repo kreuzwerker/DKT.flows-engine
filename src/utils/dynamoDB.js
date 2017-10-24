@@ -6,7 +6,10 @@ import settings from '../../settings'
 
 function DynamoDB() {
   const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
-  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
+  const documentClient = new AWS.DynamoDB.DocumentClient({
+    service: dynamoDB,
+    convertEmptyValues: true
+  })
 
   function merge(table, params = {}) {
     return { ...params, TableName: table }

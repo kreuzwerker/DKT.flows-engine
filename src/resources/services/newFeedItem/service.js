@@ -25,9 +25,9 @@ module.exports = arn => ({
     }
   ],
   samplePayload: {
-    'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-    'idType': 'guid',
-    'interval': '15'
+    url: 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+    idType: 'guid',
+    interval: '15'
   },
   arn: arn
 })

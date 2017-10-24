@@ -1,10 +1,6 @@
 const settings = require('../../../../settings')
 const { PARSE_JSON_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
-/*
- * AWS SAM Resource Template
- * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
- */
 module.exports = ({ key }) => ({
   [PARSE_JSON_FUNCTION]: {
     Type: 'AWS::Serverless::Function',

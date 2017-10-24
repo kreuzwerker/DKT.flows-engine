@@ -18,8 +18,8 @@ module.exports = arn => ({
     }
   ],
   samplePayload: {
-    'json': '{"person": {"firstName": "John", "lastName": "Doe"}}',
-    'path': '$.person.firstName'
+    json: '{"person": {"firstName": "John", "lastName": "Doe"}}',
+    path: '$.person.firstName'
   },
   arn: arn
 })

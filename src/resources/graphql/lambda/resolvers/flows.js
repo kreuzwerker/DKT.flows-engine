@@ -104,13 +104,15 @@ export async function generateFlowStepsPositions(flow, newStep) {
 
   // Find steps that need to be updated because their position is equal or higher
   // than the given new step
-  let updateSteps = [], pos = newStep.position
+  let updateSteps = [],
+      pos = newStep.position
+
   updateSteps = steps
     .filter(step => step.id !== newStep.id && step.position >= newStep.position)
     .map((step) => {
       pos++
       step.position = pos
-      return step 
+      return step
     })
 
   return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))

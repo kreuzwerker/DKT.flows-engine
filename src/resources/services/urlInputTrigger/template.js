@@ -6,10 +6,6 @@ const {
   S3_BUCKET
 } = require('../../logicalResourceIds')
 
-/*
- * AWS SAM Resource Template
- * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
- */
 module.exports = ({ key }) => ({
   [URL_CONFIG_TRIGGER_SERVICE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',

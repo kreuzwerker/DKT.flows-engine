@@ -14,7 +14,7 @@ module.exports = arn => ({
       fieldId: 'title',
       position: 0,
       label: 'Title',
-      defaultValue: '[FIXME no empty default values possibile]',
+      defaultValue: '',
       type: 'input',
       required: true
     },
@@ -23,7 +23,7 @@ module.exports = arn => ({
       fieldId: 'description',
       label: 'Description',
       type: 'textarea',
-      defaultValue: '[FIXME no empty default values possibile]',
+      defaultValue: '',
       required: true
     }
   ],

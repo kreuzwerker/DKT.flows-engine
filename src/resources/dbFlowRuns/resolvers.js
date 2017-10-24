@@ -1,4 +1,5 @@
 import dynDB from '../../utils/dynamoDB'
+import _sortBy from 'lodash/sortBy'
 
 export function allFlowRuns() {
   const table = process.env.DYNAMO_FLOW_RUNS
@@ -27,6 +28,14 @@ export function getFlowRunsByFlowId(flowId) {
     }
   }
   return dynDB.scan(table, params).then(r => r.Items)
+}
+
+export async function getLastFlowRunByFlowId(flowId) {
+  const items = await getFlowRunsByFlowId(flowId)
+
+  // Return the last created flow run
+  const sortedItems = _sortBy(items, item => item.updatedAt).reverse()
+  return (sortedItems && sortedItems[0]) || null
 }
 
 export function createFlowRun(flowRun) {

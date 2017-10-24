@@ -51,7 +51,7 @@ export function updateFlow(flow) {
 
 export async function restoreFlow(id) {
   // Restore flow steps from previous model stored in flowRun
-  const [flow, flowRun] = await Promise.all([getFlowById(id), dbFlowRuns.getFlowRunByFlowId(id)])
+  const [flow, flowRun] = await Promise.all([getFlowById(id), dbFlowRuns.getLastFlowRunByFlowId(id)])
   if (!flowRun) {
     return Promise.reject('No previous flow run found.')
   }

@@ -110,5 +110,5 @@ export async function generateFlowStepsPositions(flow, newStep) {
       return step 
     })
 
-  return await Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
+  return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
 }

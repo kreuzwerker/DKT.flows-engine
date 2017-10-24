@@ -1,5 +1,6 @@
 import uuid from 'uuid'
-import { createStep, deleteStep } from './steps'
+import _sortBy from 'lodash/sortBy'
+import { createStep, deleteStep, batchGetStepByIds } from './steps'
 import * as dbFlows from '../../../dbFlows/resolvers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 import * as dbSteps from '../../../dbSteps/resolvers'
@@ -95,4 +96,22 @@ export function deleteFlow(id) {
     .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId))))
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
+}
+
+export async function generateFlowStepsPositions(flow, newStep) {
+  let steps = await batchGetStepByIds(flow.steps)
+  steps = _sortBy(steps, 'position')
+
+  // Find steps that need to be updated because their position is equal or higher
+  // than the given new step
+  let updateSteps = [], pos = newStep.position
+  updateSteps = steps
+    .filter(step => step.id !== newStep.id && step.position >= newStep.position)
+    .map((step) => {
+      pos++
+      step.position = pos
+      return step 
+    })
+
+  return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
 }

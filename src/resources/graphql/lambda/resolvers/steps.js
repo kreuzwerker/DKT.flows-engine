@@ -1,5 +1,10 @@
 import uuid from 'uuid'
-import { getFlowById, updateFlow, setFlowDraftState } from './flows'
+import {
+  getFlowById,
+  updateFlow,
+  setFlowDraftState,
+  generateFlowStepsPositions
+} from './flows'
 import { getServiceById } from './services'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
@@ -52,6 +57,7 @@ export async function createStep(step) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
         await setFlowDraftState(flow, true)
+        await generateFlowStepsPositions(flow, newStep)
       }
     }
 

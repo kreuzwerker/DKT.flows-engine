@@ -8,7 +8,7 @@ import {
   GraphQLEnumType
 } from 'graphql'
 import { FlowType } from './flow'
-import { getFlowById } from '../resolvers/flows'
+import { FlowRunType } from './flowRun'
 
 // TODO UPDATE TASK DATA
 
@@ -53,12 +53,8 @@ export const TaskType = new GraphQLObjectType({
     state: { type: TaskState },
     activityArn: { type: GraphQLString },
     taskToken: { type: GraphQLString },
-    flow: {
-      type: FlowType,
-      resolve: (task) => {
-        return getFlowById(task.flow)
-      }
-    },
+    flow: { type: FlowRunType }, // legacy
+    flowRun: { type: FlowRunType },
     currentStep: { type: GraphQLInt },
     input: { type: GraphQLString },
     comments: { type: new GraphQLList(CommentsType) },

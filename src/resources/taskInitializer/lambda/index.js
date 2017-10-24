@@ -5,6 +5,28 @@ import StepFunctions from '../../../utils/stepFunctions'
 import { getStepData, testStepErrorHandler } from '../../../utils/helpers/stepHelpers'
 import { createTask } from '../../dbTasks/resolvers'
 
+function getTitle(currentStep) {
+  if (
+    currentStep.configParams &&
+    currentStep.configParams[0] &&
+    currentStep.configParams[0].value
+  ) {
+    return currentStep.configParams[0].value
+  }
+  return currentStep.service.name
+}
+
+function getDescription(currentStep) {
+  if (
+    currentStep.configParams &&
+    currentStep.configParams[1] &&
+    currentStep.configParams[1].value
+  ) {
+    return currentStep.configParams[1].value
+  }
+  return currentStep.description
+}
+
 async function taskInitializer(event, context, callback) {
   const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event
@@ -39,14 +61,15 @@ async function taskInitializer(event, context, callback) {
 
   const task = {
     id: uuid.v4(),
-    title: currentStep.configParams[0].value || currentStep.service.name,
-    description: currentStep.configParams[1].value || currentStep.description,
+    title: getTitle(currentStep),
+    description: getDescription(currentStep),
     date: new Date().toISOString(),
     type: 'APPROVE',
     state: 'NOT_STARTED',
     activityArn: currentStep.service.activityArn,
     taskToken: activityData.taskToken,
-    flow: stepData.flowRun,
+    flow: stepData.flowRun, // legacy
+    flowRun: stepData.flowRun,
     currentStep: input.currentStep,
     input: JSON.stringify(activityData.input),
     comments: []

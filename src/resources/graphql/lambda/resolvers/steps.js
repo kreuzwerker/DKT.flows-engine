@@ -61,9 +61,22 @@ export async function createStep(step) {
   }
 }
 
+async function updateFlowDraftState(step) {
+  // Load step with flow object
+  const stepObj = !step.flow ? await getStepById(step.id) : step
+
+  if (stepObj && stepObj.flow) {
+    const flow = await getFlowById(stepObj.flow)
+
+    if (flow) {
+      return setFlowDraftState(flow, true)
+    }
+  }
+  return Promise.resolve()
+}
+
 export async function updateStep(step) {
-  await updateFlowDraftState(step)
-  return dbSteps.updateStep(step)
+  return updateFlowDraftState(step).then(() => dbSteps.updateStep(step))
 }
 
 export async function testStep(stepId, payload, configParams) {
@@ -141,17 +154,5 @@ export async function deleteStep(id) {
     }
   } catch (err) {
     return Promise.reject(err)
-  }
-}
-
-async function updateFlowDraftState(step) {
-  // Load step with flow object
-  const stepObj = !step.flow ? await getStepById(step.id) : step
-
-  if (stepObj && stepObj.flow) {
-    const flow = await getFlowById(stepObj.flow)
-    if (flow) {
-      return await setFlowDraftState(flow, true)
-    }
   }
 }

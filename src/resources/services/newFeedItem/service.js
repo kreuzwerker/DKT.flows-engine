@@ -13,8 +13,9 @@ module.exports = arn => ({
       fieldId: 'url',
       position: 0,
       label: 'Feed URL',
-      defaultValue: 'rss://',
-      type: 'input'
+      defaultValue: '',
+      type: 'input',
+      required: true
     },
     {
       fieldId: 'interval',

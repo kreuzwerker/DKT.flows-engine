@@ -22,15 +22,16 @@ module.exports = arn => ({
       fieldId: 'url-input',
       position: 1,
       label: 'URL',
-      defaultValue: 'false',
-      type: 'input'
+      defaultValue: '',
+      type: 'input',
+      required: true
     },
     {
       position: 3,
       fieldId: 'comment-textarea',
       label: 'Comment',
       type: 'textarea',
-      defaultValue: 'Sample comment',
+      defaultValue: '',
       required: false
     },
     {

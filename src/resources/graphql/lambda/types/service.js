@@ -27,7 +27,7 @@ const ServiceConfigSchemaType = new GraphQLObjectType({
     label: { type: GraphQLString },
     type: { type: GraphQLString },
     defaultValue: { type: GraphQLString },
-    required: { type: GraphQLFloat },
+    required: { type: GraphQLBoolean },
     options: { type: new GraphQLList(SelectOptionsType) }
   })
 })

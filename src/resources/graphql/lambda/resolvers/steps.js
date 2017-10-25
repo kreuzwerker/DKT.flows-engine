@@ -1,10 +1,5 @@
 import uuid from 'uuid'
-import {
-  getFlowById,
-  updateFlow,
-  setFlowDraftState,
-  generateFlowStepsPositions
-} from './flows'
+import { getFlowById, updateFlow, setFlowDraftState, generateFlowStepsPositions } from './flows'
 import { getServiceById } from './services'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'

@@ -1,5 +1,5 @@
-import dynDB from '../../utils/dynamoDB'
 import _sortBy from 'lodash/sortBy'
+import dynDB from '../../utils/dynamoDB'
 
 export function allFlowRuns() {
   const table = process.env.DYNAMO_FLOW_RUNS

@@ -5,8 +5,7 @@ import service from '../../../../utils/service'
  * Fetch an Article from given URL
  */
 async function fetchArticle(inputData, logger) {
-  let output = {},
-      result = {},
+  let result = {},
       articleHTML = {}
 
   try {

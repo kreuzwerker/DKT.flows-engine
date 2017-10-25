@@ -1,6 +1,5 @@
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
-import S3 from '../../../utils/s3'
 import StepFunctions from '../../../utils/stepFunctions'
 import { flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 

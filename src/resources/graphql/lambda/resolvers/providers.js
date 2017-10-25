@@ -18,18 +18,15 @@ export function getProviderById(providerId) {
  * -----------------------------------------------------------------------------
  */
 export function createProvider(provider) {
-  const newProvider = Object.assign(
-    {},
-    {
-      id: uuid.v4(),
-      name: null,
-      group: null,
-      description: null,
-      icon: null,
-      services: [null]
-    },
-    provider
-  )
+  const newProvider = {
+    id: uuid.v4(),
+    name: null,
+    group: null,
+    description: null,
+    icon: null,
+    services: [null],
+    ...provider
+  }
 
   return dbProviders.createProvider(newProvider)
 }

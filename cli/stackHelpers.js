@@ -74,7 +74,8 @@ module.exports = logger => ({
     const resourcesWithoutLambda = fsUtil.getAllResourcesWithoutLambda()
 
     resourcesWithoutLambda.forEach((resource) => {
-      const resourceTmpl = require(fsUtil.getResourceTemplatePath(resource)) // eslint-disable-line
+      const resourcePath = fsUtil.getResourceTemplatePath(resource)
+      const resourceTmpl = fs.existsSync(`${resourcePath}.js`) ? require(resourcePath) : null // eslint-disable-line
       const swaggerKey = `${stage}/${resource}/swagger-${uuidV1()}.json`
       const swaggerPath = fsUtil.getResourceSwaggerPath(resource)
       const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
@@ -88,15 +89,17 @@ module.exports = logger => ({
         )
       }
 
-      const updatedResource = Object.assign(
-        {},
-        cloudFormationTmpl.Resources,
-        resourceTmpl({ stage, resource, swaggerKey })
-      )
+      if (resourceTmpl) {
+        const updatedResource = Object.assign(
+          {},
+          cloudFormationTmpl.Resources,
+          resourceTmpl({ stage, resource, swaggerKey })
+        )
 
-      cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
-        Resources: updatedResource
-      })
+        cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
+          Resources: updatedResource
+        })
+      }
     })
 
     fs.writeFileSync(resourceTmplPath, JSON.stringify(cloudFormationTmpl, null, 2))
@@ -123,13 +126,13 @@ module.exports = logger => ({
           return r.LogicalResourceId === serviceResource().logicalResourceId
         })
 
-        if (summary.ResourceType === 'AWS::Lambda::Function') {
+        if (summary && summary.ResourceType === 'AWS::Lambda::Function') {
           return Lambda.getFunction(summary.PhysicalResourceId).then(fn =>
             serviceResource(fn.Configuration.FunctionArn)
           )
         }
 
-        return serviceResource(summary.PhysicalResourceId)
+        return serviceResource(summary ? summary.PhysicalResourceId : null)
       })
     )
   }

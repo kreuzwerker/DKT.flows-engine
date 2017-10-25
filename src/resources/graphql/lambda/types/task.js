@@ -7,7 +7,6 @@ import {
   GraphQLNonNull,
   GraphQLEnumType
 } from 'graphql'
-import { FlowType } from './flow'
 import { FlowRunType } from './flowRun'
 
 // TODO UPDATE TASK DATA

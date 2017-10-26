@@ -52,7 +52,6 @@ export const TaskType = new GraphQLObjectType({
     state: { type: TaskState },
     activityArn: { type: GraphQLString },
     taskToken: { type: GraphQLString },
-    flow: { type: FlowRunType }, // legacy
     flowRun: { type: FlowRunType },
     currentStep: { type: GraphQLInt },
     input: { type: GraphQLString },

@@ -21,6 +21,7 @@ export const FlowType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     stateMachineArn: { type: GraphQLString },
+    userId: { type: GraphQLID },
     steps: {
       type: new GraphQLList(StepType),
       resolve: (flow) => {

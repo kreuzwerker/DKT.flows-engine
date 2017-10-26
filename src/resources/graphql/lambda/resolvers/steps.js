@@ -138,6 +138,13 @@ export async function testStep(stepId, payload, configParams) {
 
 export async function deleteStep(id) {
   const step = await getStepById(id)
+  if (!step) {
+    // Step doesn't exist anymore
+    return {
+      id: id,
+      flow: null
+    }
+  }
 
   try {
     if (step.flow) {

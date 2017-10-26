@@ -98,6 +98,7 @@ export function deleteFlow(id) {
     .then(() => ({ id }))
 }
 
+// Generate step positions after inserting a new step
 export async function generateFlowStepsPositions(flow, newStep) {
   let steps = await batchGetStepByIds(flow.steps)
   steps = _sortBy(steps, 'position')
@@ -114,6 +115,28 @@ export async function generateFlowStepsPositions(flow, newStep) {
       step.position = pos
       return step
     })
+
+  return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
+}
+
+// Generate step positions after removing a step
+export async function regenerateFlowStepsPositions(flow) {
+  let steps = await batchGetStepByIds(flow.steps)
+  steps = _sortBy(steps, 'position')
+
+  // Find steps that need to be updated because their position leaves a gap
+  let updateSteps = [],
+      pos = -1
+
+  updateSteps = steps
+  .filter((step) => {
+    pos++
+    return step.position != pos
+  })
+  .map((step) => {
+    step.position = pos
+    return step
+  })
 
   return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
 }

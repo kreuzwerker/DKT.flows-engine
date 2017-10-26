@@ -1,5 +1,11 @@
 import uuid from 'uuid'
-import { getFlowById, updateFlow, setFlowDraftState, generateFlowStepsPositions } from './flows'
+import {
+  getFlowById,
+  updateFlow,
+  setFlowDraftState,
+  generateFlowStepsPositions,
+  regenerateFlowStepsPositions
+} from './flows'
 import { getServiceById } from './services'
 import Lambda from '../../../../utils/lambda'
 import S3 from '../../../../utils/s3'
@@ -140,6 +146,7 @@ export async function deleteStep(id) {
         flow.steps = flow.steps.filter(stepId => stepId !== step.id)
         await updateFlow(flow)
         await setFlowDraftState(flow, true)
+        await regenerateFlowStepsPositions(flow)
       }
     }
 

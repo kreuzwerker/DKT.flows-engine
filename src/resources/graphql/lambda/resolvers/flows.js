@@ -125,18 +125,17 @@ export async function regenerateFlowStepsPositions(flow) {
   steps = _sortBy(steps, 'position')
 
   // Find steps that need to be updated because their position leaves a gap
-  let updateSteps = [],
-      pos = -1
+  let pos = 0
+  const updateSteps = steps.reduce((result, step) => {
+    if (step.position != pos) {
+      result.push(Object.assign({}, step, {
+        position: pos
+      }));
+    }
 
-  updateSteps = steps
-  .filter((step) => {
     pos++
-    return step.position != pos
-  })
-  .map((step) => {
-    step.position = pos
-    return step
-  })
+    return result
+  }, [])
 
   return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
 }

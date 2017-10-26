@@ -1,17 +1,30 @@
 import dynDB from '../../utils/dynamoDB'
 
-export function allFlows() {
+export function allFlows(userId) {
   const table = process.env.DYNAMO_FLOWS
-  return dynDB.scan(table).then(r => r.Items)
+  const params = {
+    FilterExpression: '#userId = :userId',
+    ExpressionAttributeNames: {
+      '#userId': 'userId'
+    },
+    ExpressionAttributeValues: {
+      ':userId': userId
+    }
+  }
+
+  return dynDB.scan(table, params).then(r => r.Items)
 }
 
-export function getFlowById(flowId) {
+export function getFlowById(flowId, userId) {
   const table = process.env.DYNAMO_FLOWS
   const query = {
     Key: { id: flowId }
   }
 
-  return dynDB.getItem(table, query).then(r => r.Item || null)
+  return dynDB.getItem(table, query).then((r) => {
+    const item = r.Item || {}
+    return item.userId === userId || item.userId === null ? item : null
+  })
 }
 
 export function createFlow(flow) {

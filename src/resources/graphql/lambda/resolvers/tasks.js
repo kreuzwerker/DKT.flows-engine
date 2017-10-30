@@ -20,7 +20,7 @@ export async function getTaskItemById(taskId) {
     return Promise.reject('Task not found.')
   }
 
-  const runs = await getRuns(task.flow, { offset: 0 })
+  const runs = await getRuns(task.flowRun, { offset: 0 })
   if (!runs) {
     return Promise.reject('No flow runs available for this task.')
   }

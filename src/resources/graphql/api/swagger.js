@@ -26,7 +26,7 @@ module.exports = ({ stage }) => ({
     '/': {
       post: {
         'produces': ['application/json'],
-        'security': [{ UserPool: [] }], // TODO
+        'security': [{ UserPool: [] }],
         'responses': {
           '200': {
             description: '200 response',

@@ -8,6 +8,7 @@ import {
   GraphQLBoolean,
   GraphQLInputObjectType
 } from 'graphql'
+import _isString from 'lodash/isString'
 import { FlowType } from './flow'
 import { ServiceType } from './service'
 import * as Flows from '../resolvers/flows'
@@ -48,7 +49,10 @@ export const StepType = new GraphQLObjectType({
       type: ServiceType,
       resolve: (step) => {
         if (!step.service) return null
-        return Services.getServiceById(step.service)
+        if (_isString(step.service)) {
+          return Services.getServiceById(step.service)
+        }
+        return step.service
       }
     },
     configParams: { type: new GraphQLList(StepConfigParamsType) },

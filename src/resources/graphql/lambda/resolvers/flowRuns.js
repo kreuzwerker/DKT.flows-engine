@@ -1,4 +1,5 @@
 import uuid from 'uuid'
+import _sortBy from 'lodash/sortBy'
 import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
@@ -29,6 +30,42 @@ export async function getLastFlowRunByFlowId(flowId) {
   return dbFlowRuns.getLastFlowRunByFlowId(flowId)
 }
 
+// Get all runs from all flowRuns from the given flow
+export async function getRunsForFlow(flow, args) {
+  const flowRuns = await getFlowRunsByFlowId(flow.id)
+
+  let runs = []
+  await Promise.all(
+    flowRuns.map((flowRun) => {
+      return getRuns(flowRun, {
+          offset: 0,
+          status: args.status
+        })
+        .then((_runs) => {
+          if (_runs) {
+            runs = [...runs, ..._runs]
+          }
+        })
+        .catch(() => Promise.resolve())
+    })
+  )
+
+  const pagination = {
+    start: args.offset,
+    end: args.offset + args.limit || undefined
+  }
+
+  return _sortBy(runs, 'startedAt')
+    .reverse()
+    .slice(pagination.start, pagination.end)
+}
+
+export async function getRunsForFlowCount(flow, args) {
+  const runs = await getRunsForFlow(flow, args)
+  return runs ? runs.length : 0;
+}
+
+// Get all runs from the given flowRun
 export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
   const { runs } = flowRun
@@ -54,14 +91,19 @@ export async function getRuns(flowRun, args) {
       dataKeys.map((key) => {
         return s3
           .getObject({ Key: key })
-          .then(data => flowRunsData.push(data))
+          .then((data) => {
+            const parsedData = JSON.parse(data.Body)
+            if (!args.status || args.status === parsedData.status) {
+            // Filter out runs that don't match the given status
+            flowRunsData.push(parsedData)
+            }
+          })
           .catch(() => Promise.resolve())
       })
     )
 
     return flowRunsData.map((data) => {
-      const parsedData = JSON.parse(data.Body)
-      const logs = parsedData.logs
+      const logs = data.logs
 
       const steps = Object.keys(logs.steps).map(id => ({
         status: logs.steps[id].status,
@@ -72,12 +114,12 @@ export async function getRuns(flowRun, args) {
       }))
 
       return {
-        id: parsedData.runId,
-        status: parsedData.status,
+        id: data.runId,
+        status: data.status,
         logs: { steps },
-        result: parsedData.data,
-        startedAt: parsedData.startedAt,
-        finishedAt: parsedData.finishedAt
+        result: data.data,
+        startedAt: data.startedAt,
+        finishedAt: data.finishedAt
       }
     })
   } catch (err) {

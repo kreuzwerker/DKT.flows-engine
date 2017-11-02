@@ -28,7 +28,7 @@ const LogsType = new GraphQLObjectType({
   })
 })
 
-const RunsType = new GraphQLObjectType({
+export const RunsType = new GraphQLObjectType({
   name: 'RunsType',
   fields: () => ({
     id: { type: GraphQLID },
@@ -56,7 +56,8 @@ export const FlowRunType = new GraphQLObjectType({
       type: new GraphQLList(RunsType),
       args: {
         limit: { type: GraphQLInt },
-        offset: { type: GraphQLInt }
+        offset: { type: GraphQLInt },
+        status: { type: GraphQLString }
       },
       resolve: getRuns
     },

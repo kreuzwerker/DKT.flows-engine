@@ -89,7 +89,7 @@ export async function getRuns(flowRun, args) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createFlowRun(params) {
+export async function createFlowRun(params, userId) {
   function getServicesIdsFromSteps(steps) {
     return steps.filter(step => step.service !== null).map(step => step.service)
   }
@@ -113,7 +113,7 @@ export async function createFlowRun(params) {
   }
 
   try {
-    let flow = await getFlowById(params.flow)
+    let flow = await getFlowById(params.flow, userId)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
     let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []

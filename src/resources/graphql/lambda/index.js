@@ -18,11 +18,13 @@ export async function handler(event, context, callback) {
 
   try {
     const body = _isString(event.body) ? JSON.parse(event.body) : event.body
+    const userId = event.requestContext.authorizer.claims.sub
     logger.log('Query:', body.query)
+    logger.log('userId:', userId)
 
     const { query, operationName, variables } = body
 
-    const response = await graphql(Schema, query, null, null, variables, operationName)
+    const response = await graphql(Schema, query, null, { userId }, variables, operationName)
     logger.log('Result:', JSON.stringify(response, null, 2))
 
     if (response.errors) {

@@ -39,9 +39,9 @@ export const StepType = new GraphQLObjectType({
     createdAt: { type: GraphQLString },
     flow: {
       type: FlowType,
-      resolve: (step) => {
+      resolve: (step, _, { userId }) => {
         if (!step.flow) return null
-        return Flows.getFlowById(step.flow)
+        return Flows.getFlowById(step.flow, userId)
       }
     },
     service: {

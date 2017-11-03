@@ -36,7 +36,7 @@ export function batchGetStepByIds(stepsIds) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createStep(step) {
+export async function createStep(step, userId) {
   // set defaults
   const newStep = Object.assign(
     {},
@@ -53,7 +53,7 @@ export async function createStep(step) {
 
   try {
     if (newStep.flow) {
-      const flow = await getFlowById(newStep.flow)
+      const flow = await getFlowById(newStep.flow, userId)
       if (flow) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
@@ -68,12 +68,12 @@ export async function createStep(step) {
   }
 }
 
-async function updateFlowDraftState(step) {
+async function updateFlowDraftState(step, userId) {
   // Load step with flow object
   const stepObj = !step.flow ? await getStepById(step.id) : step
 
   if (stepObj && stepObj.flow) {
-    const flow = await getFlowById(stepObj.flow)
+    const flow = await getFlowById(stepObj.flow, userId)
 
     if (flow) {
       return setFlowDraftState(flow, true)
@@ -82,8 +82,8 @@ async function updateFlowDraftState(step) {
   return Promise.resolve()
 }
 
-export async function updateStep(step) {
-  return updateFlowDraftState(step).then(() => dbSteps.updateStep(step))
+export async function updateStep(step, userId) {
+  return updateFlowDraftState(step, userId).then(() => dbSteps.updateStep(step))
 }
 
 export async function testStep(stepId, payload, configParams) {
@@ -136,7 +136,7 @@ export async function testStep(stepId, payload, configParams) {
   }
 }
 
-export async function deleteStep(id) {
+export async function deleteStep(id, userId) {
   const step = await getStepById(id)
   if (!step) {
     // Step doesn't exist anymore
@@ -148,7 +148,7 @@ export async function deleteStep(id) {
 
   try {
     if (step.flow) {
-      const flow = await getFlowById(step.flow)
+      const flow = await getFlowById(step.flow, userId)
       if (flow) {
         flow.steps = flow.steps.filter(stepId => stepId !== step.id)
         await updateFlow(flow)

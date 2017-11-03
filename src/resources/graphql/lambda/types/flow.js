@@ -7,6 +7,7 @@ import {
   GraphQLNonNull,
   GraphQLBoolean
 } from 'graphql'
+import _isString from 'lodash/isString'
 import { StepType } from './step'
 import * as Steps from '../resolvers/steps'
 import { FlowRunType, RunsType } from './flowRun'
@@ -22,11 +23,15 @@ export const FlowType = new GraphQLObjectType({
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     stateMachineArn: { type: GraphQLString },
+    userId: { type: GraphQLID },
     steps: {
       type: new GraphQLList(StepType),
       resolve: (flow) => {
         if (!flow.steps || flow.steps.length === 0) return []
-        return Steps.batchGetStepByIds(flow.steps)
+        if (_isString(flow.steps[0])) {
+          return Steps.batchGetStepByIds(flow.steps)
+        }
+        return flow.steps
       }
     },
     flowRuns: {

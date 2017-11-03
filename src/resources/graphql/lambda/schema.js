@@ -29,12 +29,12 @@ const QueryType = new GraphQLObjectType({
   fields: () => ({
     allFlows: {
       type: new GraphQLList(FlowType),
-      resolve: Flows.allFlows
+      resolve: (_, variables, { userId }) => Flows.allFlows(userId)
     },
     Flow: {
       type: FlowType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }) => Flows.getFlowById(id)
+      resolve: (_, { id }, { userId }) => Flows.getFlowById(id, userId)
     },
 
     allFlowRuns: {
@@ -73,12 +73,12 @@ const QueryType = new GraphQLObjectType({
 
     allTasks: {
       type: new GraphQLList(TaskType),
-      resolve: Tasks.allTasks
+      resolve: (_, variables, { userId }) => Tasks.allTasks(userId)
     },
     TaskItem: {
       type: TaskItemType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }) => Tasks.getTaskItemById(id)
+      resolve: (_, { id }, { userId }) => Tasks.getTaskItemById(id, userId)
     },
 
     allSteps: {
@@ -106,9 +106,10 @@ const MutationType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
-        steps: { type: new GraphQLList(GraphQLID) }
+        steps: { type: new GraphQLList(GraphQLID) },
+        userId: { type: GraphQLID }
       },
-      resolve: (_, flow) => Flows.createFlow(flow)
+      resolve: (_, flow, { userId }) => Flows.createFlow(flow, userId)
     },
     updateFlow: {
       type: FlowType,
@@ -116,19 +117,22 @@ const MutationType = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
-        steps: { type: new GraphQLList(GraphQLID) }
+        steps: { type: new GraphQLList(GraphQLID) },
+        userId: { type: GraphQLID }
       },
-      resolve: (_, flow) => Flows.updateFlow(flow)
+      resolve: (_, flow, { userId }) => {
+        return Flows.updateFlow(flow, userId)
+      }
     },
     restoreFlow: {
       type: FlowType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => Flows.restoreFlow(id)
+      resolve: (_, { id }, { userId }) => Flows.restoreFlow(id, userId)
     },
     deleteFlow: {
       type: FlowType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => Flows.deleteFlow(id)
+      resolve: (_, { id }, { userId }) => Flows.deleteFlow(id, userId)
     },
 
     createFlowRun: {
@@ -137,7 +141,7 @@ const MutationType = new GraphQLObjectType({
         flow: { type: new GraphQLNonNull(GraphQLID) },
         userId: { type: new GraphQLNonNull(GraphQLID) }
       },
-      resolve: (_, flowRun) => FlowRuns.createFlowRun(flowRun)
+      resolve: (_, flowRun, { userId }) => FlowRuns.createFlowRun(flowRun, userId)
     },
     startFlowRun: {
       type: FlowRunType,
@@ -145,7 +149,7 @@ const MutationType = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
         payload: { type: new GraphQLNonNull(GraphQLString) }
       },
-      resolve: (_, args) => FlowRuns.startFlowRun(args)
+      resolve: (_, args, { userId }) => FlowRuns.startFlowRun(args, null, userId)
     },
     createAndStartFlowRun: {
       type: FlowRunType,
@@ -154,7 +158,7 @@ const MutationType = new GraphQLObjectType({
         userId: { type: new GraphQLNonNull(GraphQLID) },
         payload: { type: new GraphQLNonNull(GraphQLString) }
       },
-      resolve: (_, args) => FlowRuns.createAndStartFlowRun(args)
+      resolve: (_, args, { userId }) => FlowRuns.createAndStartFlowRun(args, userId)
     },
     updateFlowRun: {
       type: FlowRunType,
@@ -164,12 +168,12 @@ const MutationType = new GraphQLObjectType({
         message: { type: GraphQLString },
         currentStep: { type: GraphQLInt }
       },
-      resolve: (_, flow) => FlowRuns.updateFlowRun(flow)
+      resolve: (_, flow, { userId }) => FlowRuns.updateFlowRun(flow, userId)
     },
     deleteFlowRun: {
       type: FlowRunType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => FlowRuns.deleteFlowRun(id)
+      resolve: (_, { id }, { userId }) => FlowRuns.deleteFlowRun(id, userId)
     },
 
     createProvider: {
@@ -212,7 +216,7 @@ const MutationType = new GraphQLObjectType({
         service: { type: GraphQLID },
         configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
-      resolve: (_, step) => Steps.createStep(step)
+      resolve: (_, step, { userId }) => Steps.createStep(step, userId)
     },
     updateStep: {
       type: StepType,
@@ -224,7 +228,7 @@ const MutationType = new GraphQLObjectType({
         service: { type: GraphQLID },
         configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
-      resolve: (_, step) => Steps.updateStep(step)
+      resolve: (_, step, { userId }) => Steps.updateStep(step, userId)
     },
     testStep: {
       type: StepTestType,
@@ -238,7 +242,7 @@ const MutationType = new GraphQLObjectType({
     deleteStep: {
       type: StepType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve: (_, { id }) => Steps.deleteStep(id)
+      resolve: (_, { id }, { userId }) => Steps.deleteStep(id, userId)
     },
 
     updateTask: {
@@ -247,7 +251,7 @@ const MutationType = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
         state: { type: GraphQLString }
       },
-      resolve: (_, task) => Tasks.updateTask(task)
+      resolve: (_, task, { userId }) => Tasks.updateTask(task, userId)
     },
     deleteTask: {
       type: TaskType,

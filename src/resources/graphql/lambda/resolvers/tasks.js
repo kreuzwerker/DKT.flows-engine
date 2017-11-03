@@ -6,16 +6,16 @@ import { getRuns } from './flowRuns'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export function allTasks() {
-  return dbTasks.allTasks()
+export function allTasks(userId) {
+  return dbTasks.allTasks(userId)
 }
 
-export function getTaskById(taskId) {
-  return dbTasks.getTaskById(taskId)
+export function getTaskById(taskId, userId) {
+  return dbTasks.getTaskById(taskId, userId)
 }
 
-export async function getTaskItemById(taskId) {
-  const task = await getTaskById(taskId)
+export async function getTaskItemById(taskId, userId) {
+  const task = await getTaskById(taskId, userId)
   if (!task) {
     return Promise.reject('Task not found.')
   }
@@ -40,8 +40,8 @@ export function batchGetTasksByIds(tasksIds) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function updateTask(task) {
-  const oldTask = await getTaskById(task.id)
+export async function updateTask(task, userId) {
+  const oldTask = await getTaskById(task.id, userId)
 
   if (oldTask.state !== task.state) {
     const taskToken = oldTask.taskToken

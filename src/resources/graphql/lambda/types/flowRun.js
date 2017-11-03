@@ -49,8 +49,8 @@ export const FlowRunType = new GraphQLObjectType({
     status: { type: GraphQLString },
     message: { type: GraphQLString },
     flow: {
-      type: FlowType,
-      resolve: flowRun => getFlowById(flowRun.flow.id)
+      type: FlowType
+      // resolve: (flowRun, _, { userId }) => getFlowById(flowRun.flow.id, userId)
     },
     runs: {
       type: new GraphQLList(RunsType),

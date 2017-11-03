@@ -9,12 +9,12 @@ import * as dbSteps from '../../../dbSteps/resolvers'
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export function allFlows() {
-  return dbFlows.allFlows()
+export function allFlows(userId) {
+  return dbFlows.allFlows(userId)
 }
 
-export function getFlowById(flowId) {
-  return dbFlows.getFlowById(flowId)
+export function getFlowById(flowId, userId) {
+  return dbFlows.getFlowById(flowId, userId)
 }
 
 /**
@@ -57,10 +57,10 @@ export function updateFlow(flow) {
   return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, true))
 }
 
-export async function restoreFlow(id) {
+export async function restoreFlow(id, userId) {
   // Restore flow steps from previous model stored in flowRun
   const [flow, flowRun] = await Promise.all([
-    getFlowById(id),
+    getFlowById(id, userId),
     dbFlowRuns.getLastFlowRunByFlowId(id)
   ])
   if (!flowRun) {
@@ -68,7 +68,7 @@ export async function restoreFlow(id) {
   }
 
   // Delete all current flow steps
-  await Promise.all(flow.steps.map(flowId => deleteStep(flowId)))
+  await Promise.all(flow.steps.map(flowId => deleteStep(flowId, userId)))
 
   // Restore all steps from the previous flow
   await Promise.all(
@@ -91,9 +91,9 @@ export async function restoreFlow(id) {
   )
 }
 
-export function deleteFlow(id) {
-  return getFlowById(id)
-    .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId))))
+export function deleteFlow(id, userId) {
+  return getFlowById(id, userId)
+    .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId, userId))))
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
 }
@@ -121,16 +121,19 @@ export async function generateFlowStepsPositions(flow, newStep) {
 
 // Generate step positions after removing a step
 export async function regenerateFlowStepsPositions(flow) {
-  let steps = await batchGetStepByIds(flow.steps)
+  let steps = await batchGetStepByIds(flow.steps),
+      pos = 0
+
   steps = _sortBy(steps, 'position')
 
   // Find steps that need to be updated because their position leaves a gap
-  let pos = 0
   const updateSteps = steps.reduce((result, step) => {
-    if (step.position != pos) {
-      result.push(Object.assign({}, step, {
-        position: pos
-      }));
+    if (step.position !== pos) {
+      result.push(
+        Object.assign({}, step, {
+          position: pos
+        })
+      )
     }
 
     pos++

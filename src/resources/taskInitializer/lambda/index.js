@@ -68,6 +68,7 @@ async function taskInitializer(event, context, callback) {
     state: 'NOT_STARTED',
     activityArn: currentStep.service.activityArn,
     taskToken: activityData.taskToken,
+    userId: stepData.flowRun.flow.userId,
     flowRun: stepData.flowRun,
     currentStep: input.currentStep,
     input: JSON.stringify(activityData.input),

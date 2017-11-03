@@ -1,29 +1,35 @@
 import dynDB from '../../utils/dynamoDB'
 
-export function allTasks() {
+export function allTasks(userId) {
   // Retrieves all unfinished tasks
   const table = process.env.DYNAMO_TASKS
   const params = {
-    FilterExpression: '#state IN (:not_started, :started, :paused)',
+    FilterExpression: '#state IN (:not_started, :started, :paused) AND #userId = :userId',
     ExpressionAttributeNames: {
-      '#state': 'state'
+      '#state': 'state',
+      '#userId': 'userId'
     },
     ExpressionAttributeValues: {
       ':not_started': 'NOT_STARTED',
       ':started': 'STARTED',
-      ':paused': 'PAUSED'
+      ':paused': 'PAUSED',
+      ':userId': userId
     }
   }
+
   return dynDB.scan(table, params).then(r => r.Items)
 }
 
-export function getTaskById(taskId) {
+export function getTaskById(taskId, userId) {
   const table = process.env.DYNAMO_TASKS
   const query = {
     Key: { id: taskId }
   }
 
-  return dynDB.getItem(table, query).then(r => r.Item || null)
+  return dynDB.getItem(table, query).then((r) => {
+    const item = r.Item || {}
+    return item.userId === userId || item.userId === null ? item : null
+  })
 }
 
 export function batchGetTasksByIds(tasksIds) {

@@ -67,14 +67,18 @@ export function createFlowRunTriggerParams(flowRun, runId) {
 
 export function triggerFlowRun(flowRun, payload) {
   const s3 = S3(process.env.S3_BUCKET)
-
-  const runId = `${timestamp()}_${uuid.v4()}`
+  const startedAt = timestamp()
+  const runId = `${startedAt}_${uuid.v4()}`
 
   if (!flowRun.runs) {
     flowRun.runs = []
   }
 
-  flowRun.runs.push(runId)
+  flowRun.runs.push({
+    id: runId,
+    status: 'running',
+    startedAt: startedAt
+  })
 
   const flowRunData = createFlowRunDataParams(flowRun, runId, payload, 'running')
   const invokeParams = createFlowRunTriggerParams(flowRun, runId)
@@ -112,6 +116,17 @@ export function updateLogs(logs, step, status, message = '') {
     }
   })
   return Object.assign({}, logs, { status, steps })
+}
+
+function setCurrentRunStatus(runs, runId, status) {
+  return runs.map((run) => {
+    const updatedRun = run
+    if (run.id === runId) {
+      updatedRun.status = status
+    }
+    updatedRun.finishedAt = timestamp()
+    return run
+  })
 }
 
 /*
@@ -153,10 +168,14 @@ export async function flowRunSuccessHandler(input, flowRunData) {
   flowRunData.finishedAt = timestamp()
 
   try {
+    const flowRunFromDB = await dbFlowRun.getFlowRunById(flowRunData.flowRun.id)
+    const updatedRuns = setCurrentRunStatus(flowRunFromDB.runs, input.runId, 'success')
     await s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
     await dbFlowRun.updateFlowRun({
       id: flowRunData.flowRun.id,
       status: 'success',
+      runs: updatedRuns,
+      finishedAt: timestamp(),
       message: flowRunData.flowRun.message
     })
 
@@ -188,10 +207,13 @@ export async function flowRunErrorHandler(err, input) {
 
   try {
     const flowRunData = await getStepData(input)
+    const flowRunFromDB = await dbFlowRun.getFlowRunById(flowRunData.flowRun.id)
+    const updatedRuns = setCurrentRunStatus(flowRunFromDB.runs, input.runId, 'error')
     const [_, updatedData] = await Promise.all([
       dbFlowRun.updateFlowRun({
         id: flowRunData.flowRun.id,
         status: 'error',
+        runs: updatedRuns,
         finishedAt: timestamp(),
         message: flowRunData.flowRun.message
       }),

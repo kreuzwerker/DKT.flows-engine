@@ -21,11 +21,12 @@ export function getFlowById(flowId, userId) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export async function createFlow(flow) {
+export async function createFlow(flow, userId) {
   let newFlow = Object.assign(
     {},
     {
       id: uuid.v4(),
+      userId: userId,
       name: null,
       description: null,
       draft: true,
@@ -36,7 +37,7 @@ export async function createFlow(flow) {
 
   try {
     if (newFlow.steps.length === 0) {
-      const newStep = await createStep({ flow: newFlow.id })
+      const newStep = await createStep({ flow: newFlow.id }, userId)
       newFlow = Object.assign({}, newFlow, { steps: [newStep.id] })
     }
 
@@ -53,7 +54,7 @@ export async function setFlowDraftState(flow, state) {
   })
 }
 
-export function updateFlow(flow) {
+export function updateFlow(flow, userId) {
   return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, true))
 }
 

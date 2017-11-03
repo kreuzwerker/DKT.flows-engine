@@ -102,7 +102,7 @@ function getStepFromFlowRun(flowRun, currentStep) {
   return steps.find(s => parseInt(s.position, 10) === parseInt(currentStep, 10))
 }
 
-function updateLogs(logs, step, status, message = '') {
+export function updateLogs(logs, step, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
     [step.id]: {
       status,

@@ -1,8 +1,14 @@
 import _isString from 'lodash/isString'
 import uuid from 'uuid'
+import S3 from '../../../utils/s3'
 import Logger from '../../../utils/logger'
 import StepFunctions from '../../../utils/stepFunctions'
 import { getStepData, testStepErrorHandler } from '../../../utils/helpers/stepHelpers'
+import {
+  getStepOutputKey,
+  getFlowRunOutputKey,
+  updateLogs
+} from '../../../utils/helpers/flowRunHelpers'
 import { createTask } from '../../dbTasks/resolvers'
 
 function getTitle(currentStep) {
@@ -28,10 +34,13 @@ function getDescription(currentStep) {
 }
 
 async function taskInitializer(event, context, callback) {
+  const s3 = S3(process.env.S3_BUCKET)
   const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event
   let stepData = [],
       activityData = {}
+
+  input.currentStep += 1
 
   try {
     stepData = await getStepData(input)
@@ -43,7 +52,7 @@ async function taskInitializer(event, context, callback) {
   }
 
   const currentStep = stepData.flowRun.flow.steps.find(
-    step => step.position === stepData.currentStep + 1
+    step => parseInt(step.position, 10) === parseInt(input.currentStep, 10)
   )
 
   try {
@@ -74,15 +83,41 @@ async function taskInitializer(event, context, callback) {
     input: JSON.stringify(activityData.input),
     comments: []
   }
+  const flowRunOutputKey = getFlowRunOutputKey(stepData.flowRun, input.runId)
+  const stepOutputKey = getStepOutputKey(
+    stepData.flowRun,
+    input.runId,
+    currentStep.id,
+    input.currentStep
+  )
 
   try {
     await createTask(task)
+    const updatedStepData = {
+      ...stepData,
+      currentStep: input.currentStep,
+      logs: updateLogs(stepData.logs, currentStep, 'pending')
+    }
+
+    await Promise.all([
+      s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedStepData, null, 2) }),
+      s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedStepData, null, 2) })
+    ])
   } catch (err) {
     logger.log('unable to create task', task, err)
-    callback(null, { ...input, error: err })
+    const updatedStepData = {
+      ...stepData,
+      currentStep: input.currentStep,
+      logs: updateLogs(stepData.logs, currentStep, 'error', 'unable to create task')
+    }
+    await Promise.all([
+      s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedStepData, null, 2) }),
+      s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedStepData, null, 2) })
+    ])
+    callback(null, { ...input, key: stepOutputKey, error: err })
   }
 
-  callback(null, input)
+  callback(null, { ...input, key: stepOutputKey })
 }
 
 export const handler = taskInitializer

@@ -30,41 +30,6 @@ export async function getLastFlowRunByFlowId(flowId) {
   return dbFlowRuns.getLastFlowRunByFlowId(flowId)
 }
 
-// Get all runs from all flowRuns from the given flow
-export async function getRunsForFlow(flow, args) {
-  const flowRuns = await getFlowRunsByFlowId(flow.id)
-
-  let runs = []
-  await Promise.all(
-    flowRuns.map((flowRun) => {
-      return getRuns(flowRun, {
-          offset: 0,
-          status: args.status
-        })
-        .then((_runs) => {
-          if (_runs) {
-            runs = [...runs, ..._runs]
-          }
-        })
-        .catch(() => Promise.resolve())
-    })
-  )
-
-  const pagination = {
-    start: args.offset,
-    end: args.offset + args.limit || undefined
-  }
-
-  return _sortBy(runs, 'startedAt')
-    .reverse()
-    .slice(pagination.start, pagination.end)
-}
-
-export async function getRunsForFlowCount(flow, args) {
-  const runs = await getRunsForFlow(flow, args)
-  return runs ? runs.length : 0;
-}
-
 // Get all runs from the given flowRun
 export async function getRuns(flowRun, args) {
   if (!flowRun.runs) return null
@@ -94,8 +59,8 @@ export async function getRuns(flowRun, args) {
           .then((data) => {
             const parsedData = JSON.parse(data.Body)
             if (!args.status || args.status === parsedData.status) {
-            // Filter out runs that don't match the given status
-            flowRunsData.push(parsedData)
+              // Filter out runs that don't match the given status
+              flowRunsData.push(parsedData)
             }
           })
           .catch(() => Promise.resolve())
@@ -104,6 +69,9 @@ export async function getRuns(flowRun, args) {
 
     return flowRunsData.map((data) => {
       const logs = data.logs
+      const currentStep = data.flowRun.flow.steps.find(
+        step => parseInt(step.position, 10) === parseInt(data.currentStep, 10)
+      )
 
       const steps = Object.keys(logs.steps).map(id => ({
         status: logs.steps[id].status,
@@ -116,6 +84,7 @@ export async function getRuns(flowRun, args) {
       return {
         id: data.runId,
         status: data.status,
+        currentStep: currentStep,
         logs: { steps },
         result: data.data,
         startedAt: data.startedAt,
@@ -125,6 +94,41 @@ export async function getRuns(flowRun, args) {
   } catch (err) {
     return err
   }
+}
+
+// Get all runs from all flowRuns from the given flow
+export async function getRunsForFlow(flow, args) {
+  const flowRuns = await getFlowRunsByFlowId(flow.id)
+
+  let runs = []
+  await Promise.all(
+    flowRuns.map((flowRun) => {
+      return getRuns(flowRun, {
+        offset: 0,
+        status: args.status
+      })
+        .then((_runs) => {
+          if (_runs) {
+            runs = [...runs, ..._runs]
+          }
+        })
+        .catch(() => Promise.resolve())
+    })
+  )
+
+  const pagination = {
+    start: args.offset,
+    end: args.offset + args.limit || undefined
+  }
+
+  return _sortBy(runs, 'startedAt')
+    .reverse()
+    .slice(pagination.start, pagination.end)
+}
+
+export async function getRunsForFlowCount(flow, args) {
+  const runs = await getRunsForFlow(flow, args)
+  return runs ? runs.length : 0
 }
 
 /**

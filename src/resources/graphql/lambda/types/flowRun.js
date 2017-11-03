@@ -6,6 +6,7 @@ import {
   GraphQLNonNull,
   GraphQLList
 } from 'graphql'
+import { StepType } from './step'
 import { FlowType } from './flow'
 import { getRuns } from '../resolvers/flowRuns'
 import { getFlowById } from '../resolvers/flows'
@@ -34,6 +35,7 @@ export const RunsType = new GraphQLObjectType({
     id: { type: GraphQLID },
     status: { type: GraphQLString },
     logs: { type: LogsType },
+    currentStep: { type: StepType },
     result: { type: GraphQLString },
     startedAt: { type: GraphQLString },
     finishedAt: { type: GraphQLString }

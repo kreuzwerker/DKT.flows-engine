@@ -1,5 +1,6 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
+import _flatten from 'lodash/flatten'
 import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
@@ -32,7 +33,7 @@ export async function getLastFlowRunByFlowId(flowId) {
 
 // Get all runs from the given flowRun
 export async function getRuns(flowRun, args) {
-  if (!flowRun.runs) return null
+  if (!flowRun.runs) return []
   const { runs } = flowRun
   const s3 = S3(process.env.S3_BUCKET)
 
@@ -44,7 +45,7 @@ export async function getRuns(flowRun, args) {
   const dataKeys = runs
     .reverse()
     .slice(pagination.start, pagination.end)
-    .map(runId => getFlowRunOutputKey(flowRun, runId))
+    .map(run => getFlowRunOutputKey(flowRun, run.id))
 
   if (dataKeys.length <= 0) {
     return null

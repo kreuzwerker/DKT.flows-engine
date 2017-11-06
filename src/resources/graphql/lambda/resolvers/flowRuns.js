@@ -31,17 +31,49 @@ export async function getLastFlowRunByFlowId(flowId) {
   return dbFlowRuns.getLastFlowRunByFlowId(flowId)
 }
 
-// Get all runs from the given flowRun
-export async function getRuns(flowRun, args) {
-  if (!flowRun.runs) return []
-  const { runs } = flowRun
+function getFlowRunsData(dataKeys, status) {
   const s3 = S3(process.env.S3_BUCKET)
 
+  return Promise.all(dataKeys.map(key => s3.getObject({ Key: key })))
+    .then(data => data.map(d => JSON.parse(d.Body)))
+    .then(parsedData => parsedData.filter(d => !status || status === d.status))
+}
+
+function getRunsFromFlowRunsData(flowRunsData) {
+  return flowRunsData.map((data) => {
+    const logs = data.logs
+    const currentStep = data.flowRun.flow.steps.find(
+      step => parseInt(step.position, 10) === parseInt(data.currentStep, 10)
+    )
+
+    const steps = Object.keys(logs.steps).map(id => ({
+      status: logs.steps[id].status,
+      message: logs.steps[id].message,
+      finishedAt: logs.steps[id].finishedAt,
+      position: logs.steps[id].position,
+      id: id
+    }))
+
+    return {
+      id: data.runId,
+      status: data.status,
+      currentStep: currentStep,
+      logs: { steps },
+      result: data.data,
+      startedAt: data.startedAt,
+      finishedAt: data.finishedAt
+    }
+  })
+}
+
+// Get all runs from the given flowRun
+export function getRuns(flowRun, args) {
+  if (!flowRun.runs) return []
+  const { runs } = flowRun
   const pagination = {
     start: args.offset,
     end: args.offset + args.limit || undefined
   }
-
   const dataKeys = runs
     .reverse()
     .slice(pagination.start, pagination.end)
@@ -51,84 +83,35 @@ export async function getRuns(flowRun, args) {
     return null
   }
 
-  try {
-    const flowRunsData = []
-    await Promise.all(
-      dataKeys.map((key) => {
-        return s3
-          .getObject({ Key: key })
-          .then((data) => {
-            const parsedData = JSON.parse(data.Body)
-
-            if (!args.status || args.status === parsedData.status) {
-              // Filter out runs that don't match the given status
-              flowRunsData.push(parsedData)
-            }
-          })
-          .catch((err) => {
-            console.log(err)
-            return Promise.resolve()
-          })
-      })
-    )
-
-    return flowRunsData.map((data) => {
-      const logs = data.logs
-      const currentStep = data.flowRun.flow.steps.find(
-        step => parseInt(step.position, 10) === parseInt(data.currentStep, 10)
-      )
-
-      const steps = Object.keys(logs.steps).map(id => ({
-        status: logs.steps[id].status,
-        message: logs.steps[id].message,
-        finishedAt: logs.steps[id].finishedAt,
-        position: logs.steps[id].position,
-        id: id
-      }))
-
-      return {
-        id: data.runId,
-        status: data.status,
-        currentStep: currentStep,
-        logs: { steps },
-        result: data.data,
-        startedAt: data.startedAt,
-        finishedAt: data.finishedAt
-      }
-    })
-  } catch (err) {
-    return err
-  }
+  return getFlowRunsData(dataKeys, args.status).then(flowRunsData =>
+    getRunsFromFlowRunsData(flowRunsData)
+  )
 }
 
 // Get all runs from all flowRuns from the given flow
 export async function getRunsForFlow(flow, args) {
   const flowRuns = await getFlowRunsByFlowId(flow.id)
-
-  let runs = []
-  await Promise.all(
-    flowRuns.map((flowRun) => {
-      return getRuns(flowRun, {
-        offset: 0,
-        status: args.status
-      })
-        .then((_runs) => {
-          if (_runs) {
-            runs = [...runs, ..._runs]
-          }
-        })
-        .catch(() => Promise.resolve())
-    })
-  )
-
   const pagination = {
     start: args.offset,
     end: args.offset + args.limit || undefined
   }
+  // we need the flowRun object within the run object get the outputKey later.
+  // this allows us to only fetch the required (paginated) flowRun dataJSONs from S3
+  const evert = flowRun => flowRun.runs.map(run => ({ ...run, flowRun }))
+  let runsItems = _flatten(flowRuns.map(flowRun => evert(flowRun)))
 
-  return _sortBy(runs, 'startedAt')
-    .reverse()
-    .slice(pagination.start, pagination.end)
+  runsItems = _sortBy(runsItems, 'startedAt')
+  runsItems = runsItems.reverse().slice(pagination.start, pagination.end)
+
+  const dataKeys = runsItems.map(run => getFlowRunOutputKey(run.flowRun, run.id))
+
+  if (dataKeys.length <= 0) {
+    return null
+  }
+
+  return getFlowRunsData(dataKeys, args.status).then(flowRunsData =>
+    getRunsFromFlowRunsData(flowRunsData)
+  )
 }
 
 export async function getRunsForFlowCount(flow, args) {

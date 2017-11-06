@@ -95,7 +95,7 @@ export async function getRunsForFlow(flow, args) {
     start: args.offset,
     end: args.offset + args.limit || undefined
   }
-  // we need the flowRun object within the run object get the outputKey later.
+  // we need the flowRun object within the run object to get the outputKey later.
   // this allows us to only fetch the required (paginated) flowRun dataJSONs from S3
   const evert = flowRun => flowRun.runs.map(run => ({ ...run, flowRun }))
   let runsItems = _flatten(flowRuns.map(flowRun => evert(flowRun)))

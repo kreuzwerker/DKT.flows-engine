@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { TASK_OUTPUT_HANDLER_FUNCTION } = require('../logicalResourceIds')
+const { TASK_OUTPUT_HANDLER_FUNCTION, S3_BUCKET } = require('../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [TASK_OUTPUT_HANDLER_FUNCTION]: {
@@ -11,9 +11,11 @@ module.exports = ({ key }) => ({
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,
       Environment: {
-        Variables: {}
+        Variables: {
+          S3_BUCKET: { Ref: S3_BUCKET }
+        }
       }
     },
-    DependsOn: []
+    DependsOn: [S3_BUCKET]
   }
 })

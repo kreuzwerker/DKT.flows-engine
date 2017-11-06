@@ -16,8 +16,6 @@ export default function service(serviceFn) {
         inputData = {},
         serviceResult = {}
 
-    input.currentStep += 1
-
     function errorHandler(err) {
       if (input.testStep) {
         testStepErrorHandler(input, stepData, err).then(errorOutput => callback(null, errorOutput))
@@ -27,6 +25,13 @@ export default function service(serviceFn) {
       }
     }
 
+    if (input.error) {
+      errorHandler(input.error)
+      return
+    }
+
+    input.currentStep += 1
+
     // get step data from s3
     try {
       stepData = await getStepData(input)
@@ -34,6 +39,7 @@ export default function service(serviceFn) {
     } catch (err) {
       logger.log('Error while getting step data', err)
       errorHandler(err)
+      return
     }
 
     try {
@@ -42,6 +48,7 @@ export default function service(serviceFn) {
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)
+      return
     }
 
     // handle the service lambda output
@@ -54,6 +61,7 @@ export default function service(serviceFn) {
     } catch (err) {
       logger.log('Error while handling service result', err)
       errorHandler(err)
+      return
     }
 
     callback(null, output)

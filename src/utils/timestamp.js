@@ -8,5 +8,5 @@ import settings from '../../settings'
  * @return {String}                            UNIX Timestamp
  */
 export default function timestamp(timezone = settings.timezone) {
-  return moment.tz(timezone).unix()
+  return new Date(moment.tz('Europe/Berlin').toISOString()).getTime()
 }

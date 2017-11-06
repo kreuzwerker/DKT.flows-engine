@@ -59,12 +59,16 @@ export async function getRuns(flowRun, args) {
           .getObject({ Key: key })
           .then((data) => {
             const parsedData = JSON.parse(data.Body)
+
             if (!args.status || args.status === parsedData.status) {
               // Filter out runs that don't match the given status
               flowRunsData.push(parsedData)
             }
           })
-          .catch(() => Promise.resolve())
+          .catch((err) => {
+            console.log(err)
+            return Promise.resolve()
+          })
       })
     )
 

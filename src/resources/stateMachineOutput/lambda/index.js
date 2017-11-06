@@ -10,7 +10,6 @@ export async function handler(event, context, callback) {
   try {
     if (input.error) {
       logger.log(input.error)
-
       const result = await flowRunErrorHandler(input.error, input)
       callback(null, result)
     } else {

@@ -191,16 +191,17 @@ export async function flowRunSuccessHandler(input, flowRunData) {
  */
 export async function flowRunErrorHandler(err, input) {
   const s3 = S3(process.env.S3_BUCKET)
+
   const position = input.currentStep
   const update = (currentData) => {
     const step = getStepFromFlowRun(currentData.flowRun, position)
-    const updatedData = Object.assign({}, position, {
+    const updatedData = Object.assign({}, currentData, {
       status: 'error',
       currentStep: position,
       logs: updateLogs(currentData.logs, step, 'error', err.message)
     })
     return s3.putObject({
-      Key: getFlowRunOutputKey(updatedData.flowRun, input.runId),
+      Key: getFlowRunOutputKey(currentData.flowRun, input.runId),
       Body: JSON.stringify(updatedData, null, 2)
     })
   }

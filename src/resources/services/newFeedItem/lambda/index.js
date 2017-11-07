@@ -83,6 +83,7 @@ export async function handler(event, context, callback) {
   event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
+
   const steps = input.flowRun.flow.steps || []
   const currentStep = steps.reduce(triggerStepReducer, {})
   const flowId = input.flowRun.flow.id

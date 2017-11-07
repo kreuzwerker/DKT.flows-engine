@@ -54,7 +54,7 @@ export async function setFlowDraftState(flow, state) {
   })
 }
 
-export function updateFlow(flow, userId) {
+export function updateFlow(flow) {
   return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, true))
 }
 
@@ -94,7 +94,14 @@ export async function restoreFlow(id, userId) {
 
 export function deleteFlow(id, userId) {
   return getFlowById(id, userId)
-    .then(flow => Promise.all(flow.steps.map(stepId => deleteStep(stepId, userId))))
+    .then(flow =>
+      Promise.all(
+        flow.steps.map((stepId) => {
+          console.log(`DELETE STEP: ${stepId}`)
+          return deleteStep(stepId, userId)
+        })
+      )
+    )
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
 }
@@ -122,10 +129,17 @@ export async function generateFlowStepsPositions(flow, newStep) {
 
 // Generate step positions after removing a step
 export async function regenerateFlowStepsPositions(flow) {
-  let steps = await batchGetStepByIds(flow.steps),
+  let steps = [],
       pos = 0
 
-  steps = _sortBy(steps, 'position')
+  if (flow.steps.length > 0) {
+    steps = await batchGetStepByIds(flow.steps)
+    steps = _sortBy(steps, 'position')
+  }
+
+  if (steps.length <= 1) {
+    return Promise.resolve()
+  }
 
   // Find steps that need to be updated because their position leaves a gap
   const updateSteps = steps.reduce((result, step) => {
@@ -140,6 +154,8 @@ export async function regenerateFlowStepsPositions(flow) {
     pos++
     return result
   }, [])
+
+  console.log(updateSteps)
 
   return Promise.all(updateSteps.map(step => dbSteps.updateStep(step)))
 }

@@ -139,11 +139,9 @@ export async function testStep(stepId, payload, configParams) {
 export async function deleteStep(id, userId) {
   const step = await getStepById(id)
   if (!step) {
+    console.log("Step doesn't exist anymore")
     // Step doesn't exist anymore
-    return {
-      id: id,
-      flow: null
-    }
+    return { id: id, flow: null }
   }
 
   try {
@@ -156,18 +154,16 @@ export async function deleteStep(id, userId) {
         await regenerateFlowStepsPositions(flow)
       }
     }
-
-    await dbSteps.deleteStep(id)
-
-    return {
-      id: id,
-      // NB after deleting the step from the DB, GraphQL won't be able to retrieve
-      // the related flow entity anymore. Hence we manually include it in the
-      // response so the client will be able to e.g. request the current
-      // flow.draft state within the deleteStep mutation.
-      flow: step.flow || null
-    }
   } catch (err) {
     return Promise.reject(err)
   }
+
+  return dbSteps.deleteStep(id).then(() => ({
+    id: id,
+    // NB after deleting the step from the DB, GraphQL won't be able to retrieve
+    // the related flow entity anymore. Hence we manually include it in the
+    // response so the client will be able to e.g. request the current
+    // flow.draft state within the deleteStep mutation.
+    flow: step.flow || null
+  }))
 }

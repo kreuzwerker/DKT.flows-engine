@@ -73,7 +73,7 @@ async function taskInitializer(event, context, callback) {
     title: getTitle(currentStep),
     description: getDescription(currentStep),
     date: new Date().toISOString(),
-    type: 'APPROVE',
+    type: currentStep.service.taskType || 'APPROVE',
     state: 'NOT_STARTED',
     activityArn: currentStep.service.activityArn,
     taskToken: activityData.taskToken,

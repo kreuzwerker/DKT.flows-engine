@@ -40,6 +40,7 @@ export const ServiceType = new GraphQLObjectType({
     description: { type: GraphQLString },
     type: { type: GraphQLString },
     task: { type: GraphQLBoolean },
+    taskType: { type: GraphQLString },
     arn: { type: GraphQLString },
     activityArn: { type: GraphQLString },
     taskToken: { type: GraphQLString },

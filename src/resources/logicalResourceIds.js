@@ -30,6 +30,7 @@ module.exports = {
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
   APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',
+  REVIEW_TASK_FUNCTION: 'ReviewTaskFunction',
 
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
 

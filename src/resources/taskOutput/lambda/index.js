@@ -7,8 +7,12 @@ import { getFlowRunOutputKey, updateLogs } from '../../../utils/helpers/flowRunH
 export async function handler(event, context, callback) {
   const s3 = S3(process.env.S3_BUCKET)
   const logger = Logger()
-  const input = _isString(event) ? JSON.parse(event)[1] : event[1]
-  let stepData = []
+  const inputEvent = _isString(event) ? JSON.parse(event) : event
+  const taskOutput = inputEvent[0].message
+  const input = inputEvent[1]
+
+  let stepData = [],
+      updatedStepData = {}
 
   try {
     stepData = await getStepData(input)
@@ -22,9 +26,19 @@ export async function handler(event, context, callback) {
   )
 
   const flowRunOutputKey = getFlowRunOutputKey(stepData.flowRun, input.runId)
-  const updatedStepData = {
-    ...stepData,
-    logs: updateLogs(stepData.logs, currentStep, 'success')
+
+  if (input.error) {
+    updatedStepData = {
+      ...stepData,
+      status: 'error',
+      logs: updateLogs(stepData.logs, currentStep, 'error', input.error.message)
+    }
+  } else {
+    updatedStepData = {
+      ...stepData,
+      status: taskOutput,
+      logs: updateLogs(stepData.logs, currentStep, taskOutput)
+    }
   }
 
   console.log(JSON.stringify(updatedStepData))

@@ -27,5 +27,16 @@
       "ciy2jfkvufdsef0864z9r38opw",
       "ciy4poibcrqth0133z4r56alz"
     ]
+  },
+  {
+    "description": "Task services.",
+    "group": "DKT native app",
+    "icon": "assignment",
+    "id": "nqY2xusB5hHLMUdFdCQ=",
+    "name": "Task",
+    "services": [
+      "djk1jfkvjfmbh0123z9fri94",
+      "ciy0jfkvjfmbh0133z9rkg83"
+    ]
   }
 ]

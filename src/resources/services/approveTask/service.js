@@ -2,11 +2,11 @@ const { APPROVE_TASK_FUNCTION } = require('../../logicalResourceIds')
 
 module.exports = arn => ({
   description: 'Manual Approve Task',
-  icon: 'rss_feed',
+  icon: 'assignment',
   id: 'ciy0jfkvjfmbh0133z9rkg83',
   logicalResourceId: APPROVE_TASK_FUNCTION,
   name: 'Approve Task',
-  provider: 'ciy0ivuazabar0133xu1vlvyj',
+  provider: 'nqY2xusB5hHLMUdFdCQ=',
   type: 'ACTION',
   task: true,
   taskType: 'APPROVE',

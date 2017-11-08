@@ -20,6 +20,7 @@
     "id": "ciy0jgybhai7v013373puyuvy",
     "position": 1,
     "service": "ciy0jfkvuahth0133z9r38ljg",
+    "configParams": [],
     "tested": false
   },
   {
@@ -28,6 +29,12 @@
     "id": "ciy0jgybhai7v013373fdsafad",
     "position": 2,
     "service": "ciy2jfkvufdsef0864z9r38opw",
+    "configParams": [
+      {
+        "fieldId": "language-input",
+        "value": "en"
+      }
+    ],
     "tested": false
   },
   {
@@ -36,6 +43,7 @@
     "id": "ciy0jgybhai7v01dsda887ahw",
     "position": 3,
     "service": "ciy4poibcrqth0133z4r56alz",
+    "configParams": [],
     "tested": false
   },
   {

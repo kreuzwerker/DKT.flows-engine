@@ -3,7 +3,7 @@
     "description": "This is a mocked flow object.",
     "id": "ciy0ie2q1aoul0179imlh0a73",
     "name": "first flow",
-    "draft": true,
+    "draft": false,
     "steps": [
       "ciy0jidbmaivt0133sqdy35e6",
       "ciy0jgybhai7v013373puyuvy",
@@ -12,6 +12,7 @@
       "ciy0jfkvjfmbh0133z9rkg83"
     ],
     "flowRuns": [],
-    "latestFlowRun": {}
+    "latestFlowRun": {},
+    "userId": "c9fb82da-9268-412d-85ff-9057fbfd98fb"
   }
 ]

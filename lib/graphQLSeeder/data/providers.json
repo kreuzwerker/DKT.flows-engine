@@ -25,7 +25,8 @@
       "ciy0jeruzbb5m01790ymkz7xl",
       "ciy0jfkvuahth0133z9r38ljg",
       "ciy2jfkvufdsef0864z9r38opw",
-      "ciy4poibcrqth0133z4r56alz"
+      "ciy4poibcrqth0133z4r56alz",
+      "ciy0jfkvuahth0133z9r38yu2"
     ]
   },
   {
@@ -34,10 +35,6 @@
     "icon": "assignment",
     "id": "nqY2xusB5hHLMUdFdCQ=",
     "name": "Task",
-    "services": [
-      "djk1jfkvjfmbh0123z9fri94",
-      "ciy0jfkvjfmbh0133z9rkg83",
-      "azWOR5NJ5uz2cj7TqJc="
-    ]
+    "services": ["ciy0jfkvjfmbh0133z9rkg83", "djk1jfkvjfmbh0123z9fri94", "azWOR5NJ5uz2cj7TqJc="]
   }
 ]

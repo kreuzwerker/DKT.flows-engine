@@ -1,4 +1,4 @@
-const { MODIFY_TASK_FUNCTION } = require('../../logicalResourceIds');
+const { MODIFY_TASK_FUNCTION } = require('../../logicalResourceIds')
 
 module.exports = arn => ({
   description: 'Manual Modify Task',
@@ -30,4 +30,4 @@ module.exports = arn => ({
   ],
   samplePayload: null,
   arn: arn
-});
+})

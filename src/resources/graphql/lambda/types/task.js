@@ -29,7 +29,7 @@ const TaskTypeType = new GraphQLEnumType({
   values: {
     REVIEW: { value: 'REVIEW' },
     APPROVE: { value: 'APPROVE' },
-    CORRECT: { value: 'CORRECT' }
+    MODIFY: { value: 'MODIFY' }
   }
 })
 

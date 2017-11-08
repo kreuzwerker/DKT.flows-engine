@@ -47,11 +47,17 @@ export async function updateTask(task, userId) {
     const taskToken = oldTask.taskToken
     switch (task.state) {
       case 'APPROVED': {
-        await StepFunctions.sendTaskSuccess({ taskToken, output: JSON.stringify({}) })
+        await StepFunctions.sendTaskSuccess({
+          taskToken,
+          output: JSON.stringify({ message: 'success' })
+        })
         break
       }
       case 'REJECTED': {
-        await StepFunctions.sendTaskFailure({ taskToken, cause: 'REJECTED' })
+        await StepFunctions.sendTaskSuccess({
+          taskToken,
+          output: JSON.stringify({ message: 'rejected' })
+        })
         break
       }
       default:

@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Capitalize Text',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  scheduled: null,
   task: false,
   configSchema: null,
   samplePayload: 'Lorem Ipsum dolor sit amet.',

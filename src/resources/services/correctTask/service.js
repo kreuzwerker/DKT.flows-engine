@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Modify Task',
   provider: 'nqY2xusB5hHLMUdFdCQ=',
   type: 'ACTION',
+  scheduled: null,
   task: true,
   taskType: 'MODIFY',
   configSchema: [

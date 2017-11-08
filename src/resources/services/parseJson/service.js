@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Parse JSON',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  scheduled: null,
   configSchema: [
     {
       fieldId: 'path',

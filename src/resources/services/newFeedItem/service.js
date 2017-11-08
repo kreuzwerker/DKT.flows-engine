@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'New Item in Feed',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'TRIGGER',
+  scheduled: true,
   configSchema: [
     {
       fieldId: 'url',

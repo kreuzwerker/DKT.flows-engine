@@ -165,7 +165,8 @@ export async function createFlowRun(params, userId) {
       flow
     }
 
-    // TODO create CloudWatch events here for scheduled triggers
+    // TODO Add CloudWatch event creator here for scheduled triggers
+    // analog to http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/RunLambdaSchedule.html
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 

@@ -31,6 +31,7 @@ module.exports = {
 
   APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',
   REVIEW_TASK_FUNCTION: 'ReviewTaskFunction',
+  CORRECT_TASK_FUNCTION: 'CorrectTaskFunction',
 
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
 

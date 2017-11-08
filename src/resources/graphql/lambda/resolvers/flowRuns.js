@@ -165,6 +165,8 @@ export async function createFlowRun(params, userId) {
       flow
     }
 
+    // TODO create CloudWatch events here for scheduled triggers
+
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 
     const stateMachine = await StepFunctions.createStateMachine(

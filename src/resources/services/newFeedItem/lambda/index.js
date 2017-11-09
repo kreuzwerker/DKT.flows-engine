@@ -1,4 +1,4 @@
-// import feedparser from 'feedparser-promised'
+// import feedparser from 'feedparser-promised' // TODO this breaks the build - we need to use another feedparser package
 import _isString from 'lodash/isString'
 import service from '../../../../utils/service'
 import Logger from '../../../../utils/logger'
@@ -35,7 +35,7 @@ async function getNewFeedItems(params, logger) {
 
   // Fetch feed items
   try {
-    // feedItems = await feedparser.parse(url) // TODO this breaks the build
+    // feedItems = await feedparser.parse(url)
   } catch (err) {
     logger.log('Error fetching the feed', err)
     throw new Error(err)

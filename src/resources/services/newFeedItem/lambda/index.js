@@ -1,5 +1,6 @@
-import feedparser from 'feedparser-promised'
+// import feedparser from 'feedparser-promised'
 import _isString from 'lodash/isString'
+import service from '../../../../utils/service'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbServiceFeeds from '../../../dbServiceFeeds/resolvers'
@@ -34,7 +35,7 @@ async function getNewFeedItems(params, logger) {
 
   // Fetch feed items
   try {
-    feedItems = await feedparser.parse(url)
+    // feedItems = await feedparser.parse(url) // TODO this breaks the build
   } catch (err) {
     logger.log('Error fetching the feed', err)
     throw new Error(err)
@@ -79,7 +80,7 @@ async function getNewFeedItems(params, logger) {
   return newItems
 }
 
-export async function handler(event, context, callback) {
+async function newItemInFeed(event, context, callback) {
   event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
@@ -138,6 +139,8 @@ export async function handler(event, context, callback) {
     err(error)
   }
 }
+
+export const handler = service(newItemInFeed)
 
 // Test function locally
 // process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'

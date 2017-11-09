@@ -115,7 +115,7 @@ export async function testStep(stepId, payload, configParams) {
       result = { ...testedStep, service, error: output[parsedStepResult.contentKey] }
     } else {
       testedStep.tested = true
-      result = { ...testedStep, service, error: output[parsedStepResult.contentKey] }
+      result = { ...testedStep, service, result: output[parsedStepResult.contentKey] }
     }
 
     await Promise.all([

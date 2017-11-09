@@ -48,6 +48,8 @@ export const FlowRunType = new GraphQLObjectType({
     id: { type: new GraphQLNonNull(GraphQLID) },
     userId: { type: GraphQLID },
     stateMachineArn: { type: GraphQLString },
+    scheduledTriggerArn: { type: GraphQLString },
+    scheduledTriggerStatementId: { type: GraphQLString },
     status: { type: GraphQLString },
     message: { type: GraphQLString },
     flow: {

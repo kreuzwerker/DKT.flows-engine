@@ -5,6 +5,7 @@ import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
 import S3 from '../../../../utils/s3'
+import CloudWatchEvents from '../../../../utils/cloudWatchEvents'
 import Lambda from '../../../../utils/lambda'
 import StepFunctions from '../../../../utils/stepFunctions'
 import ASLGenerator from '../../../../utils/aslGenerator'
@@ -146,6 +147,33 @@ export async function createFlowRun(params, userId) {
     )
   }
 
+  function createScheduledEvent(ruleName, interval, service, payload = {}) {
+    return CloudWatchEvents.putRule({
+      Name: ruleName,
+      ScheduleExpression: `rate(${interval.value} minutes)`
+    }).then(({ RuleArn }) =>
+      Promise.all([
+        Lambda.addPermission({
+          StatementId: ruleName,
+          Action: 'lambda:InvokeFunction',
+          FunctionName: service.arn,
+          Principal: 'events.amazonaws.com',
+          SourceArn: RuleArn
+        }),
+        CloudWatchEvents.putTargets({
+          Rule: ruleName,
+          Targets: [
+            {
+              Arn: service.arn,
+              Id: service.id,
+              Input: JSON.stringify(payload, null, 2)
+            }
+          ]
+        })
+      ]).then(() => RuleArn)
+    )
+  }
+
   try {
     let flow = await getFlowById(params.flow, userId)
     const steps = await batchGetStepByIds(flow.steps)
@@ -162,11 +190,28 @@ export async function createFlowRun(params, userId) {
       message: null,
       runs: [],
       runsCount: 0,
+      scheduledTriggerArn: null,
+      scheduledTriggerStatementId: null,
+      stateMachineArn: null,
       flow
     }
 
-    // TODO Add CloudWatch event creator here for scheduled triggers
-    // analog to http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/RunLambdaSchedule.html
+    const scheduledTriggerStep = flow.steps.find(step => step.service.scheduled)
+    if (scheduledTriggerStep) {
+      const interval = scheduledTriggerStep.configParams.find(param => param.fieldId === 'interval')
+      const ruleName = `${newFlowRun.id}-scheduledTrigger`
+      const ruleArn = await createScheduledEvent(
+        ruleName,
+        interval,
+        scheduledTriggerStep.service,
+        scheduledTriggerStep.configParams
+      )
+
+      newFlowRun.scheduledTriggerArn = ruleArn
+      newFlowRun.scheduledTriggerStatementId = ruleName
+    }
+
+    // -------------------------------------------------------------------------
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 

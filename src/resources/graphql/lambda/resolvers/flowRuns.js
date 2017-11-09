@@ -211,8 +211,6 @@ export async function createFlowRun(params, userId) {
       newFlowRun.scheduledTriggerStatementId = ruleName
     }
 
-    // -------------------------------------------------------------------------
-
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 
     const stateMachine = await StepFunctions.createStateMachine(

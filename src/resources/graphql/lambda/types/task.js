@@ -8,6 +8,7 @@ import {
   GraphQLEnumType
 } from 'graphql'
 import { FlowRunType } from './flowRun'
+import { StepType } from './step';
 
 // TODO UPDATE TASK DATA
 
@@ -67,6 +68,6 @@ export const TaskItemType = new GraphQLObjectType({
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
     data: { type: GraphQLString },
-    type: { type: GraphQLString }
+    prevStep: { type: StepType }
   })
 })

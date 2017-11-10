@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Parse JSON',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  scheduled: null,
   configSchema: [
     {
       fieldId: 'path',
@@ -17,9 +18,6 @@ module.exports = arn => ({
       type: 'input'
     }
   ],
-  samplePayload: {
-    json: '{"person": {"firstName": "John", "lastName": "Doe"}}',
-    path: '$.person.firstName'
-  },
+  samplePayload: '{"person": {"firstName": "John", "lastName": "Doe"}}',
   arn: arn
 })

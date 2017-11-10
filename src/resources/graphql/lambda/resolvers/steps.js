@@ -82,7 +82,7 @@ async function updateFlowDraftState(step, userId) {
   return Promise.resolve()
 }
 
-export async function updateStep(step, userId) {
+export function updateStep(step, userId) {
   return updateFlowDraftState(step, userId).then(() => dbSteps.updateStep(step))
 }
 
@@ -96,9 +96,9 @@ export async function testStep(stepId, payload, configParams) {
     const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
 
     if (service.type === 'TRIGGER') {
-      const newStep = Object.assign({}, step, { tested: true })
+      const newStep = { ...step, tested: true }
       await updateStep(newStep)
-      return Object.assign({}, newStep, { service })
+      return { ...newStep, service }
     }
 
     await s3.putObject(testStepData)
@@ -112,16 +112,16 @@ export async function testStep(stepId, payload, configParams) {
 
     if (output.status === 'error') {
       testedStep.tested = false
-      result = Object.assign({}, testedStep, {
-        service,
-        error: output[parsedStepResult.contentKey]
-      })
+      result = { ...testedStep, service, error: output[parsedStepResult.contentKey] }
     } else {
       testedStep.tested = true
-      result = Object.assign({}, testedStep, {
-        service,
-        result: JSON.stringify(output[parsedStepResult.contentKey])
-      })
+      let _result = output[parsedStepResult.contentKey]
+      if (typeof _result === 'object') {
+        // NB StepTestType.result must be a string
+        _result = JSON.stringify(output[parsedStepResult.contentKey])
+      }
+
+      result = { ...testedStep, service, result: _result }
     }
 
     await Promise.all([

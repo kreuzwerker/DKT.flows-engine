@@ -5,11 +5,56 @@ import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
 import S3 from '../../../../utils/s3'
+import CloudWatchEvents from '../../../../utils/cloudWatchEvents'
 import Lambda from '../../../../utils/lambda'
 import StepFunctions from '../../../../utils/stepFunctions'
 import ASLGenerator from '../../../../utils/aslGenerator'
 import { getFlowRunOutputKey } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
+
+function createScheduledEvent(ruleName, interval, service, payload = {}) {
+  return CloudWatchEvents.putRule({
+    Name: ruleName,
+    ScheduleExpression: `rate(${interval.value} minutes)`
+  }).then(({ RuleArn }) =>
+    Promise.all([
+      Lambda.addPermission({
+        StatementId: ruleName,
+        Action: 'lambda:InvokeFunction',
+        FunctionName: service.arn,
+        Principal: 'events.amazonaws.com',
+        SourceArn: RuleArn
+      }),
+      CloudWatchEvents.putTargets({
+        Rule: ruleName,
+        Targets: [
+          {
+            Arn: service.arn,
+            Id: service.id,
+            Input: JSON.stringify(payload, null, 2)
+          }
+        ]
+      })
+    ]).then(() => RuleArn)
+  )
+}
+
+function removeScheduledEvent(scheduledTriggerName, service) {
+  return CloudWatchEvents.removeTargets({
+    Ids: [service.id],
+    Rule: scheduledTriggerName
+  }).then(() =>
+    Promise.all([
+      CloudWatchEvents.deleteRule({
+        Name: scheduledTriggerName
+      }),
+      Lambda.removePermission({
+        FunctionName: service.arn,
+        StatementId: scheduledTriggerName
+      })
+    ])
+  )
+}
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -162,7 +207,26 @@ export async function createFlowRun(params, userId) {
       message: null,
       runs: [],
       runsCount: 0,
+      active: true,
+      scheduledTriggerArn: null,
+      scheduledTriggerName: null,
+      stateMachineArn: null,
       flow
+    }
+
+    const scheduledTriggerStep = flow.steps.find(step => step.service.scheduled)
+    if (scheduledTriggerStep) {
+      const interval = scheduledTriggerStep.configParams.find(param => param.fieldId === 'interval')
+      const ruleName = `${newFlowRun.id}-scheduledTrigger`
+      const ruleArn = await createScheduledEvent(
+        ruleName,
+        interval,
+        scheduledTriggerStep.service,
+        scheduledTriggerStep.configParams
+      )
+
+      newFlowRun.scheduledTriggerArn = ruleArn
+      newFlowRun.scheduledTriggerName = ruleName
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
@@ -229,11 +293,24 @@ export function deleteFlowRun(id) {
     .then((flowRun) => {
       const { steps } = flowRun.flow
       const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
+      const scheduledTrigger = steps.find(step => step.service.scheduled)
+      let removeScheduledTrigger
+
+      if (scheduledTrigger) {
+        const { scheduledTriggerName } = flowRun
+        removeScheduledTrigger = removeScheduledEvent(
+          scheduledTriggerName,
+          scheduledTrigger.service
+        )
+      } else {
+        removeScheduledTrigger = Promise.resolve()
+      }
 
       return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
         StepFunctions.deleteActivities(tasks),
-        dbFlowRuns.deleteFlowRun(id)
+        dbFlowRuns.deleteFlowRun(id),
+        removeScheduledTrigger
       ])
     })
     .then(() => ({ id }))

@@ -17,6 +17,9 @@ module.exports = {
       capabilities: 'CAPABILITY_IAM',
       region: 'eu-west-1'
     },
+    cloudWatchEvents: {
+      apiVersion: '2015-10-07'
+    },
     apiGateway: {
       restApiId: 'mbrnjwzz5a',
       host: 'mbrnjwzz5a.execute-api.eu-west-1.amazonaws.com',

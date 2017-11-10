@@ -11,7 +11,9 @@ function Lambda() {
   return {
     invoke: params => lambda.invoke(params).promise(),
     listFunctions: params => lambda.listFunctions(params).promise(),
-    getFunction: params => lambda.getFunction(params).promise()
+    getFunction: params => lambda.getFunction(params).promise(),
+    addPermission: params => lambda.addPermission(params).promise(),
+    removePermission: params => lambda.removePermission(params).promise()
   }
 }
 

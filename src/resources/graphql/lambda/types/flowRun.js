@@ -2,6 +2,7 @@ import {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLBoolean,
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLList
@@ -48,6 +49,9 @@ export const FlowRunType = new GraphQLObjectType({
     id: { type: new GraphQLNonNull(GraphQLID) },
     userId: { type: GraphQLID },
     stateMachineArn: { type: GraphQLString },
+    scheduledTriggerArn: { type: GraphQLString },
+    scheduledTriggerName: { type: GraphQLString },
+    active: { type: GraphQLBoolean },
     status: { type: GraphQLString },
     message: { type: GraphQLString },
     flow: {

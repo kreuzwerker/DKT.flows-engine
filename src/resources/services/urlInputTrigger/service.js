@@ -9,6 +9,7 @@ module.exports = arn => ({
   logicalResourceId: URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   arn: arn,
   type: 'TRIGGER',
+  scheduled: false,
   configSchema: [
     {
       position: 0,

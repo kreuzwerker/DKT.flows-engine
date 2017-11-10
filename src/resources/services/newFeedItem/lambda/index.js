@@ -130,10 +130,13 @@ async function newItemInFeed(event, context, callback) {
 
   logger.log(`Trigger FlowRun '${input.flowRun.id}'`)
   try {
-    const result = await triggerFlowRun(input.flowRun, {
-      json: items[0]
-    })
-    logger.log('Triggered FlowRun', result)
+    if (!items[0].url) {
+      err('Feed item has no URL property.')
+      return
+    }
+
+    const result = await triggerFlowRun(input.flowRun, items[0].url)
+    logger.log(`Triggered FlowRun with URL ${items[0].url}`, result);
     callback(null, result)
   } catch (error) {
     err(error)

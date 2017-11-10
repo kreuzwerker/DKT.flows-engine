@@ -43,9 +43,8 @@ function removeScheduledEvent(scheduledTriggerName, service) {
   return CloudWatchEvents.removeTargets({
     Ids: [service.id],
     Rule: scheduledTriggerName
-  }).then((res) => {
-    console.log('removeTargets res', JSON.stringify(res, null, 2))
-    return Promise.all([
+  }).then(() =>
+    Promise.all([
       CloudWatchEvents.deleteRule({
         Name: scheduledTriggerName
       }),
@@ -54,7 +53,7 @@ function removeScheduledEvent(scheduledTriggerName, service) {
         StatementId: scheduledTriggerName
       })
     ])
-  })
+  )
 }
 
 /**

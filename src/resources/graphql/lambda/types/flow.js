@@ -22,7 +22,7 @@ export const FlowType = new GraphQLObjectType({
     draft: { type: GraphQLBoolean },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
-    stateMachineArn: { type: GraphQLString },
+    stateMachineArn: { type: GraphQLString }, // depricated
     userId: { type: GraphQLID },
     steps: {
       type: new GraphQLList(StepType),

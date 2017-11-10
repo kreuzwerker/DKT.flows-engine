@@ -24,7 +24,7 @@ function triggerStepReducer(a, step) {
 /*
  * Check for new items in given feed
  */
-async function getNewFeedItems(params, logger) {
+export async function getNewFeedItems(params, logger) {
   const flowId = params.flowId
   const url = params.url
 
@@ -80,7 +80,8 @@ async function getNewFeedItems(params, logger) {
   return newItems
 }
 
-async function newItemInFeed(event, context, callback) {
+export async function handler(event, context, callback) {
+  console.log('newItemInFeed', event)
   event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
@@ -142,8 +143,6 @@ async function newItemInFeed(event, context, callback) {
     err(error)
   }
 }
-
-export const handler = service(newItemInFeed)
 
 // Test function locally
 // process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'

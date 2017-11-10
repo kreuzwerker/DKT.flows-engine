@@ -26,10 +26,6 @@ module.exports = arn => ({
       type: 'input'
     }
   ],
-  samplePayload: {
-    url: 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-    idType: 'guid',
-    interval: '15'
-  },
+  samplePayload: 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
   arn: arn
 })

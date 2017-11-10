@@ -18,9 +18,6 @@ module.exports = arn => ({
       type: 'input'
     }
   ],
-  samplePayload: {
-    json: '{"person": {"firstName": "John", "lastName": "Doe"}}',
-    path: '$.person.firstName'
-  },
+  samplePayload: '{"person": {"firstName": "John", "lastName": "Doe"}}',
   arn: arn
 })

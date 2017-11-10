@@ -1,41 +1,36 @@
-import _isString from 'lodash/isString'
 import JSONPath from 'jsonpath-plus'
 import service from '../../../../utils/service'
 
 /*
- * Parse JSON from given string or object
+ * Return a json fragment for the given json path from the given json string or object
  */
-async function parseJson(input, logger, { stepData }) {
-  let result = {},
-      json = null
+async function parseJson(json, logger, { stepData }) {
+  let result = {}
 
   logger.log('DEBUG stepData', stepData)
-  logger.log('DEBUG input', input)
+  logger.log('DEBUG json', json);
 
   // Get step config
-  // TODO where are the step config params when the service was triggered in the
-  // context of 'Test step'? In this context, there is no stepData.flowRun
-  // available.
-  const configParams = stepData.flowRun
-    ? stepData.flowRun.flow.steps[stepData.currentStep].configParams
-    : []
-  // logger.log('DEBUG configParams', configParams);
+  const stepIndex = typeof stepData.currentStep !== 'undefined' ? stepData.currentStep : 0;
+  if (!stepData.flowRun || !stepData.flowRun.flow.steps[stepIndex]) {
+    return Promise.reject("Missing step config params.");
+  }
+
+  const configParams = stepData.flowRun.flow.steps[stepIndex].configParams;
+  logger.log('DEBUG configParams', configParams);
+
   const path = configParams.reduce((a, param) => {
     return param.fieldId === 'path' ? param.value : a
   }, '')
 
-  if (typeof input.json === 'undefined') {
-    return Promise.reject("Missing required 'json' parameter.")
-  } else if (_isString(input.json)) {
+  if (typeof json === 'string') {
     try {
-      logger.log('Try to parse JSON from string')
-      json = JSON.parse(input.json)
+      logger.log('Try to parse JSON from string');
+      json = JSON.parse(json);
     } catch (err) {
-      logger.log('Error while parsing JSON string', err)
-      return Promise.reject(err)
+      logger.log('Error while parsing JSON string', err);
+      return Promise.reject(err);
     }
-  } else {
-    json = input.json
   }
 
   try {

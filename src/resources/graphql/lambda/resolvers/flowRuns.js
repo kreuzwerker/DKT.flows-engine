@@ -78,10 +78,16 @@ export async function getLastFlowRunByFlowId(flowId) {
 
 function getFlowRunsData(dataKeys, status) {
   const s3 = S3(process.env.S3_BUCKET)
-
-  return Promise.all(dataKeys.map(key => s3.getObject({ Key: key })))
-    .then(data => data.map(d => JSON.parse(d.Body)))
-    .then(parsedData => parsedData.filter(d => !status || status === d.status))
+  return Promise.all(
+    dataKeys.map((key) => {
+      return s3.getObject({ Key: key }).catch(() => {
+        console.log('Unable to get file', key)
+        return {}
+      })
+    })
+  )
+    .then(data => data.map(d => (d.Body ? JSON.parse(d.Body) : null)))
+    .then(data => data.filter(d => d !== null))
 }
 
 function getRunsFromFlowRunsData(flowRunsData) {
@@ -119,18 +125,26 @@ export function getRuns(flowRun, args) {
     start: args.offset,
     end: args.offset + args.limit || undefined
   }
-  const dataKeys = runs
+
+  const paginatedRuns = runs
+    .filter(run => (args.status ? run.status === args.status : true))
     .reverse()
     .slice(pagination.start, pagination.end)
-    .map(run => getFlowRunOutputKey(flowRun, run.id))
+  const dataKeys = paginatedRuns.map(run => getFlowRunOutputKey(flowRun, run.id))
 
   if (dataKeys.length <= 0) {
     return null
   }
 
-  return getFlowRunsData(dataKeys, args.status).then(flowRunsData =>
-    getRunsFromFlowRunsData(flowRunsData)
-  )
+  return getFlowRunsData(dataKeys, args.status)
+    .then(flowRunsData => getRunsFromFlowRunsData(flowRunsData))
+    .then(extendedRunsData =>
+      // merge data from dynamoDB and s3
+      paginatedRuns.map((run) => {
+        const runData = extendedRunsData.find(er => er.id === run.id)
+        return { ...run, ...runData }
+      })
+    )
 }
 
 // Get all runs from all flowRuns from the given flow
@@ -146,7 +160,10 @@ export async function getRunsForFlow(flow, args) {
   let runsItems = _flatten(flowRuns.map(flowRun => evert(flowRun)))
 
   runsItems = _sortBy(runsItems, 'startedAt')
-  runsItems = runsItems.reverse().slice(pagination.start, pagination.end)
+  runsItems = runsItems
+    .filter(run => (args.status ? run.status === args.status : true))
+    .reverse()
+    .slice(pagination.start, pagination.end)
 
   const dataKeys = runsItems.map(run => getFlowRunOutputKey(run.flowRun, run.id))
 
@@ -154,9 +171,15 @@ export async function getRunsForFlow(flow, args) {
     return null
   }
 
-  return getFlowRunsData(dataKeys, args.status).then(flowRunsData =>
-    getRunsFromFlowRunsData(flowRunsData)
-  )
+  return getFlowRunsData(dataKeys, args.status)
+    .then(flowRunsData => getRunsFromFlowRunsData(flowRunsData))
+    .then(extendedRunsData =>
+      // merge data from dynamoDB and s3
+      runsItems.map((run) => {
+        const runData = extendedRunsData.find(er => er.id === run.id)
+        return { ...run, ...runData }
+      })
+    )
 }
 
 export async function getRunsForFlowCount(flow, args) {

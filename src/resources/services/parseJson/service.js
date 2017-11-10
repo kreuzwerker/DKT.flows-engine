@@ -8,6 +8,8 @@ module.exports = arn => ({
   name: 'Parse JSON',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  inputType: 'json',
+  outputType: 'json',
   scheduled: null,
   configSchema: [
     {

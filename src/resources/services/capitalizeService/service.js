@@ -8,6 +8,8 @@ module.exports = arn => ({
   name: 'Capitalize Text',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  inputType: 'string',
+  outputType: 'string',
   scheduled: null,
   task: false,
   configSchema: null,

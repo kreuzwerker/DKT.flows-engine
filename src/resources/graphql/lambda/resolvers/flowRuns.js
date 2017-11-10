@@ -12,6 +12,32 @@ import ASLGenerator from '../../../../utils/aslGenerator'
 import { getFlowRunOutputKey } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 
+function createScheduledEvent(ruleName, interval, service, payload = {}) {
+  return CloudWatchEvents.putRule({
+    Name: ruleName,
+    ScheduleExpression: `rate(${interval.value} minutes)`
+  }).then(({ RuleArn }) =>
+    Promise.all([
+      Lambda.addPermission({
+        StatementId: ruleName,
+        Action: 'lambda:InvokeFunction',
+        FunctionName: service.arn,
+        Principal: 'events.amazonaws.com',
+        SourceArn: RuleArn
+      }),
+      CloudWatchEvents.putTargets({
+        Rule: ruleName,
+        Targets: [
+          {
+            Arn: service.arn,
+            Id: service.id,
+            Input: JSON.stringify(payload, null, 2)
+          }
+        ]
+      })
+    ]).then(() => RuleArn)
+  )
+}
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -147,33 +173,6 @@ export async function createFlowRun(params, userId) {
     )
   }
 
-  function createScheduledEvent(ruleName, interval, service, payload = {}) {
-    return CloudWatchEvents.putRule({
-      Name: ruleName,
-      ScheduleExpression: `rate(${interval.value} minutes)`
-    }).then(({ RuleArn }) =>
-      Promise.all([
-        Lambda.addPermission({
-          StatementId: ruleName,
-          Action: 'lambda:InvokeFunction',
-          FunctionName: service.arn,
-          Principal: 'events.amazonaws.com',
-          SourceArn: RuleArn
-        }),
-        CloudWatchEvents.putTargets({
-          Rule: ruleName,
-          Targets: [
-            {
-              Arn: service.arn,
-              Id: service.id,
-              Input: JSON.stringify(payload, null, 2)
-            }
-          ]
-        })
-      ]).then(() => RuleArn)
-    )
-  }
-
   try {
     let flow = await getFlowById(params.flow, userId)
     const steps = await batchGetStepByIds(flow.steps)
@@ -190,8 +189,9 @@ export async function createFlowRun(params, userId) {
       message: null,
       runs: [],
       runsCount: 0,
+      active: true,
       scheduledTriggerArn: null,
-      scheduledTriggerStatementId: null,
+      scheduledTriggerName: null,
       stateMachineArn: null,
       flow
     }
@@ -208,7 +208,7 @@ export async function createFlowRun(params, userId) {
       )
 
       newFlowRun.scheduledTriggerArn = ruleArn
-      newFlowRun.scheduledTriggerStatementId = ruleName
+      newFlowRun.scheduledTriggerName = ruleName
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)

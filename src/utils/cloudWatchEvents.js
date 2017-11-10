@@ -12,7 +12,8 @@ function CloudWatchEvents() {
     disableRule: params => cloudWatchEvents.disableRule(params).promise(),
     enableRule: params => cloudWatchEvents.enableRule(params).promise(),
     deleteRule: params => cloudWatchEvents.deleteRule(params).promise(),
-    putTargets: params => cloudWatchEvents.putTargets(params).promise()
+    putTargets: params => cloudWatchEvents.putTargets(params).promise(),
+    removeTargets: params => cloudWatchEvents.removeTargets(params).promise()
   }
 }
 

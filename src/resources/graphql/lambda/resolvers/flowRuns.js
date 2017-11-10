@@ -38,6 +38,25 @@ function createScheduledEvent(ruleName, interval, service, payload = {}) {
     ]).then(() => RuleArn)
   )
 }
+
+function removeScheduledEvent(scheduledTriggerName, service) {
+  return CloudWatchEvents.removeTargets({
+    Ids: [service.id],
+    Rule: scheduledTriggerName
+  }).then((res) => {
+    console.log('removeTargets res', JSON.stringify(res, null, 2))
+    return Promise.all([
+      CloudWatchEvents.deleteRule({
+        Name: scheduledTriggerName
+      }),
+      Lambda.removePermission({
+        FunctionName: service.arn,
+        StatementId: scheduledTriggerName
+      })
+    ])
+  })
+}
+
 /**
  * ---- Queries ----------------------------------------------------------------
  * -----------------------------------------------------------------------------
@@ -275,11 +294,24 @@ export function deleteFlowRun(id) {
     .then((flowRun) => {
       const { steps } = flowRun.flow
       const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
+      const scheduledTrigger = steps.find(step => step.service.scheduled)
+      let removeScheduledTrigger
+
+      if (scheduledTrigger) {
+        const { scheduledTriggerName } = flowRun
+        removeScheduledTrigger = removeScheduledEvent(
+          scheduledTriggerName,
+          scheduledTrigger.service
+        )
+      } else {
+        removeScheduledTrigger = Promise.resolve()
+      }
 
       return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
         StepFunctions.deleteActivities(tasks),
-        dbFlowRuns.deleteFlowRun(id)
+        dbFlowRuns.deleteFlowRun(id),
+        removeScheduledTrigger
       ])
     })
     .then(() => ({ id }))

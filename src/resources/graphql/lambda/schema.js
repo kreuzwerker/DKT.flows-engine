@@ -4,6 +4,7 @@ import {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLBoolean,
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
@@ -116,6 +117,7 @@ const MutationType = new GraphQLObjectType({
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
+        active: { type: GraphQLBoolean },
         description: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) },
         userId: { type: GraphQLID }
@@ -164,6 +166,7 @@ const MutationType = new GraphQLObjectType({
       type: FlowRunType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
+        active: { type: GraphQLBoolean },
         status: { type: GraphQLString },
         message: { type: GraphQLString },
         currentStep: { type: GraphQLInt }

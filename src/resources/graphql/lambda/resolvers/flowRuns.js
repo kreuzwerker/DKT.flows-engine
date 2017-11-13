@@ -4,52 +4,16 @@ import _flatten from 'lodash/flatten'
 import { getFlowById, setFlowDraftState, updateFlow } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
-import { S3, CloudWatchEvents, Lambda, StepFunctions } from '../../../../utils/aws'
+import { S3, Lambda, StepFunctions } from '../../../../utils/aws'
+import {
+  createScheduledEvent,
+  enableScheduledEvent,
+  disableScheduledEvent,
+  removeScheduledEvent
+} from '../../../../utils/scheduledEvents'
 import ASLGenerator from '../../../../utils/aslGenerator'
 import { getFlowRunOutputKey } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
-
-function createScheduledEvent(ruleName, interval, service, payload = {}) {
-  return CloudWatchEvents.putRule({
-    Name: ruleName,
-    ScheduleExpression: `rate(${interval.value} minutes)`
-  }).then(({ RuleArn }) =>
-    Promise.all([
-      Lambda.addPermission({
-        StatementId: ruleName,
-        Action: 'lambda:InvokeFunction',
-        FunctionName: service.arn,
-        Principal: 'events.amazonaws.com',
-        SourceArn: RuleArn
-      }),
-      CloudWatchEvents.putTargets({
-        Rule: ruleName,
-        Targets: [
-          {
-            Arn: service.arn,
-            Id: service.id,
-            Input: JSON.stringify(payload, null, 2)
-          }
-        ]
-      })
-    ]).then(() => RuleArn))
-}
-
-function removeScheduledEvent(scheduledTriggerName, service) {
-  return CloudWatchEvents.removeTargets({
-    Ids: [service.id],
-    Rule: scheduledTriggerName
-  }).then(() =>
-    Promise.all([
-      CloudWatchEvents.deleteRule({
-        Name: scheduledTriggerName
-      }),
-      Lambda.removePermission({
-        FunctionName: service.arn,
-        StatementId: scheduledTriggerName
-      })
-    ]))
-}
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -85,7 +49,7 @@ function getFlowRunsData(dataKeys, status) {
 
 function getRunsFromFlowRunsData(flowRunsData) {
   return flowRunsData.map((data) => {
-    const logs = data.logs
+    const { logs } = data
     const currentStep = data.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(data.currentStep, 10))
 
     const steps = Object.keys(logs.steps).map(id => ({
@@ -259,7 +223,15 @@ export async function createFlowRun(params, userId) {
   }
 }
 
-export function updateFlowRun(flowRun) {
+export async function updateFlowRun(flowRun) {
+  const oldFlowRun = await getFlowRunById(flowRun.id)
+
+  if (oldFlowRun.scheduledTriggerName && flowRun.active) {
+    await enableScheduledEvent(oldFlowRun.scheduledTriggerName)
+  } else if (oldFlowRun.scheduledTriggerName && !flowRun.active) {
+    await disableScheduledEvent(oldFlowRun.scheduledTriggerName)
+  }
+
   return dbFlowRuns.updateFlowRun(flowRun)
 }
 
@@ -269,6 +241,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
   try {
     if (!flowRun) {
       flowRun = await getFlowRunById(id)
+    }
+
+    if (!flowRun.active) {
+      return {
+        ...flowRun,
+        status: 'error',
+        message: 'FlowRun is not active'
+      }
     }
 
     const triggerStep = flowRun.flow.steps.reduce((a, step) => {

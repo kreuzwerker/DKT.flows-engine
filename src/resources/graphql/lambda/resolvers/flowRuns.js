@@ -1,13 +1,10 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import _flatten from 'lodash/flatten'
-import { getFlowById, setFlowDraftState } from './flows'
+import { getFlowById, setFlowDraftState, updateFlow } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
-import S3 from '../../../../utils/s3'
-import CloudWatchEvents from '../../../../utils/cloudWatchEvents'
-import Lambda from '../../../../utils/lambda'
-import StepFunctions from '../../../../utils/stepFunctions'
+import { S3, CloudWatchEvents, Lambda, StepFunctions } from '../../../../utils/aws'
 import ASLGenerator from '../../../../utils/aslGenerator'
 import { getFlowRunOutputKey } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
@@ -35,8 +32,7 @@ function createScheduledEvent(ruleName, interval, service, payload = {}) {
           }
         ]
       })
-    ]).then(() => RuleArn)
-  )
+    ]).then(() => RuleArn))
 }
 
 function removeScheduledEvent(scheduledTriggerName, service) {
@@ -52,8 +48,7 @@ function removeScheduledEvent(scheduledTriggerName, service) {
         FunctionName: service.arn,
         StatementId: scheduledTriggerName
       })
-    ])
-  )
+    ]))
 }
 
 /**
@@ -78,14 +73,12 @@ export async function getLastFlowRunByFlowId(flowId) {
 
 function getFlowRunsData(dataKeys, status) {
   const s3 = S3(process.env.S3_BUCKET)
-  return Promise.all(
-    dataKeys.map((key) => {
-      return s3.getObject({ Key: key }).catch(() => {
-        console.log('Unable to get file', key)
-        return {}
-      })
+  return Promise.all(dataKeys.map((key) => {
+    return s3.getObject({ Key: key }).catch(() => {
+      console.log('Unable to get file', key)
+      return {}
     })
-  )
+  }))
     .then(data => data.map(d => (d.Body ? JSON.parse(d.Body) : null)))
     .then(data => data.filter(d => d !== null))
 }
@@ -93,9 +86,7 @@ function getFlowRunsData(dataKeys, status) {
 function getRunsFromFlowRunsData(flowRunsData) {
   return flowRunsData.map((data) => {
     const logs = data.logs
-    const currentStep = data.flowRun.flow.steps.find(
-      step => parseInt(step.position, 10) === parseInt(data.currentStep, 10)
-    )
+    const currentStep = data.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(data.currentStep, 10))
 
     const steps = Object.keys(logs.steps).map(id => ({
       status: logs.steps[id].status,
@@ -143,8 +134,7 @@ export function getRuns(flowRun, args) {
       paginatedRuns.map((run) => {
         const runData = extendedRunsData.find(er => er.id === run.id)
         return { ...run, ...runData }
-      })
-    )
+      }))
 }
 
 // Get all runs from all flowRuns from the given flow
@@ -178,8 +168,7 @@ export async function getRunsForFlow(flow, args) {
       runsItems.map((run) => {
         const runData = extendedRunsData.find(er => er.id === run.id)
         return { ...run, ...runData }
-      })
-    )
+      }))
 }
 
 export async function getRunsForFlowCount(flow, args) {
@@ -204,14 +193,12 @@ export async function createFlowRun(params, userId) {
   }
 
   function extendTasksWithActivities(services) {
-    return Promise.all(
-      services.map((service) => {
-        if (!service.task) return Promise.resolve(service)
-        return StepFunctions.createActivity({
-          name: `${service.id}-activity-${uuid.v4()}`
-        }).then(({ activityArn }) => ({ ...service, activityArn }))
-      })
-    )
+    return Promise.all(services.map((service) => {
+      if (!service.task) return Promise.resolve(service)
+      return StepFunctions.createActivity({
+        name: `${service.id}-activity-${uuid.v4()}`
+      }).then(({ activityArn }) => ({ ...service, activityArn }))
+    }))
   }
 
   try {
@@ -293,10 +280,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({ flowRun, payload })
     })
 
-    return getFlowRunById(id)
+    return Promise.all([
+      getFlowRunById(id),
+      updateFlow({ id: flowRun.flow.id, active: true })
+    ]).then(res => res[0])
   } catch (err) {
     return updateFlowRun({
       id,
+      active: true,
       status: 'error',
       message: err,
       runs: flowRun.runs,

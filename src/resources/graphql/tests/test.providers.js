@@ -1,5 +1,5 @@
 import _find from 'lodash/find'
-import dynDB from '../../../utils/dynamoDB'
+import { DynamoDB } from '../../../utils/aws'
 import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from '../lambda/index'
 import testData from './testData/providers.json'
@@ -64,11 +64,9 @@ export default function () {
     const deleteTestData = Object.assign({}, testData[0], { id: 'deleteTestProvider430lju' })
 
     before(async function () {
-      await Promise.all(
-        [updateTestData, deleteTestData].map((flow) => {
-          return dynDB.putItem(process.env.DYNAMO_PROVIDERS, flow)
-        })
-      )
+      await Promise.all([updateTestData, deleteTestData].map((flow) => {
+        return DynamoDB.putItem(process.env.DYNAMO_PROVIDERS, flow)
+      }))
     })
 
     it('creating a Provider creates a new Provider', async () => {
@@ -152,13 +150,11 @@ export default function () {
     })
 
     after(async function () {
-      await Promise.all(
-        [createTestData, updateTestData].map((testProvider) => {
-          return dynDB.deleteItem(process.env.DYNAMO_PROVIDERS, {
-            Key: { id: { S: testProvider.id } }
-          })
+      await Promise.all([createTestData, updateTestData].map((testProvider) => {
+        return DynamoDB.deleteItem(process.env.DYNAMO_PROVIDERS, {
+          Key: { id: { S: testProvider.id } }
         })
-      )
+      }))
     })
   })
 }

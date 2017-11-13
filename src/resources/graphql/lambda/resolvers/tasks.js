@@ -1,5 +1,5 @@
 import * as dbTasks from '../../../dbTasks/resolvers'
-import StepFunctions from '../../../../utils/stepFunctions'
+import { StepFunctions } from '../../../../utils/aws'
 import { getRuns } from './flowRuns'
 
 /**
@@ -25,15 +25,13 @@ export async function getTaskItemById(taskId, userId) {
     return Promise.reject('No flow runs available for this task.')
   }
 
-  // Retrieve the preceding step to this task so the client can determine the 
+  // Retrieve the preceding step to this task so the client can determine the
   // task item's content type via prevStep.service
   let lastRun = runs[0],
-      prevStep = null;
+      prevStep = null
   if (parseInt(lastRun.currentStep.position, 10) > 0) {
-    const prevStepPos = parseInt(lastRun.currentStep.position, 10) - 1;
-    prevStep = task.flowRun.flow.steps.find(
-      step => parseInt(step.position, 10) === prevStepPos
-    )
+    const prevStepPos = parseInt(lastRun.currentStep.position, 10) - 1
+    prevStep = task.flowRun.flow.steps.find(step => parseInt(step.position, 10) === prevStepPos)
   }
 
   return Promise.resolve({

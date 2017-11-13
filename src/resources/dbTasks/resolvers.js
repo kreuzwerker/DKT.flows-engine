@@ -1,4 +1,4 @@
-import dynDB from '../../utils/dynamoDB'
+import { DynamoDB } from '../../utils/aws'
 
 export function allTasks(userId) {
   // Retrieves all unfinished tasks
@@ -17,7 +17,7 @@ export function allTasks(userId) {
     }
   }
 
-  return dynDB.scan(table, params).then(r => r.Items)
+  return DynamoDB.scan(table, params).then(r => r.Items)
 }
 
 export function getTaskById(taskId, userId) {
@@ -26,7 +26,7 @@ export function getTaskById(taskId, userId) {
     Key: { id: taskId }
   }
 
-  return dynDB.getItem(table, query).then((r) => {
+  return DynamoDB.getItem(table, query).then((r) => {
     const item = r.Item || {}
     return item.userId === userId || item.userId === null ? item : null
   })
@@ -42,12 +42,12 @@ export function batchGetTasksByIds(tasksIds) {
     }
   }
 
-  return dynDB.batchGetItem(query).then(res => res.Responses[table])
+  return DynamoDB.batchGetItem(query).then(res => res.Responses[table])
 }
 
 export function createTask(task) {
   const table = process.env.DYNAMO_TASKS
-  return dynDB.putItem(table, task)
+  return DynamoDB.putItem(table, task)
 }
 
 export function updateTask(task) {
@@ -56,7 +56,7 @@ export function updateTask(task) {
     Key: { id: task.id }
   }
 
-  return dynDB.updateItem(table, query, task)
+  return DynamoDB.updateItem(table, query, task)
 }
 
 export function deleteTask(id) {
@@ -64,5 +64,5 @@ export function deleteTask(id) {
   const query = {
     Key: { id }
   }
-  return dynDB.deleteItem(table, query).then(() => ({ id }))
+  return DynamoDB.deleteItem(table, query).then(() => ({ id }))
 }

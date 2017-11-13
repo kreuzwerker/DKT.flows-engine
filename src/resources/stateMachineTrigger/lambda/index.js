@@ -1,6 +1,6 @@
 import _isString from 'lodash/isString'
 import Logger from '../../../utils/logger'
-import StepFunctions from '../../../utils/stepFunctions'
+import { StepFunctions } from '../../../utils/aws'
 import { flowRunErrorHandler } from '../../../utils/helpers/flowRunHelpers'
 
 export async function handler(event, context, callback) {

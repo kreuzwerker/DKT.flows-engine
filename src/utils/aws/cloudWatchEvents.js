@@ -2,7 +2,7 @@
  * CloudWatchEvents Utitlity
  */
 import AWS from 'aws-sdk'
-import settings from '../../settings'
+import settings from '../../../settings'
 
 function CloudWatchEvents() {
   const cloudWatchEvents = new AWS.CloudWatchEvents(settings.aws.cloudWatchEvents)

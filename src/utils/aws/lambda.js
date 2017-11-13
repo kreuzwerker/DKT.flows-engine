@@ -2,7 +2,7 @@
  * Lambda Utitlity which can be used in lambda functions
  */
 import AWS from 'aws-sdk'
-import settings from '../../settings'
+import settings from '../../../settings'
 
 function Lambda() {
   const { apiVersion } = settings.aws.lambda

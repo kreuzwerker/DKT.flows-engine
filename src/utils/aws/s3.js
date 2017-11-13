@@ -2,7 +2,7 @@
  * S3 Utitlity which can be used in lambda functions
  */
 import AWS from 'aws-sdk'
-import settings from '../../settings'
+import settings from '../../../settings'
 
 function S3(bucket) {
   if (!bucket) {

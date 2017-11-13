@@ -7,8 +7,7 @@ import {
   regenerateFlowStepsPositions
 } from './flows'
 import { getServiceById } from './services'
-import Lambda from '../../../../utils/lambda'
-import S3 from '../../../../utils/s3'
+import { S3, Lambda } from '../../../../utils/aws'
 import timestamp from '../../../../utils/timestamp'
 import {
   createTestStepDataParams,

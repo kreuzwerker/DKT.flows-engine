@@ -1,5 +1,5 @@
 import _sortBy from 'lodash/sortBy'
-import Lambda from './lambda'
+import { Lambda } from './aws'
 
 const outputResourceName = 'StatesMachineOutput'
 

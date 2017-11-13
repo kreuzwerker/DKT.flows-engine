@@ -2,7 +2,7 @@
  * StepFunctions Utitlity which can be used in lambda functions
  */
 import AWS from 'aws-sdk'
-import settings from '../../settings'
+import settings from '../../../settings'
 
 function StepFunctions() {
   AWS.config.apiVersions = { stepfunctions: settings.aws.stepFunctions.apiVersion }
@@ -41,12 +41,10 @@ function StepFunctions() {
     },
 
     deleteActivities: (activities) => {
-      return Promise.all(
-        activities.map((activity) => {
-          const { activityArn } = activity
-          return stepFunctions.deleteActivity({ activityArn }).promise()
-        })
-      )
+      return Promise.all(activities.map((activity) => {
+        const { activityArn } = activity
+        return stepFunctions.deleteActivity({ activityArn }).promise()
+      }))
     },
 
     getActivityTask: (params) => {

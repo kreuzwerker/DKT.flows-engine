@@ -1,4 +1,4 @@
-// import feedparser from 'feedparser-promised' // TODO this breaks the build - we need to use another feedparser package
+import feedparser from 'feedparser-promised' // TODO this breaks the build - we need to use another feedparser package
 import _isString from 'lodash/isString'
 import service from '../../../../utils/service'
 import Logger from '../../../../utils/logger'
@@ -35,7 +35,7 @@ export async function getNewFeedItems(params, logger) {
 
   // Fetch feed items
   try {
-    // feedItems = await feedparser.parse(url)
+    feedItems = await feedparser.parse(url)
   } catch (err) {
     logger.log('Error fetching the feed', err)
     throw new Error(err)
@@ -137,7 +137,7 @@ export async function handler(event, context, callback) {
     }
 
     const result = await triggerFlowRun(input.flowRun, items[0].url)
-    logger.log(`Triggered FlowRun with URL ${items[0].url}`, result);
+    logger.log(`Triggered FlowRun with URL ${items[0].url}`, result)
     callback(null, result)
   } catch (error) {
     err(error)

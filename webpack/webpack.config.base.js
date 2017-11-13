@@ -1,7 +1,8 @@
 const webpack = require('webpack')
+const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 module.exports = {
-  devtool: 'source-map',
+  devtool: 'none',
   target: 'node',
   module: {
     rules: [
@@ -24,14 +25,6 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.LoaderOptionsPlugin({ minimize: true }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: true,
-      beautify: true,
-      mangle: true,
-      output: {
-        comments: false
-      }
-    })
+    new MinifyPlugin()
   ]
 }

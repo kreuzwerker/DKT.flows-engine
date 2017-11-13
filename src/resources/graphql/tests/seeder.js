@@ -1,5 +1,5 @@
 import _flatten from 'lodash/flatten'
-import dynDB from '../../../utils/dynamoDB'
+import { DynamoDB } from '../../../utils/aws'
 import flows from './testData/flows.json'
 import providers from './testData/providers.json'
 import services from './testData/services.json'
@@ -14,10 +14,10 @@ export function seedTestdata() {
     DYNAMO_STEPS
   } = process.env
 
-  const seedFlows = flows.map(flow => dynDB.putItem(DYNAMO_FLOWS, flow))
-  const seedProviders = providers.map(provider => dynDB.putItem(DYNAMO_PROVIDERS, provider))
-  const seedServices = services.map(service => dynDB.putItem(DYNAMO_SERVICES, service))
-  const seedSteps = steps.map(step => dynDB.putItem(DYNAMO_STEPS, step))
+  const seedFlows = flows.map(flow => DynamoDB.putItem(DYNAMO_FLOWS, flow))
+  const seedProviders = providers.map(provider => DynamoDB.putItem(DYNAMO_PROVIDERS, provider))
+  const seedServices = services.map(service => DynamoDB.putItem(DYNAMO_SERVICES, service))
+  const seedSteps = steps.map(step => DynamoDB.putItem(DYNAMO_STEPS, step))
 
   return Promise.all(_flatten([seedFlows, seedProviders, seedServices, seedSteps]))
 }
@@ -32,16 +32,16 @@ export function clearTestdata() {
   } = process.env
 
   const seedFlows = flows.map((flow) => {
-    return dynDB.deleteItem(DYNAMO_FLOWS, { Key: { id: { S: flow.id } } })
+    return DynamoDB.deleteItem(DYNAMO_FLOWS, { Key: { id: { S: flow.id } } })
   })
   const seedProviders = providers.map((provider) => {
-    return dynDB.deleteItem(DYNAMO_PROVIDERS, { Key: { id: { S: provider.id } } })
+    return DynamoDB.deleteItem(DYNAMO_PROVIDERS, { Key: { id: { S: provider.id } } })
   })
   const seedServices = services.map((service) => {
-    return dynDB.deleteItem(DYNAMO_SERVICES, { Key: { id: { S: service.id } } })
+    return DynamoDB.deleteItem(DYNAMO_SERVICES, { Key: { id: { S: service.id } } })
   })
   const seedSteps = steps.map((step) => {
-    return dynDB.deleteItem(DYNAMO_STEPS, { Key: { id: { S: step.id } } })
+    return DynamoDB.deleteItem(DYNAMO_STEPS, { Key: { id: { S: step.id } } })
   })
 
   return Promise.all(_flatten([seedFlows, seedProviders, seedServices, seedSteps]))

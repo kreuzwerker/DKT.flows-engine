@@ -4,6 +4,7 @@
     "id": "ciy0ie2q1aoul0179imlh0a73",
     "name": "first flow",
     "draft": true,
+    "active": false,
     "steps": [
       "ciy0jidbmaivt0133sqdy35e6",
       "ciy0jgybhai7v013373puyuvy",

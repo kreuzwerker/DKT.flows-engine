@@ -1,6 +1,5 @@
 import uuid from 'uuid'
-import S3 from '../s3'
-import Lambda from '../lambda'
+import { S3, Lambda } from '../aws'
 import timestamp from '../timestamp'
 import { getStepData } from './stepHelpers'
 import * as dbFlowRun from '../../resources/dbFlowRuns/resolvers'
@@ -93,8 +92,7 @@ export function triggerFlowRun(flowRun, payload) {
         message: null,
         runs: flowRun.runs,
         runsCount: flowRun.runs.length
-      })
-    )
+      }))
 }
 
 /*

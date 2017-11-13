@@ -1,8 +1,7 @@
 import _isString from 'lodash/isString'
 import uuid from 'uuid'
-import S3 from '../../../utils/s3'
+import { S3, StepFunctions } from '../../../utils/aws'
 import Logger from '../../../utils/logger'
-import StepFunctions from '../../../utils/stepFunctions'
 import { getStepData, testStepErrorHandler } from '../../../utils/helpers/stepHelpers'
 import {
   getStepOutputKey,
@@ -48,13 +47,10 @@ async function taskInitializer(event, context, callback) {
   } catch (err) {
     logger.log('Error while getting step data', err)
     return testStepErrorHandler(input, stepData, err).then(errorOutput =>
-      callback(null, errorOutput)
-    )
+      callback(null, errorOutput))
   }
 
-  const currentStep = stepData.flowRun.flow.steps.find(
-    step => parseInt(step.position, 10) === parseInt(input.currentStep, 10)
-  )
+  const currentStep = stepData.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(input.currentStep, 10))
 
   try {
     activityData = await StepFunctions.getActivityTask({

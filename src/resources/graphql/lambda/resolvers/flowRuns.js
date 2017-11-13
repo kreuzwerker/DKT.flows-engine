@@ -1,60 +1,19 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import _flatten from 'lodash/flatten'
-import { getFlowById, setFlowDraftState } from './flows'
+import { getFlowById, setFlowDraftState, updateFlow } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
-import S3 from '../../../../utils/s3'
-import CloudWatchEvents from '../../../../utils/cloudWatchEvents'
-import Lambda from '../../../../utils/lambda'
-import StepFunctions from '../../../../utils/stepFunctions'
+import { S3, Lambda, StepFunctions } from '../../../../utils/aws'
+import {
+  createScheduledEvent,
+  enableScheduledEvent,
+  disableScheduledEvent,
+  removeScheduledEvent
+} from '../../../../utils/scheduledEvents'
 import ASLGenerator from '../../../../utils/aslGenerator'
 import { getFlowRunOutputKey } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
-
-function createScheduledEvent(ruleName, interval, service, payload = {}) {
-  return CloudWatchEvents.putRule({
-    Name: ruleName,
-    ScheduleExpression: `rate(${interval.value} minutes)`
-  }).then(({ RuleArn }) =>
-    Promise.all([
-      Lambda.addPermission({
-        StatementId: ruleName,
-        Action: 'lambda:InvokeFunction',
-        FunctionName: service.arn,
-        Principal: 'events.amazonaws.com',
-        SourceArn: RuleArn
-      }),
-      CloudWatchEvents.putTargets({
-        Rule: ruleName,
-        Targets: [
-          {
-            Arn: service.arn,
-            Id: service.id,
-            Input: JSON.stringify(payload, null, 2)
-          }
-        ]
-      })
-    ]).then(() => RuleArn)
-  )
-}
-
-function removeScheduledEvent(scheduledTriggerName, service) {
-  return CloudWatchEvents.removeTargets({
-    Ids: [service.id],
-    Rule: scheduledTriggerName
-  }).then(() =>
-    Promise.all([
-      CloudWatchEvents.deleteRule({
-        Name: scheduledTriggerName
-      }),
-      Lambda.removePermission({
-        FunctionName: service.arn,
-        StatementId: scheduledTriggerName
-      })
-    ])
-  )
-}
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -78,24 +37,20 @@ export async function getLastFlowRunByFlowId(flowId) {
 
 function getFlowRunsData(dataKeys, status) {
   const s3 = S3(process.env.S3_BUCKET)
-  return Promise.all(
-    dataKeys.map((key) => {
-      return s3.getObject({ Key: key }).catch(() => {
-        console.log('Unable to get file', key)
-        return {}
-      })
+  return Promise.all(dataKeys.map((key) => {
+    return s3.getObject({ Key: key }).catch(() => {
+      console.log('Unable to get file', key)
+      return {}
     })
-  )
+  }))
     .then(data => data.map(d => (d.Body ? JSON.parse(d.Body) : null)))
     .then(data => data.filter(d => d !== null))
 }
 
 function getRunsFromFlowRunsData(flowRunsData) {
   return flowRunsData.map((data) => {
-    const logs = data.logs
-    const currentStep = data.flowRun.flow.steps.find(
-      step => parseInt(step.position, 10) === parseInt(data.currentStep, 10)
-    )
+    const { logs } = data
+    const currentStep = data.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(data.currentStep, 10))
 
     const steps = Object.keys(logs.steps).map(id => ({
       status: logs.steps[id].status,
@@ -143,8 +98,7 @@ export function getRuns(flowRun, args) {
       paginatedRuns.map((run) => {
         const runData = extendedRunsData.find(er => er.id === run.id)
         return { ...run, ...runData }
-      })
-    )
+      }))
 }
 
 // Get all runs from all flowRuns from the given flow
@@ -178,8 +132,7 @@ export async function getRunsForFlow(flow, args) {
       runsItems.map((run) => {
         const runData = extendedRunsData.find(er => er.id === run.id)
         return { ...run, ...runData }
-      })
-    )
+      }))
 }
 
 export async function getRunsForFlowCount(flow, args) {
@@ -204,14 +157,12 @@ export async function createFlowRun(params, userId) {
   }
 
   function extendTasksWithActivities(services) {
-    return Promise.all(
-      services.map((service) => {
-        if (!service.task) return Promise.resolve(service)
-        return StepFunctions.createActivity({
-          name: `${service.id}-activity-${uuid.v4()}`
-        }).then(({ activityArn }) => ({ ...service, activityArn }))
-      })
-    )
+    return Promise.all(services.map((service) => {
+      if (!service.task) return Promise.resolve(service)
+      return StepFunctions.createActivity({
+        name: `${service.id}-activity-${uuid.v4()}`
+      }).then(({ activityArn }) => ({ ...service, activityArn }))
+    }))
   }
 
   try {
@@ -272,7 +223,15 @@ export async function createFlowRun(params, userId) {
   }
 }
 
-export function updateFlowRun(flowRun) {
+export async function updateFlowRun(flowRun) {
+  const oldFlowRun = await getFlowRunById(flowRun.id)
+
+  if (oldFlowRun.scheduledTriggerName && flowRun.active) {
+    await enableScheduledEvent(oldFlowRun.scheduledTriggerName)
+  } else if (oldFlowRun.scheduledTriggerName && !flowRun.active) {
+    await disableScheduledEvent(oldFlowRun.scheduledTriggerName)
+  }
+
   return dbFlowRuns.updateFlowRun(flowRun)
 }
 
@@ -284,6 +243,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       flowRun = await getFlowRunById(id)
     }
 
+    if (!flowRun.active) {
+      return {
+        ...flowRun,
+        status: 'error',
+        message: 'FlowRun is not active'
+      }
+    }
+
     const triggerStep = flowRun.flow.steps.reduce((a, step) => {
       return step.service.type === 'TRIGGER' ? step : a
     }, {})
@@ -293,10 +260,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({ flowRun, payload })
     })
 
-    return getFlowRunById(id)
+    return Promise.all([
+      getFlowRunById(id),
+      updateFlow({ id: flowRun.flow.id, active: true })
+    ]).then(res => res[0])
   } catch (err) {
     return updateFlowRun({
       id,
+      active: true,
       status: 'error',
       message: err,
       runs: flowRun.runs,

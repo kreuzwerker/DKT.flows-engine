@@ -1,6 +1,5 @@
 import feedparser from 'feedparser-promised'
 import _isString from 'lodash/isString'
-import service from '../../../../utils/service'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbServiceFeeds from '../../../dbServiceFeeds/resolvers'

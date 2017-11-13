@@ -1,5 +1,5 @@
 import _isString from 'lodash/isString'
-import S3 from '../../../utils/s3'
+import { S3 } from '../../../utils/aws'
 import Logger from '../../../utils/logger'
 import { getStepData } from '../../../utils/helpers/stepHelpers'
 import { getFlowRunOutputKey, updateLogs } from '../../../utils/helpers/flowRunHelpers'
@@ -21,9 +21,7 @@ export async function handler(event, context, callback) {
     callback(null, { ...input, error: err })
   }
 
-  const currentStep = stepData.flowRun.flow.steps.find(
-    step => parseInt(step.position, 10) === parseInt(input.currentStep, 10)
-  )
+  const currentStep = stepData.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(input.currentStep, 10))
 
   const flowRunOutputKey = getFlowRunOutputKey(stepData.flowRun, input.runId)
 

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import _isString from 'lodash/isString'
-import S3 from '../../../../utils/s3'
+import { S3 } from '../../../../utils/aws'
 import service from '../../../../utils/service'
 
 async function nlpRequest(inputData, logger, { event, context }) {
@@ -22,7 +22,9 @@ async function nlpRequest(inputData, logger, { event, context }) {
   }
 
   const text = JSON.parse(data.Body).article
-  const url = `${NLP_URL}?language=de&analysis=dict&models=mendelsohnDictionary_PER&outformat=json-ld&informat=text`
+  const url = `${
+    NLP_URL
+  }?language=de&analysis=dict&models=mendelsohnDictionary_PER&outformat=json-ld&informat=text`
 
   try {
     logger.log(`Try to fetch data from ${url}`)

@@ -1,6 +1,7 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import { createStep, deleteStep, batchGetStepByIds } from './steps'
+import { getFlowRunsByFlowId, updateFlowRun } from './flowRuns'
 import * as dbFlows from '../../../dbFlows/resolvers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 import * as dbSteps from '../../../dbSteps/resolvers'
@@ -54,8 +55,13 @@ export async function setFlowDraftState(flow, state) {
   })
 }
 
-export function updateFlow(flow) {
-  return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, true))
+export async function updateFlow(flow, draft = true) {
+  if (typeof flow.active === 'boolean') {
+    const flowRuns = await getFlowRunsByFlowId(flow.id)
+    await Promise.all(flowRuns.map(flowRun => updateFlowRun({ id: flowRun.id, active: flow.active })))
+  }
+
+  return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, draft))
 }
 
 export async function restoreFlow(id, userId) {
@@ -72,36 +78,26 @@ export async function restoreFlow(id, userId) {
   await Promise.all(flow.steps.map(flowId => deleteStep(flowId, userId)))
 
   // Restore all steps from the previous flow
-  await Promise.all(
-    flowRun.flow.steps.map(step =>
-      dbSteps.createStep(
-        Object.assign({}, step, {
-          service: step.service.id,
-          flow: step.flow
-        })
-      )
-    )
-  )
+  await Promise.all(flowRun.flow.steps.map(step =>
+    dbSteps.createStep(Object.assign({}, step, {
+      service: step.service.id,
+      flow: step.flow
+    }))))
 
   // Restore old flow steps relations and take flow out of draft state
-  return dbFlows.updateFlow(
-    Object.assign({}, flow, {
-      steps: flowRun.flow.steps.map(step => step.id),
-      draft: false
-    })
-  )
+  return dbFlows.updateFlow(Object.assign({}, flow, {
+    steps: flowRun.flow.steps.map(step => step.id),
+    draft: false
+  }))
 }
 
 export function deleteFlow(id, userId) {
   return getFlowById(id, userId)
     .then(flow =>
-      Promise.all(
-        flow.steps.map((stepId) => {
-          console.log(`DELETE STEP: ${stepId}`)
-          return deleteStep(stepId, userId)
-        })
-      )
-    )
+      Promise.all(flow.steps.map((stepId) => {
+        console.log(`DELETE STEP: ${stepId}`)
+        return deleteStep(stepId, userId)
+      })))
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
 }
@@ -144,11 +140,9 @@ export async function regenerateFlowStepsPositions(flow) {
   // Find steps that need to be updated because their position leaves a gap
   const updateSteps = steps.reduce((result, step) => {
     if (step.position !== pos) {
-      result.push(
-        Object.assign({}, step, {
-          position: pos
-        })
-      )
+      result.push(Object.assign({}, step, {
+        position: pos
+      }))
     }
 
     pos++

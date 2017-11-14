@@ -14,20 +14,17 @@ export function createFeed(feed) {
   return DynamoDB.putItem(table, feed, 'flowId')
 }
 
-export async function getOrCreateFeed(flowId, url) {
-  // Find feed
-  let feed = await getFeed(flowId)
-
-  // Or create feed
-  if (!feed) {
-    feed = await createFeed({
-      flowId: flowId,
-      url: url,
-      items: []
-    })
-  }
-
-  return feed
+export function getOrCreateFeed(flowId, url) {
+  return getFeed(flowId).then((feed) => {
+    if (!feed) {
+      return createFeed({
+        flowId: flowId,
+        url: url,
+        items: []
+      })
+    }
+    return feed
+  })
 }
 
 export function updateFeed(flowId, feed) {

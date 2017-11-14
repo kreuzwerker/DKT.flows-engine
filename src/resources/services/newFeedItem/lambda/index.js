@@ -19,12 +19,13 @@ function getFeedIdType(items) {
 /*
  * Check for new items in given feed
  */
-function getNewFeedItems(params, logger) {
-  const { flowId, url } = params
+function getNewFeedItems(params) {
+  const { flowRunId, url } = params
 
-  return Promise.all([feedparser.parse(url), dbServiceFeeds.getOrCreateFeed(flowId, url)]).then((res) => {
+  return Promise.all([feedparser.parse(url), dbServiceFeeds.getOrCreateFeed(flowRunId, url)]).then((res) => {
     const [feedItems, feed] = res
     const idType = getFeedIdType(feedItems)
+
     if (!idType) {
       return Promise.reject(new Error('Error detecting the unique feed item identifier.'))
     }
@@ -33,7 +34,7 @@ function getNewFeedItems(params, logger) {
     const itemIds = feedItems.map(item => item[idType])
 
     return dbServiceFeeds
-      .updateFeed(flowId, {
+      .updateFeed(flowRunId, {
         url: url,
         items: itemIds
       })

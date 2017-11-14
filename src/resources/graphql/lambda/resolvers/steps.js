@@ -56,7 +56,6 @@ export async function createStep(step, userId) {
       if (flow) {
         flow.steps.push(newStep.id)
         await updateFlow(flow)
-        await setFlowDraftState(flow, true)
         await generateFlowStepsPositions(flow, newStep)
       }
     }
@@ -149,7 +148,6 @@ export async function deleteStep(id, userId) {
       if (flow) {
         flow.steps = flow.steps.filter(stepId => stepId !== step.id)
         await updateFlow(flow)
-        await setFlowDraftState(flow, true)
         await regenerateFlowStepsPositions(flow)
       }
     }

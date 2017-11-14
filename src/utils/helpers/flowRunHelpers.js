@@ -123,7 +123,7 @@ function setCurrentRunStatus(runs, runId, status) {
       updatedRun.status = status
     }
     updatedRun.finishedAt = timestamp()
-    return run
+    return updatedRun
   })
 }
 

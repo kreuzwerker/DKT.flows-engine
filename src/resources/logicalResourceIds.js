@@ -29,7 +29,7 @@ module.exports = {
 
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
 
-  S3_OUTPUT_SERVICE_FUNCTION: 'S3OutputServiceFunction'
+  S3_OUTPUT_SERVICE_FUNCTION: 'S3OutputServiceFunction',
 
   APPROVE_TASK_FUNCTION: 'ApproveTaskFunction',
   REVIEW_TASK_FUNCTION: 'ReviewTaskFunction',

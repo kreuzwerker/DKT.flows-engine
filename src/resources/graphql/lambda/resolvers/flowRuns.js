@@ -192,11 +192,15 @@ export async function createFlowRun(params, userId) {
     if (scheduledTriggerStep) {
       const interval = scheduledTriggerStep.configParams.find(param => param.fieldId === 'interval')
       const ruleName = `${newFlowRun.id}-scheduledTrigger`
+      const payload = {
+        configParams: scheduledTriggerStep.configParams,
+        flowRun: { id: newFlowRun.id }
+      }
       const ruleArn = await createScheduledEvent(
         ruleName,
         interval,
         scheduledTriggerStep.service,
-        scheduledTriggerStep.configParams
+        payload
       )
 
       newFlowRun.scheduledTriggerArn = ruleArn

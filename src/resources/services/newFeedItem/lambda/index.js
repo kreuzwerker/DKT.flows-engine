@@ -16,140 +16,78 @@ function getFeedIdType(items) {
   return false
 }
 
-function triggerStepReducer(a, step) {
-  return step.service.type === 'TRIGGER' ? step : a
-}
-
 /*
  * Check for new items in given feed
  */
-export async function getNewFeedItems(params, logger) {
-  const flowId = params.flowId
-  const url = params.url
+function getNewFeedItems(params) {
+  const { flowRunId, url } = params
 
-  const newItems = []
-  let feedItems = [],
-      feed = null,
-      itemIds = []
-
-  // Fetch feed items
-  try {
-    feedItems = await feedparser.parse(url)
-  } catch (err) {
-    logger.log('Error fetching the feed', err)
-    throw new Error(err)
-  }
-
-  // Get feed items from cache
-  try {
-    feed = await dbServiceFeeds.getOrCreateFeed(flowId, url)
-  } catch (err) {
-    logger.log('Error getting/creating the feed db entry', err)
-    throw new Error(err)
-  }
-
-  if (feedItems.length) {
-    // Detect id type
+  return Promise.all([feedparser.parse(url), dbServiceFeeds.getOrCreateFeed(flowRunId, url)]).then((res) => {
+    const [feedItems, feed] = res
     const idType = getFeedIdType(feedItems)
+
     if (!idType) {
-      throw new Error('Error detecting the unique feed item identifier.')
+      return Promise.reject(new Error('Error detecting the unique feed item identifier.'))
     }
 
-    // Detect new items
-    feedItems.forEach((item) => {
-      if (!feed.items.includes(item[idType])) {
-        newItems.push(item)
-      }
-    })
+    const newItems = feedItems.filter(feedItem => !feed.items.includes(feedItem[idType]))
+    const itemIds = feedItems.map(item => item[idType])
 
-    itemIds = feedItems.map(item => item[idType])
-  }
-
-  // Update feed cache
-  try {
-    await dbServiceFeeds.updateFeed(flowId, {
-      url: url,
-      items: itemIds
-    })
-  } catch (err) {
-    logger.log('Error fetching the feed', err)
-    throw new Error(err)
-  }
-
-  return newItems
+    return dbServiceFeeds
+      .updateFeed(flowRunId, {
+        url: url,
+        items: itemIds
+      })
+      .then(() => newItems)
+  })
 }
 
-export async function handler(event, context, callback) {
-  console.log('newItemInFeed', event)
+export function handler(event, context, callback) {
   event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
+  const url = input.configParams.find(param => param.fieldId === 'url').value
 
-  const steps = input.flowRun.flow.steps || []
-  const currentStep = steps.reduce(triggerStepReducer, {})
-  const flowId = input.flowRun.flow.id
+  Promise.all([
+    dbFlowRuns.getFlowRunById(input.flowRun.id),
+    getNewFeedItems({ flowRunId: input.flowRun.id, url: url })
+  ])
+    .then(([flowRun, items]) => {
+      if (items.length === 0) {
+        return dbFlowRuns.updateFlowRun({
+          id: input.flowRun.id,
+          status: 'success',
+          message: 'No new feed items to process.'
+        })
+      }
 
-  const url = currentStep.configParams.reduce((a, param) => {
-    return param.fieldId === 'url' ? param.value : a
-  }, '')
-
-  function err(error) {
-    const result = Object.assign({}, input, { error })
-    logger.log('Error:', error)
-    callback(null, result)
-  }
-
-  let items = []
-  try {
-    items = await getNewFeedItems({ flowId: flowId, url: url })
-  } catch (error) {
-    err(error)
-    return
-  }
-
-  logger.log('DEBUG feed items', items)
-  if (!items.length) {
-    const msg = 'No new feed items to process.'
-    logger.log(msg)
-
-    try {
-      const result = await dbFlowRuns.updateFlowRun({
-        id: input.flowRun.id,
-        status: 'success',
-        message: msg
-      })
-
-      logger.log(`Trigger FlowRun '${input.flowRun.id}'`)
+      return Promise.all(items.map((item) => {
+        logger.log(`Trigger FlowRun with URL ${item.link}`)
+        return triggerFlowRun(flowRun, item.link)
+      }))
+    })
+    .then((res) => {
+      callback(null, res)
+    })
+    .catch((error) => {
+      const result = { ...input, error }
+      logger.log('Error:', error)
       callback(null, result)
-      return
-    } catch (error) {
-      err(error)
-      return
-    }
-  }
-
-  logger.log(`Trigger FlowRun '${input.flowRun.id}'`)
-  try {
-    if (!items[0].url) {
-      err('Feed item has no URL property.')
-      return
-    }
-
-    const result = await triggerFlowRun(input.flowRun, items[0].url)
-    logger.log(`Triggered FlowRun with URL ${items[0].url}`, result)
-    callback(null, result)
-  } catch (error) {
-    err(error)
-  }
+    })
 }
 
 // Test function locally
-// process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'
-// getNewFeedItems({
-//   'flowId': '1',
-//   'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-// }, logger).then((res) => {
-//   console.log(res);
-// }).catch((err) => {
-//   console.log(err);
-// })
+// process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Dev-DynamoDBServiceFeeds-1FLY1RDH4BGRD'
+// getNewFeedItems(
+//   {
+//     flowId: '1',
+//     url: 'https://news.ycombinator.com/rss'
+//   },
+//   console
+// )
+//   .then((res) => {
+//     // console.log(res)
+//   })
+//   .catch((err) => {
+//     console.log(err)
+//   })

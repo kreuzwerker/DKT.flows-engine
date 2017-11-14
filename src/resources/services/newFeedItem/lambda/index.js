@@ -16,67 +16,29 @@ function getFeedIdType(items) {
   return false
 }
 
-function triggerStepReducer(a, step) {
-  return step.service.type === 'TRIGGER' ? step : a
-}
-
 /*
  * Check for new items in given feed
  */
-export async function getNewFeedItems(params, logger) {
-  const flowId = params.flowId
-  const url = params.url
+function getNewFeedItems(params, logger) {
+  const { flowId, url } = params
 
-  const newItems = []
-  let feedItems = [],
-      feed = null,
-      itemIds = []
-
-  // Fetch feed items
-  try {
-    feedItems = await feedparser.parse(url)
-  } catch (err) {
-    logger.log('Error fetching the feed', err)
-    throw new Error(err)
-  }
-
-  // Get feed items from cache
-  try {
-    feed = await dbServiceFeeds.getOrCreateFeed(flowId, url)
-  } catch (err) {
-    logger.log('Error getting/creating the feed db entry', err)
-    throw new Error(err)
-  }
-
-  if (feedItems.length) {
-    // Detect id type
+  return Promise.all([feedparser.parse(url), dbServiceFeeds.getOrCreateFeed(flowId, url)]).then((res) => {
+    const [feedItems, feed] = res
     const idType = getFeedIdType(feedItems)
     if (!idType) {
-      throw new Error('Error detecting the unique feed item identifier.')
+      return Promise.reject(new Error('Error detecting the unique feed item identifier.'))
     }
 
-    // Detect new items
-    feedItems.forEach((item) => {
-      if (!feed.items.includes(item[idType])) {
-        newItems.push(item)
-      }
-    })
+    const newItems = feedItems.filter(feedItem => !feed.items.includes(feedItem[idType]))
+    const itemIds = feedItems.map(item => item[idType])
 
-    itemIds = feedItems.map(item => item[idType])
-  }
-
-  // Update feed cache
-  try {
-    await dbServiceFeeds.updateFeed(flowId, {
-      url: url,
-      items: itemIds
-    })
-  } catch (err) {
-    logger.log('Error fetching the feed', err)
-    throw new Error(err)
-  }
-
-  return newItems
+    return dbServiceFeeds
+      .updateFeed(flowId, {
+        url: url,
+        items: itemIds
+      })
+      .then(() => newItems)
+  })
 }
 
 export async function handler(event, context, callback) {
@@ -85,11 +47,9 @@ export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
 
-  const steps = input.flowRun.flow.steps || []
-  const currentStep = steps.reduce(triggerStepReducer, {})
-  const flowId = input.flowRun.flow.id
+  console.log(JSON.stringify(input, null, 2))
 
-  const url = currentStep.configParams.reduce((a, param) => {
+  const url = input.configParams.reduce((a, param) => {
     return param.fieldId === 'url' ? param.value : a
   }, '')
 
@@ -101,7 +61,7 @@ export async function handler(event, context, callback) {
 
   let items = []
   try {
-    items = await getNewFeedItems({ flowId: flowId, url: url })
+    items = await getNewFeedItems({ flowRunId: input.flowRun.id, url: url }, logger)
   } catch (error) {
     err(error)
     return
@@ -144,12 +104,17 @@ export async function handler(event, context, callback) {
 }
 
 // Test function locally
-// process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Test-DynamoDBServiceFeeds-ABC123456789'
-// getNewFeedItems({
-//   'flowId': '1',
-//   'url': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-// }, logger).then((res) => {
-//   console.log(res);
-// }).catch((err) => {
-//   console.log(err);
-// })
+process.env.DYNAMO_SERVICE_FEEDS = 'DKT-flow-engine-Dev-DynamoDBServiceFeeds-1FLY1RDH4BGRD'
+getNewFeedItems(
+  {
+    flowId: '1',
+    url: 'https://news.ycombinator.com/rss'
+  },
+  console
+)
+  .then((res) => {
+    // console.log(res)
+  })
+  .catch((err) => {
+    console.log(err)
+  })

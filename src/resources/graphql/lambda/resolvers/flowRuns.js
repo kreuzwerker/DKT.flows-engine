@@ -101,24 +101,31 @@ export function getRuns(flowRun, args) {
       }))
 }
 
+// get run items form all flowRuns from a flow
+function getRunItems(flow, args) {
+  return getFlowRunsByFlowId(flow.id).then((flowRuns) => {
+    const pagination = {
+      start: args.offset,
+      end: args.offset + args.limit || undefined
+    }
+    // we need the flowRun object within the run object to get the outputKey later.
+    // this allows us to only fetch the required (paginated) flowRun dataJSONs from S3
+    const evert = flowRun => flowRun.runs.map(run => ({ ...run, flowRun }))
+    let runsItems = _flatten(flowRuns.map(flowRun => evert(flowRun)))
+
+    runsItems = _sortBy(runsItems, 'startedAt')
+    runsItems = runsItems
+      .filter(run => (args.status ? run.status === args.status : true))
+      .reverse()
+      .slice(pagination.start, pagination.end)
+
+    return runsItems
+  })
+}
+
 // Get all runs from all flowRuns from the given flow
 export async function getRunsForFlow(flow, args) {
-  const flowRuns = await getFlowRunsByFlowId(flow.id)
-  const pagination = {
-    start: args.offset,
-    end: args.offset + args.limit || undefined
-  }
-  // we need the flowRun object within the run object to get the outputKey later.
-  // this allows us to only fetch the required (paginated) flowRun dataJSONs from S3
-  const evert = flowRun => flowRun.runs.map(run => ({ ...run, flowRun }))
-  let runsItems = _flatten(flowRuns.map(flowRun => evert(flowRun)))
-
-  runsItems = _sortBy(runsItems, 'startedAt')
-  runsItems = runsItems
-    .filter(run => (args.status ? run.status === args.status : true))
-    .reverse()
-    .slice(pagination.start, pagination.end)
-
+  const runsItems = await getRunItems(flow, args)
   const dataKeys = runsItems.map(run => getFlowRunOutputKey(run.flowRun, run.id))
 
   if (dataKeys.length <= 0) {
@@ -136,8 +143,8 @@ export async function getRunsForFlow(flow, args) {
 }
 
 export async function getRunsForFlowCount(flow, args) {
-  const runs = await getRunsForFlow(flow, args)
-  return runs ? runs.length : 0
+  const runsItems = await getRunItems(flow, args)
+  return runsItems ? runsItems.length : 0
 }
 
 /**

@@ -123,7 +123,9 @@ const MutationType = new GraphQLObjectType({
         userId: { type: GraphQLID }
       },
       resolve: (_, flow, { userId }) => {
-        return Flows.updateFlow(flow, userId)
+        // TODO check if user is the flow owner before updating it
+        // NB Updating flow properties should not put the flow into draft state
+        return Flows.updateFlow(flow, false)
       }
     },
     restoreFlow: {

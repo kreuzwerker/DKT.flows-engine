@@ -8,6 +8,14 @@
     "services": []
   },
   {
+    "description": "Parsing services.",
+    "group": "DKT native app",
+    "icon": "filter_list",
+    "id": "xOMFBmrwQmul4MB8FnEH3Z1b",
+    "name": "Parser",
+    "services": ["6CNdjnZaHtc4R3BbIIHuqBNj", "ciy0jfkvuahth0133z9r38yui"]
+  },
+  {
     "description": "Email services.",
     "group": "DKT native app",
     "icon": "mail",
@@ -26,8 +34,7 @@
       "ciy0jfkvuahth0133z9r38ljg",
       "ciy2jfkvufdsef0864z9r38opw",
       "ciy4poibcrqth0133z4r56alz",
-      "ciy0jfkvuahth0133z9r38yu2",
-      "ciy0jfkvuahth0133z9r38yui"
+      "ciy0jfkvuahth0133z9r38yu2"
     ]
   },
   {

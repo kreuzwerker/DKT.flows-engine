@@ -14,11 +14,7 @@ export function allFlows(userId) {
   return dbFlows.allFlows(userId)
 }
 
-export function getFlowById(flowId, userId) {
-  return dbFlows.getFlowById(flowId, userId)
-}
-
-export async function queryGetFlow(flowId, userId) {
+export async function queryFlow(flowId, userId) {
   const flow = await dbFlows.getFlowById(flowId);
   if (!flow.id) {
     throw new Error('E404_FLOW_NOT_FOUND');
@@ -27,6 +23,10 @@ export async function queryGetFlow(flowId, userId) {
   } else {
     return flow;
   }
+}
+
+export function getFlowById(flowId, userId) {
+  return dbFlows.getFlowById(flowId, userId)
 }
 
 /**

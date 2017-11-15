@@ -14,10 +14,12 @@ export function getTaskById(taskId, userId) {
   return dbTasks.getTaskById(taskId, userId)
 }
 
-export async function getTaskItemById(taskId, userId) {
-  const task = await getTaskById(taskId, userId)
-  if (!task) {
-    return Promise.reject('Task not found.')
+export async function queryTaskItem(taskId, userId) {
+  const task = await getTaskById(taskId)
+  if (!task.id) {
+    throw new Error('E404_TASK_NOT_FOUND');
+  } else if (task.userId !== userId) {
+    throw new Error('E401_TASK_ACCESS_DENIED');
   }
 
   const runs = await getRuns(task.flowRun, { offset: 0 })

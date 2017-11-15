@@ -35,7 +35,7 @@ const QueryType = new GraphQLObjectType({
     Flow: {
       type: FlowType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }, { userId }) => Flows.queryGetFlow(id, userId)
+      resolve: (_, { id }, { userId }) => Flows.queryFlow(id, userId)
     },
 
     allFlowRuns: {
@@ -79,7 +79,7 @@ const QueryType = new GraphQLObjectType({
     TaskItem: {
       type: TaskItemType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }, { userId }) => Tasks.getTaskItemById(id, userId)
+      resolve: (_, { id }, { userId }) => Tasks.queryTaskItem(id, userId)
     },
 
     allSteps: {

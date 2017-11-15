@@ -55,10 +55,12 @@ export async function handler(event, context, callback) {
  * Helper method to excerpt the error status code from the error message
  */
 function getStatusCode(error) {
-  const code = parseInt(error.message.slice(0, 3), 10)
-  if (isNaN(code)) {
-    return 500
+  const code = error.message.slice(0, 4)
+  if (/^E\d{3}/.test(code)) {
+    // User error e.g. E401, E404 etc.
+    return 200;
   } else {
-    return code
+    // Internal error
+    return 500;
   }
 }

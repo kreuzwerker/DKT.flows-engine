@@ -21,9 +21,9 @@ export function getFlowById(flowId, userId) {
 export async function queryGetFlow(flowId, userId) {
   const flow = await dbFlows.getFlowById(flowId);
   if (!flow.id) {
-    throw new Error('404 Flow not found');
+    throw new Error('E404_FLOW_NOT_FOUND');
   } else if (flow.userId !== userId) {
-    throw new Error('401 Access denied');
+    throw new Error('E401_FLOW_ACCESS_DENIED');
   } else {
     return flow;
   }

@@ -1,13 +1,7 @@
 import service from '../../../../utils/service'
 import { S3 } from '../../../../utils/aws'
 
-function getCurrentStep(stepData, input) {
-  const int = num => parseInt(num, 10)
-  return stepData.flowRun.flow.steps.find(s => int(s.position) === int(input.currentStep))
-}
-
-function s3Output(inputData, logger, { input, stepData }) {
-  const { configParams } = getCurrentStep(stepData, input)
+function s3Output(inputData, logger, { configParams }) {
   const bucket = configParams.find(param => param.fieldId === 'bucket').value
   const path = configParams.find(param => param.fieldId === 'path').value
   const filename = configParams.find(param => param.fieldId === 'filename').value

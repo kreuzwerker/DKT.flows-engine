@@ -5,7 +5,7 @@ module.exports = arn => ({
   icon: 'insert_drive_file',
   id: '6CNdjnZaHtc4R3BbIIHuqBNj',
   logicalResourceId: PARSE_CSV_FUNCTION,
-  name: 'Parse JSON',
+  name: 'Parse CSV',
   provider: 'xOMFBmrwQmul4MB8FnEH3Z1b',
   type: 'ACTION',
   inputType: 'csv',

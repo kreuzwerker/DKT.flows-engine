@@ -29,7 +29,8 @@ export async function handler(event, context, callback) {
 
     if (response.errors) {
       callback(null, {
-        statusCode: 500,
+        // Workaround for https://github.com/graphql/graphql-js/issues/912
+        statusCode: getStatusCode(response.errors[0]),
         headers: corsHeader,
         body: JSON.stringify(response)
       })
@@ -47,5 +48,19 @@ export async function handler(event, context, callback) {
       headers: corsHeader,
       body: JSON.stringify({ errors: err })
     })
+  }
+}
+
+/*
+ * Helper method to excerpt the error status code from the error message
+ */
+function getStatusCode(error) {
+  const code = error.message.slice(0, 4)
+  if (/^E\d{3}/.test(code)) {
+    // User error e.g. E401, E404 etc.
+    return 200;
+  } else {
+    // Internal error
+    return 500;
   }
 }

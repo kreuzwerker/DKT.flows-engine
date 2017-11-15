@@ -4,7 +4,7 @@ import service from '../../../../utils/service'
 /*
  * Return a json fragment for the given json path from the given json string or object
  */
-async function parseJson(json, logger, { stepData }) {
+function parseJson(json, logger, { stepData }) {
   let result = {}
 
   logger.log('DEBUG stepData', stepData)
@@ -13,14 +13,14 @@ async function parseJson(json, logger, { stepData }) {
   // Get step config
   const stepIndex = typeof stepData.currentStep !== 'undefined' ? stepData.currentStep : 0;
   if (!stepData.flowRun || !stepData.flowRun.flow.steps[stepIndex]) {
-    return Promise.reject("Missing step config params.");
+    return Promise.reject(new Error('Missing step config params.'))
   }
 
   const configParams = stepData.flowRun.flow.steps[stepIndex].configParams;
   logger.log('DEBUG configParams', configParams);
 
   const path = configParams.reduce((a, param) => {
-    return param.fieldId === 'path' ? param.value : a
+    return Promise.reoslve(param.fieldId === 'path' ? param.value : a)
   }, '')
 
   if (typeof json === 'string') {
@@ -28,8 +28,8 @@ async function parseJson(json, logger, { stepData }) {
       logger.log('Try to parse JSON from string');
       json = JSON.parse(json);
     } catch (err) {
-      logger.log('Error while parsing JSON string', err);
-      return Promise.reject(err);
+      logger.log('Error while parsing JSON string', err)
+      return Promise.reject(err)
     }
   }
 

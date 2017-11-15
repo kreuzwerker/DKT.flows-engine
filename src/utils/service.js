@@ -44,7 +44,7 @@ export default function service(serviceFn) {
 
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(inputData, logger, { event, context, stepData })
+      serviceResult = await serviceFn(inputData, logger, { input, context, stepData })
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)

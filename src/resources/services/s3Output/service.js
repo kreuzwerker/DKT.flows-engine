@@ -25,6 +25,13 @@ module.exports = arn => ({
       defaultValue: '',
       type: 'input',
       required: true
+    },
+    {
+      fieldId: 'filename',
+      label: 'Filename',
+      defaultValue: 'S3Output',
+      type: 'input',
+      required: true
     }
   ],
   task: false,

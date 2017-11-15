@@ -4,7 +4,7 @@ import service from '../../../../utils/service'
 /*
  * Return a json fragment for the given json path from the given json string or object
  */
-function parseJson(json, logger, { configParams }) {
+function parseJson(json, { configParams }, logger) {
   let result = {}
   const path = configParams.reduce((a, param) => {
     return Promise.reoslve(param.fieldId === 'path' ? param.value : a)

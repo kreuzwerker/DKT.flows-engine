@@ -3,7 +3,7 @@ import _isString from 'lodash/isString'
 import { S3 } from '../../../../utils/aws'
 import service from '../../../../utils/service'
 
-async function nlpRequest(inputData, logger, { event, context }) {
+async function nlpRequest(inputData, { event, context }, logger) {
   const { NLP_URL, S3_BUCKET } = process.env
   const { Key } = _isString(event) ? JSON.parse(event) : event
   const { awsRequestId } = context

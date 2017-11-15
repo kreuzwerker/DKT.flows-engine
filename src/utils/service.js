@@ -4,10 +4,17 @@ import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
 
 function getConfigParams(stepData, input) {
-  const int = num => parseInt(num, 10)
+  const { steps } = stepData.flowRun.flow
+
+  // check if there is more then one step. if theres only one then it is a step test
+  if (steps.length === 1) {
+    return steps[0].configParams || []
+  }
+
   const currentStep = stepData.flowRun.flow.steps.find((s) => {
-    return int(s.position) === int(input.currentStep)
+    return parseInt(s.position, 10) === parseInt(input.currentStep, 10)
   })
+
   return currentStep.configParams || []
 }
 
@@ -54,12 +61,16 @@ export default function service(serviceFn) {
 
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(inputData, logger, {
-        input,
-        context,
-        stepData,
-        configParams
-      })
+      serviceResult = await serviceFn(
+        inputData,
+        {
+          input,
+          context,
+          stepData,
+          configParams
+        },
+        logger
+      )
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)

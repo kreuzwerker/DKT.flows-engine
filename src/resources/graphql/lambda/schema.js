@@ -35,7 +35,7 @@ const QueryType = new GraphQLObjectType({
     Flow: {
       type: FlowType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }, { userId }) => Flows.getFlowById(id, userId)
+      resolve: (_, { id }, { userId }) => Flows.queryGetFlow(id, userId)
     },
 
     allFlowRuns: {

@@ -18,6 +18,17 @@ export function getFlowById(flowId, userId) {
   return dbFlows.getFlowById(flowId, userId)
 }
 
+export async function queryGetFlow(flowId, userId) {
+  const flow = await dbFlows.getFlowById(flowId);
+  if (!flow.id) {
+    throw new Error('404 Flow not found');
+  } else if (flow.userId !== userId) {
+    throw new Error('401 Access denied');
+  } else {
+    return flow;
+  }
+}
+
 /**
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------

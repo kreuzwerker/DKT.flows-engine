@@ -23,7 +23,9 @@ export function getFlowById(flowId, userId) {
 
   return DynamoDB.getItem(table, query).then((r) => {
     const item = r.Item || {}
-    return typeof userId === 'undefined' || item.userId === null || item.userId === userId ? item : null;
+    return typeof userId === 'undefined' || item.userId === null || item.userId === userId
+      ? item
+      : null
   })
 }
 

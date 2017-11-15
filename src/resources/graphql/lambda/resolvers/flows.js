@@ -15,13 +15,13 @@ export function allFlows(userId) {
 }
 
 export async function queryFlow(flowId, userId) {
-  const flow = await dbFlows.getFlowById(flowId);
+  const flow = await dbFlows.getFlowById(flowId)
   if (!flow.id) {
-    throw new Error('E404_FLOW_NOT_FOUND');
+    throw new Error('E404_FLOW_NOT_FOUND')
   } else if (flow.userId !== userId) {
-    throw new Error('E401_FLOW_ACCESS_DENIED');
+    throw new Error('E401_FLOW_ACCESS_DENIED')
   } else {
-    return flow;
+    return flow
   }
 }
 

@@ -3,6 +3,14 @@ import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
 
+function getConfigParams(stepData, input) {
+  const int = num => parseInt(num, 10)
+  const currentStep = stepData.flowRun.flow.steps.find((s) => {
+    return int(s.position) === int(input.currentStep)
+  })
+  return currentStep.configParams || []
+}
+
 /*
  * This function is a wrapper for service lambda function. It takes a service function as a parameter
  * and returns a function lambda function handler which can be used in flow runs and as a step test
@@ -42,9 +50,16 @@ export default function service(serviceFn) {
       return
     }
 
+    const configParams = getConfigParams(stepData, input)
+
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(inputData, logger, { input, context, stepData })
+      serviceResult = await serviceFn(inputData, logger, {
+        input,
+        context,
+        stepData,
+        configParams
+      })
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)

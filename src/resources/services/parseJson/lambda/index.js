@@ -8,16 +8,16 @@ function parseJson(json, logger, { stepData }) {
   let result = {}
 
   logger.log('DEBUG stepData', stepData)
-  logger.log('DEBUG json', json);
+  logger.log('DEBUG json', json)
 
   // Get step config
-  const stepIndex = typeof stepData.currentStep !== 'undefined' ? stepData.currentStep : 0;
+  const stepIndex = typeof stepData.currentStep !== 'undefined' ? stepData.currentStep : 0
   if (!stepData.flowRun || !stepData.flowRun.flow.steps[stepIndex]) {
     return Promise.reject(new Error('Missing step config params.'))
   }
 
-  const configParams = stepData.flowRun.flow.steps[stepIndex].configParams;
-  logger.log('DEBUG configParams', configParams);
+  const { configParams } = stepData.flowRun.flow.steps[stepIndex]
+  logger.log('DEBUG configParams', configParams)
 
   const path = configParams.reduce((a, param) => {
     return Promise.reoslve(param.fieldId === 'path' ? param.value : a)
@@ -25,8 +25,8 @@ function parseJson(json, logger, { stepData }) {
 
   if (typeof json === 'string') {
     try {
-      logger.log('Try to parse JSON from string');
-      json = JSON.parse(json);
+      logger.log('Try to parse JSON from string')
+      json = JSON.parse(json) // eslint-disable-line
     } catch (err) {
       logger.log('Error while parsing JSON string', err)
       return Promise.reject(err)
@@ -43,7 +43,7 @@ function parseJson(json, logger, { stepData }) {
 
   logger.log('DEBUG result', result[0])
 
-  return result[0]
+  return Promise.resolve(result[0])
 }
 
 export const handler = service(parseJson)

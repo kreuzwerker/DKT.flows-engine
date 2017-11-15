@@ -4,21 +4,8 @@ import service from '../../../../utils/service'
 /*
  * Return a json fragment for the given json path from the given json string or object
  */
-function parseJson(json, logger, { stepData }) {
+function parseJson(json, logger, { configParams }) {
   let result = {}
-
-  logger.log('DEBUG stepData', stepData)
-  logger.log('DEBUG json', json)
-
-  // Get step config
-  const stepIndex = typeof stepData.currentStep !== 'undefined' ? stepData.currentStep : 0
-  if (!stepData.flowRun || !stepData.flowRun.flow.steps[stepIndex]) {
-    return Promise.reject(new Error('Missing step config params.'))
-  }
-
-  const { configParams } = stepData.flowRun.flow.steps[stepIndex]
-  logger.log('DEBUG configParams', configParams)
-
   const path = configParams.reduce((a, param) => {
     return Promise.reoslve(param.fieldId === 'path' ? param.value : a)
   }, '')

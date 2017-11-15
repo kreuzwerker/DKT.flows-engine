@@ -25,7 +25,7 @@ module.exports = arn => ({
       position: 1,
       label: 'Include Header',
       type: 'checkbox',
-      defaultValue: true,
+      defaultValue: false,
       required: true
     }
   ],

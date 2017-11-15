@@ -1,10 +1,10 @@
 import service from '../../../../utils/service'
 import { S3 } from '../../../../utils/aws'
 
-  const bucket = configParams.find(param => param.fieldId === 'bucket').value
-  const path = configParams.find(param => param.fieldId === 'path').value
-  const filename = configParams.find(param => param.fieldId === 'filename').value
 function s3Output(inputData, { configParams }, logger) {
+  const bucket = configParams.get('bucket')
+  const path = configParams.get('path')
+  const filename = configParams.get('filename')
   const s3 = S3(bucket)
 
   return s3

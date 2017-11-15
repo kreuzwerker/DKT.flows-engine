@@ -6,9 +6,7 @@ import service from '../../../../utils/service'
  */
 function parseJson(json, { configParams }, logger) {
   let result = {}
-  const path = configParams.reduce((a, param) => {
-    return Promise.reoslve(param.fieldId === 'path' ? param.value : a)
-  }, '')
+  const path = configParams.get('path')
 
   if (typeof json === 'string') {
     try {

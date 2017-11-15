@@ -1,7 +1,14 @@
+import csvParse from 'csv-parse'
 import service from '../../../../utils/service'
 
-function parseCSV(inputData) {
   // TODO
+function parseCSV(inputData, { configParams }, logger) {
+  const separator = configParams.get('separator')
+  const includeHeader = configParams.get('header')
+
+  logger.log('separator:', separator)
+  logger.log('includeHeader:', includeHeader)
+
   return Promise.resolve(inputData)
 }
 

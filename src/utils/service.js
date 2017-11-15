@@ -58,6 +58,8 @@ export default function service(serviceFn) {
     }
 
     const configParams = getConfigParams(stepData, input)
+    // add getter to configParams
+    configParams.get = selector => configParams.find(p => p.fieldId === selector).value
 
     try {
       // This is the service lambda execution

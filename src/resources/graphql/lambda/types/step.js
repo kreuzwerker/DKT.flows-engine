@@ -70,11 +70,7 @@ export const StepTestType = new GraphQLObjectType({
     createdAt: { type: GraphQLString },
     flow: { type: GraphQLID },
     service: {
-      type: ServiceType,
-      resolve: (step) => {
-        if (!step.service) return null
-        return Services.getServiceById(step.service)
-      }
+      type: ServiceType
     },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     result: { type: GraphQLString },

@@ -1,4 +1,4 @@
-import dynDB from '../../utils/dynamoDB'
+import { DynamoDB } from '../../utils/aws'
 
 export function allFlows(userId) {
   const table = process.env.DYNAMO_FLOWS
@@ -12,7 +12,7 @@ export function allFlows(userId) {
     }
   }
 
-  return dynDB.scan(table, params).then(r => r.Items)
+  return DynamoDB.scan(table, params).then(r => r.Items)
 }
 
 export function getFlowById(flowId, userId) {
@@ -21,15 +21,17 @@ export function getFlowById(flowId, userId) {
     Key: { id: flowId }
   }
 
-  return dynDB.getItem(table, query).then((r) => {
+  return DynamoDB.getItem(table, query).then((r) => {
     const item = r.Item || {}
-    return item.userId === userId || item.userId === null ? item : null
+    return typeof userId === 'undefined' || item.userId === null || item.userId === userId
+      ? item
+      : null
   })
 }
 
 export function createFlow(flow) {
   const table = process.env.DYNAMO_FLOWS
-  return dynDB.putItem(table, flow)
+  return DynamoDB.putItem(table, flow)
 }
 
 export function updateFlow(flow) {
@@ -38,12 +40,12 @@ export function updateFlow(flow) {
     Key: { id: flow.id }
   }
 
-  return dynDB.updateItem(table, query, flow)
+  return DynamoDB.updateItem(table, query, flow)
 }
 
 export function deleteFlow(id) {
   const table = process.env.DYNAMO_FLOWS
   const query = { Key: { id } }
 
-  return dynDB.deleteItem(table, query)
+  return DynamoDB.deleteItem(table, query)
 }

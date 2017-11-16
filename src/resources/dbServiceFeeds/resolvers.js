@@ -1,4 +1,4 @@
-import dynDB from '../../utils/dynamoDB'
+import { DynamoDB } from '../../utils/aws'
 
 export function getFeed(flowId) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
@@ -6,28 +6,25 @@ export function getFeed(flowId) {
     Key: { flowId: flowId }
   }
 
-  return dynDB.getItem(table, query).then(res => res.Item || null)
+  return DynamoDB.getItem(table, query).then(res => res.Item || null)
 }
 
 export function createFeed(feed) {
   const table = process.env.DYNAMO_SERVICE_FEEDS
-  return dynDB.putItem(table, feed, 'flowId')
+  return DynamoDB.putItem(table, feed, 'flowId')
 }
 
-export async function getOrCreateFeed(flowId, url) {
-  // Find feed
-  let feed = await getFeed(flowId)
-
-  // Or create feed
-  if (!feed) {
-    feed = await createFeed({
-      flowId: flowId,
-      url: url,
-      items: []
-    })
-  }
-
-  return feed
+export function getOrCreateFeed(flowId, url) {
+  return getFeed(flowId).then((feed) => {
+    if (!feed) {
+      return createFeed({
+        flowId: flowId,
+        url: url,
+        items: []
+      })
+    }
+    return feed
+  })
 }
 
 export function updateFeed(flowId, feed) {
@@ -36,7 +33,7 @@ export function updateFeed(flowId, feed) {
     Key: { flowId: flowId }
   }
 
-  return dynDB.updateItem(table, query, feed, 'flowId')
+  return DynamoDB.updateItem(table, query, feed, 'flowId')
 }
 
 export function deleteFeed(flowId) {
@@ -44,5 +41,5 @@ export function deleteFeed(flowId) {
   const query = {
     Key: { flowId }
   }
-  return dynDB.deleteItem(table, query).then(() => ({ flowId }))
+  return DynamoDB.deleteItem(table, query).then(() => ({ flowId }))
 }

@@ -1,15 +1,18 @@
-const { CORRECT_TASK_FUNCTION } = require('../../logicalResourceIds');
+const { MODIFY_TASK_FUNCTION } = require('../../logicalResourceIds')
 
 module.exports = arn => ({
-  description: 'Manual Correct Task',
+  description: 'Manual Modify Task',
   icon: 'assignment',
   id: 'azWOR5NJ5uz2cj7TqJc=',
-  logicalResourceId: CORRECT_TASK_FUNCTION,
-  name: 'Correct Task',
+  logicalResourceId: MODIFY_TASK_FUNCTION,
+  name: 'Modify Task',
   provider: 'nqY2xusB5hHLMUdFdCQ=',
   type: 'ACTION',
+  inputType: null,
+  outputType: null,
+  scheduled: null,
   task: true,
-  taskType: 'CORRECT',
+  taskType: 'MODIFY',
   configSchema: [
     {
       fieldId: 'title',
@@ -30,4 +33,4 @@ module.exports = arn => ({
   ],
   samplePayload: null,
   arn: arn
-});
+})

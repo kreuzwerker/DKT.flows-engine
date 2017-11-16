@@ -26,7 +26,8 @@
       "ciy0jfkvuahth0133z9r38ljg",
       "ciy2jfkvufdsef0864z9r38opw",
       "ciy4poibcrqth0133z4r56alz",
-      "ciy0jfkvuahth0133z9r38yu2"
+      "ciy0jfkvuahth0133z9r38yu2",
+      "ciy0jfkvuahth0133z9r38yui"
     ]
   },
   {
@@ -36,5 +37,13 @@
     "id": "nqY2xusB5hHLMUdFdCQ=",
     "name": "Task",
     "services": ["ciy0jfkvjfmbh0133z9rkg83", "djk1jfkvjfmbh0123z9fri94", "azWOR5NJ5uz2cj7TqJc="]
+  },
+  {
+    "description": "AWS services.",
+    "group": "DKT native app",
+    "icon": "assignment",
+    "id": "aws2xusB54GTFUUTERY2",
+    "name": "AWS",
+    "services": ["cij1jqvvgagth9999z3r33aws"]
   }
 ]

@@ -52,6 +52,38 @@
     "id": "ArPY5hKQkzyqWBvURRubo5edbAFIervg",
     "position": 4,
     "service": "ciy0jfkvjfmbh0133z9rkg83",
+    "configParams": [
+      {
+        "fieldId": "title",
+        "value": "Approve Data"
+      },
+      {
+        "fieldId": "description",
+        "value": "foobar"
+      }
+    ],
+    "tested": false
+  },
+  {
+    "description": "Push data to a AWS S3 Bucket",
+    "flow": "ciy0ie2q1aoul0179imlh0a73",
+    "id": "AWSS35hbgtxaW42BFSefsdEfvsdeq",
+    "position": 5,
+    "service": "cij1jqvvgagth9999z3r33aws",
+    "configParams": [
+      {
+        "fieldId": "bucket",
+        "value": "dkt.flow-engine.dev"
+      },
+      {
+        "fieldId": "path",
+        "value": "/"
+      },
+      {
+        "fieldId": "filename",
+        "value": "flowRun_S3Output_test"
+      }
+    ],
     "tested": false
   }
 ]

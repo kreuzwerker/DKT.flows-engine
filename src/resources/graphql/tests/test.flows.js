@@ -1,6 +1,6 @@
 import _find from 'lodash/find'
 import _sortBy from 'lodash/sortBy'
-import dynDB from '../../../utils/dynamoDB'
+import { DynamoDB } from '../../../utils/aws'
 import { promisifyLambda } from '../../../../lib/promisifier'
 import { handler } from '../lambda/index'
 import testData from './testData/flows.json'
@@ -80,11 +80,9 @@ export default function () {
     let stepToDelete = ''
 
     before(async () => {
-      await Promise.all(
-        [updateTestData, deleteTestData].map((flow) => {
-          return dynDB.putItem(process.env.DYNAMO_FLOWS, flow)
-        })
-      )
+      await Promise.all([updateTestData, deleteTestData].map((flow) => {
+        return DynamoDB.putItem(process.env.DYNAMO_FLOWS, flow)
+      }))
     })
 
     it('create a Flow is creating a new flow', async () => {
@@ -159,14 +157,12 @@ export default function () {
     })
 
     after(async () => {
-      await Promise.all(
-        [createTestData, updateTestData].map((testFlow) => {
-          return dynDB.deleteItem(process.env.DYNAMO_FLOWS, { Key: { id: { S: testFlow.id } } })
-        })
-      )
+      await Promise.all([createTestData, updateTestData].map((testFlow) => {
+        return DynamoDB.deleteItem(process.env.DYNAMO_FLOWS, { Key: { id: { S: testFlow.id } } })
+      }))
 
       if (stepToDelete) {
-        await dynDB.deleteItem(process.env.DYNAMO_STEPS, { Key: { id: { S: stepToDelete.id } } })
+        await DynamoDB.deleteItem(process.env.DYNAMO_STEPS, { Key: { id: { S: stepToDelete.id } } })
       }
     })
   })

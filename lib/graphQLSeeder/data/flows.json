@@ -3,13 +3,16 @@
     "description": "This is a mocked flow object.",
     "id": "ciy0ie2q1aoul0179imlh0a73",
     "name": "first flow",
-    "draft": false,
+    "draft": true,
+    "active": false,
     "steps": [
       "ciy0jidbmaivt0133sqdy35e6",
       "ciy0jgybhai7v013373puyuvy",
       "ciy0jgybhai7v013373fdsafad",
       "ciy0jgybhai7v01dsda887ahw",
-      "ciy0jfkvjfmbh0133z9rkg83"
+      "ciy0jfkvjfmbh0133z9rkg83",
+      "ArPY5hKQkzyqWBvURRubo5edbAFIervg",
+      "AWSS35hbgtxaW42BFSefsdEfvsdeq"
     ],
     "flowRuns": [],
     "latestFlowRun": {},

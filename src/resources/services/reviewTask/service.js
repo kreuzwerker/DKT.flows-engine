@@ -8,6 +8,9 @@ module.exports = arn => ({
   name: 'Review Task',
   provider: 'nqY2xusB5hHLMUdFdCQ=',
   type: 'ACTION',
+  inputType: null,
+  outputType: null,
+  scheduled: null,
   task: true,
   taskType: 'REVIEW',
   configSchema: [

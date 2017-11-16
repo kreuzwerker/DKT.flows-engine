@@ -8,7 +8,7 @@ function Logger(name, verbose = false) {
 
     log: (...args) => {
       if (_verbose) {
-        console.log(`[${name}]`.blue, ...args)
+        console.log(`[${name}]`.magenta, ...args)
       }
     },
 

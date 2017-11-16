@@ -1,6 +1,5 @@
 import uuid from 'uuid'
-import S3 from '../s3'
-import Lambda from '../lambda'
+import { S3, Lambda } from '../aws'
 import timestamp from '../timestamp'
 import { getStepData } from './stepHelpers'
 import * as dbFlowRun from '../../resources/dbFlowRuns/resolvers'
@@ -93,8 +92,7 @@ export function triggerFlowRun(flowRun, payload) {
         message: null,
         runs: flowRun.runs,
         runsCount: flowRun.runs.length
-      })
-    )
+      }))
 }
 
 /*
@@ -125,7 +123,7 @@ function setCurrentRunStatus(runs, runId, status) {
       updatedRun.status = status
     }
     updatedRun.finishedAt = timestamp()
-    return run
+    return updatedRun
   })
 }
 
@@ -159,20 +157,21 @@ export async function flowRunStepSuccessHandler(input, flowRunData, serviceResul
   }
 }
 
-export async function flowRunSuccessHandler(input, flowRunData) {
+export async function flowRunSuccessHandler(input, flowRunData, status = 'success') {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
-  flowRunData.flowRun.status = flowRunData.status
+  flowRunData.status = status
+  flowRunData.flowRun.status = status
   flowRunData.finishedAt = timestamp()
 
   try {
     const flowRunFromDB = await dbFlowRun.getFlowRunById(flowRunData.flowRun.id)
-    const updatedRuns = setCurrentRunStatus(flowRunFromDB.runs, input.runId, flowRunData.status)
+    const updatedRuns = setCurrentRunStatus(flowRunFromDB.runs, input.runId, status)
     await s3.putObject({ Key: key, Body: JSON.stringify(flowRunData, null, 2) })
     await dbFlowRun.updateFlowRun({
       id: flowRunData.flowRun.id,
-      status: flowRunData.status,
+      status: status,
       runs: updatedRuns,
       finishedAt: timestamp(),
       message: flowRunData.flowRun.message

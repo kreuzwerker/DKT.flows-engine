@@ -8,6 +8,9 @@ module.exports = arn => ({
   name: 'Fetch Article',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  inputType: 'url',
+  outputType: 'html',
+  scheduled: null,
   configSchema: null,
   task: false,
   samplePayload:

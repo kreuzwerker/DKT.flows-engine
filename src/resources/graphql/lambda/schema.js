@@ -4,15 +4,18 @@ import {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLBoolean,
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
+import { AboutType } from './types/about'
 import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
 import { TaskType, TaskItemType } from './types/task'
 import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
+import { about } from './resolvers/about'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -27,6 +30,10 @@ import * as Steps from './resolvers/steps'
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
+    about: {
+      type: AboutType,
+      resolve: about
+    },
     allFlows: {
       type: new GraphQLList(FlowType),
       resolve: (_, variables, { userId }) => Flows.allFlows(userId)
@@ -34,7 +41,7 @@ const QueryType = new GraphQLObjectType({
     Flow: {
       type: FlowType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }, { userId }) => Flows.getFlowById(id, userId)
+      resolve: (_, { id }, { userId }) => Flows.queryFlow(id, userId)
     },
 
     allFlowRuns: {
@@ -78,7 +85,7 @@ const QueryType = new GraphQLObjectType({
     TaskItem: {
       type: TaskItemType,
       args: { id: { type: GraphQLID } },
-      resolve: (_, { id }, { userId }) => Tasks.getTaskItemById(id, userId)
+      resolve: (_, { id }, { userId }) => Tasks.queryTaskItem(id, userId)
     },
 
     allSteps: {
@@ -116,12 +123,15 @@ const MutationType = new GraphQLObjectType({
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
+        active: { type: GraphQLBoolean },
         description: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) },
         userId: { type: GraphQLID }
       },
       resolve: (_, flow, { userId }) => {
-        return Flows.updateFlow(flow, userId)
+        // TODO check if user is the flow owner before updating it
+        // NB Updating flow properties should not put the flow into draft state
+        return Flows.updateFlow(flow, false)
       }
     },
     restoreFlow: {
@@ -164,6 +174,7 @@ const MutationType = new GraphQLObjectType({
       type: FlowRunType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
+        active: { type: GraphQLBoolean },
         status: { type: GraphQLString },
         message: { type: GraphQLString },
         currentStep: { type: GraphQLInt }

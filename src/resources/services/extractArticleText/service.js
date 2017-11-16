@@ -8,6 +8,9 @@ module.exports = arn => ({
   name: 'Extract Article',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  inputType: 'html',
+  outputType: 'string',
+  scheduled: null,
   task: false,
   configSchema: [
     {

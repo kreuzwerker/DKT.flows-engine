@@ -1,8 +1,8 @@
 const settings = require('../../../../settings')
-const { PARSE_JSON_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
+const { S3_OUTPUT_SERVICE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
-  [PARSE_JSON_FUNCTION]: {
+  [S3_OUTPUT_SERVICE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

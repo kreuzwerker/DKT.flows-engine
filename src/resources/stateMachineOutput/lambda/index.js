@@ -15,7 +15,8 @@ export async function handler(event, context, callback) {
     } else {
       logger.log(input)
       const flowRunData = await getStepData(input)
-      const result = await flowRunSuccessHandler(input, flowRunData)
+      const status = flowRunData.status === 'running' ? 'success' : flowRunData.status
+      const result = await flowRunSuccessHandler(input, flowRunData, status)
       callback(null, result)
     }
   } catch (err) {

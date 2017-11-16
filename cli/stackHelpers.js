@@ -1,3 +1,4 @@
+const { execSync } = require('child_process')
 const path = require('path')
 const fs = require('fs')
 const uuidV1 = require('uuid/v1')
@@ -7,35 +8,37 @@ const CloudFormation = require('../lib/aws/cloudFormation')
 const S3 = require('../lib/aws/s3')
 const settings = require('../settings')
 
+const execToString = cmd =>
+  execSync(cmd)
+    .toString()
+    .replace('\n', '')
+    .replace('\r', '')
+
 /*
  * ---- task helpers -----------------------------------------------------------
  */
 module.exports = logger => ({
   bundleLambdas: (resources, targetBase) => {
-    return Promise.all(
-      resources.map((resourceFn) => {
-        logger.log(`Bundle Lambda ${resourceFn}`)
-        return Lambda.bundle(resourceFn, targetBase)
-      })
-    )
+    return Promise.all(resources.map((resourceFn) => {
+      logger.log(`Bundle Lambda ${resourceFn}`)
+      return Lambda.bundle(resourceFn, targetBase)
+    }))
   },
 
   putLambdaBundlesToS3: (bundles, stage) => {
-    return Promise.all(
-      bundles.map(({ fnName, bundlePath }) => {
-        const lambdaName = `${fnName}-${uuidV1()}`
-        const s3Key = `${stage}/${fnName}/${lambdaName}.zip`
+    return Promise.all(bundles.map(({ fnName, bundlePath }) => {
+      const lambdaName = `${fnName}-${uuidV1()}`
+      const s3Key = `${stage}/${fnName}/${lambdaName}.zip`
 
-        logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
-        return S3.putObject({
-          Key: s3Key,
-          Body: fs.createReadStream(bundlePath)
-        }).then(() => ({
-          resource: fnName,
-          key: s3Key
-        }))
-      })
-    )
+      logger.log(`Put Lambda ${fnName} as ${lambdaName}.zip to S3`)
+      return S3.putObject({
+        Key: s3Key,
+        Body: fs.createReadStream(bundlePath)
+      }).then(() => ({
+        resource: fnName,
+        key: s3Key
+      }))
+    }))
   },
 
   createCloudFormationTmpl: (deployedBundles, stage) => {
@@ -43,6 +46,13 @@ module.exports = logger => ({
     const resourceTmplPath = path.join(settings.fs.dist.base, 'dkt-flow-engine-template.json')
     const baseTmpl = require('../src/resources/stackBaseTemplate.json') // eslint-disable-line
     const swaggerDefinitionsUploadTasks = []
+    const git = {
+      branch: execToString('git rev-parse --abbrev-ref HEAD'),
+      commit: {
+        hash: execToString('git rev-parse --short HEAD'),
+        message: execToString('git log -1 --pretty=%B | cat')
+      }
+    }
     let cloudFormationTmpl = Object.assign({}, baseTmpl)
 
     deployedBundles.forEach(({ resource, key }) => {
@@ -52,18 +62,22 @@ module.exports = logger => ({
       const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
 
       if (swaggerTmpl) {
-        swaggerDefinitionsUploadTasks.push(
-          S3.putObject({
-            Key: swaggerKey,
-            Body: JSON.stringify(swaggerTmpl({ stage }))
-          })
-        )
+        swaggerDefinitionsUploadTasks.push(S3.putObject({
+          Key: swaggerKey,
+          Body: JSON.stringify(swaggerTmpl({ stage }))
+        }))
       }
 
       const updatedResource = Object.assign(
         {},
         cloudFormationTmpl.Resources,
-        resourceTmpl({ stage, resource, key, swaggerKey })
+        resourceTmpl({
+          stage,
+          resource,
+          key,
+          swaggerKey,
+          git
+        })
       )
 
       cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
@@ -81,19 +95,22 @@ module.exports = logger => ({
       const swaggerTmpl = fs.existsSync(`${swaggerPath}.js`) ? require(swaggerPath) : null // eslint-disable-line
 
       if (swaggerTmpl) {
-        swaggerDefinitionsUploadTasks.push(
-          S3.putObject({
-            Key: swaggerKey,
-            Body: JSON.stringify(swaggerTmpl({ stage }))
-          })
-        )
+        swaggerDefinitionsUploadTasks.push(S3.putObject({
+          Key: swaggerKey,
+          Body: JSON.stringify(swaggerTmpl({ stage }))
+        }))
       }
 
       if (resourceTmpl) {
         const updatedResource = Object.assign(
           {},
           cloudFormationTmpl.Resources,
-          resourceTmpl({ stage, resource, swaggerKey })
+          resourceTmpl({
+            stage,
+            resource,
+            swaggerKey,
+            git
+          })
         )
 
         cloudFormationTmpl = Object.assign({}, cloudFormationTmpl, {
@@ -106,8 +123,7 @@ module.exports = logger => ({
 
     if (swaggerDefinitionsUploadTasks.length >= 1) {
       return Promise.all(swaggerDefinitionsUploadTasks).then(() =>
-        Promise.resolve(resourceTmplPath)
-      )
+        Promise.resolve(resourceTmplPath))
     }
     return Promise.resolve(resourceTmplPath)
   },
@@ -120,20 +136,17 @@ module.exports = logger => ({
   getServicesResources: (stackResourceSummaries) => {
     const resources = fsUtil.getServiceResources()
 
-    return Promise.all(
-      resources.map((serviceResource) => {
-        const summary = stackResourceSummaries.find((r) => {
-          return r.LogicalResourceId === serviceResource().logicalResourceId
-        })
-
-        if (summary && summary.ResourceType === 'AWS::Lambda::Function') {
-          return Lambda.getFunction(summary.PhysicalResourceId).then(fn =>
-            serviceResource(fn.Configuration.FunctionArn)
-          )
-        }
-
-        return serviceResource(summary ? summary.PhysicalResourceId : null)
+    return Promise.all(resources.map((serviceResource) => {
+      const summary = stackResourceSummaries.find((r) => {
+        return r.LogicalResourceId === serviceResource().logicalResourceId
       })
-    )
+
+      if (summary && summary.ResourceType === 'AWS::Lambda::Function') {
+        return Lambda.getFunction(summary.PhysicalResourceId).then(fn =>
+          serviceResource(fn.Configuration.FunctionArn))
+      }
+
+      return serviceResource(summary ? summary.PhysicalResourceId : null)
+    }))
   }
 })

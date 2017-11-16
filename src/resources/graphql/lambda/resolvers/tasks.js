@@ -1,5 +1,5 @@
 import * as dbTasks from '../../../dbTasks/resolvers'
-import StepFunctions from '../../../../utils/stepFunctions'
+import { StepFunctions } from '../../../../utils/aws'
 import { getRuns } from './flowRuns'
 
 /**
@@ -14,10 +14,12 @@ export function getTaskById(taskId, userId) {
   return dbTasks.getTaskById(taskId, userId)
 }
 
-export async function getTaskItemById(taskId, userId) {
-  const task = await getTaskById(taskId, userId)
-  if (!task) {
-    return Promise.reject('Task not found.')
+export async function queryTaskItem(taskId, userId) {
+  const task = await getTaskById(taskId)
+  if (!task.id) {
+    throw new Error('E404_TASK_NOT_FOUND');
+  } else if (task.userId !== userId) {
+    throw new Error('E401_TASK_ACCESS_DENIED');
   }
 
   const runs = await getRuns(task.flowRun, { offset: 0 })
@@ -25,10 +27,19 @@ export async function getTaskItemById(taskId, userId) {
     return Promise.reject('No flow runs available for this task.')
   }
 
+  // Retrieve the preceding step to this task so the client can determine the
+  // task item's content type via prevStep.service
+  let lastRun = runs[0],
+      prevStep = null
+  if (parseInt(lastRun.currentStep.position, 10) > 0) {
+    const prevStepPos = parseInt(lastRun.currentStep.position, 10) - 1
+    prevStep = task.flowRun.flow.steps.find(step => parseInt(step.position, 10) === prevStepPos)
+  }
+
   return Promise.resolve({
     id: taskId,
-    data: runs[0].result,
-    type: 'html'
+    data: lastRun.result,
+    prevStep: prevStep
   })
 }
 
@@ -47,11 +58,17 @@ export async function updateTask(task, userId) {
     const taskToken = oldTask.taskToken
     switch (task.state) {
       case 'APPROVED': {
-        await StepFunctions.sendTaskSuccess({ taskToken, output: JSON.stringify({}) })
+        await StepFunctions.sendTaskSuccess({
+          taskToken,
+          output: JSON.stringify({ message: 'success' })
+        })
         break
       }
       case 'REJECTED': {
-        await StepFunctions.sendTaskFailure({ taskToken, cause: 'REJECTED' })
+        await StepFunctions.sendTaskSuccess({
+          taskToken,
+          output: JSON.stringify({ message: 'rejected' })
+        })
         break
       }
       default:

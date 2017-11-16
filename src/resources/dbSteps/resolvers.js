@@ -1,8 +1,8 @@
-import dynDB from '../../utils/dynamoDB'
+import { DynamoDB } from '../../utils/aws'
 
 export function allSteps() {
   const table = process.env.DYNAMO_STEPS
-  return dynDB.scan(table).then(r => r.Items)
+  return DynamoDB.scan(table).then(r => r.Items)
 }
 
 export function getStepById(stepId) {
@@ -11,7 +11,7 @@ export function getStepById(stepId) {
     Key: { id: stepId }
   }
 
-  return dynDB.getItem(table, params).then(r => r.Item || null)
+  return DynamoDB.getItem(table, params).then(r => r.Item || null)
 }
 
 export function batchGetStepByIds(stepsIds) {
@@ -24,14 +24,14 @@ export function batchGetStepByIds(stepsIds) {
     }
   }
 
-  return dynDB.batchGetItem(query).then((res) => {
+  return DynamoDB.batchGetItem(query).then((res) => {
     return res.Responses[table]
   })
 }
 
 export function createStep(step) {
   const table = process.env.DYNAMO_STEPS
-  return dynDB.putItem(table, step)
+  return DynamoDB.putItem(table, step)
 }
 
 export function updateStep(step) {
@@ -40,7 +40,7 @@ export function updateStep(step) {
     Key: { id: step.id }
   }
 
-  return dynDB.updateItem(table, query, step)
+  return DynamoDB.updateItem(table, query, step)
 }
 
 export function deleteStep(id) {
@@ -48,5 +48,5 @@ export function deleteStep(id) {
   const query = {
     Key: { id }
   }
-  return dynDB.deleteItem(table, query).then(() => ({ id }))
+  return DynamoDB.deleteItem(table, query).then(() => ({ id }))
 }

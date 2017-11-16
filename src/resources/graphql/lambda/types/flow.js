@@ -20,9 +20,10 @@ export const FlowType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     draft: { type: GraphQLBoolean },
+    active: { type: GraphQLBoolean },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
-    stateMachineArn: { type: GraphQLString },
+    stateMachineArn: { type: GraphQLString }, // depricated
     userId: { type: GraphQLID },
     steps: {
       type: new GraphQLList(StepType),

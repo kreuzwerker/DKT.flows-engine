@@ -1,27 +1,53 @@
-import csvParse from 'csv-parse'
+import csvtojson from 'csvtojson'
 import service from '../../../../utils/service'
 
 function parse(csv, opts) {
+  const converter = csvtojson(opts)
+  const arr = []
+
   return new Promise((resolve, reject) => {
-    csvParse(csv, opts, (err, res) => {
-      if (err) {
-        return reject(err)
-      }
-      return resolve(res)
-    })
+    converter
+      .fromString(csv)
+      .on('csv', (row) => {
+        arr.push(row)
+      })
+      .on('error', err => reject(err))
+      .on('end_parsed', (res) => {
+        resolve({
+          array: arr,
+          normalized: res
+        })
+      })
   })
+}
+
+function parseBoolean(val) {
+  if (typeof val === 'boolean') return val
+  return val === 'true'
 }
 
 function parseCSV(inputData, { configParams }, logger) {
   const delimiter = configParams.get('separator')
-  const columns = !!configParams.get('header')
+  const header = parseBoolean(configParams.get('header'))
+  const normalized = parseBoolean(configParams.get('normalized'))
 
-  logger.log('Separator:', delimiter)
-  logger.log('Iclude Header:', columns)
+  logger.log('Delimiter:', delimiter)
+  logger.log('Header:', header)
+  logger.log('Normalized:', normalized)
 
-  // TODO clarify what "include header?" means for the result
-
-  return parse(inputData, { delimiter, columns })
+  return parse(inputData, { delimiter, noheader: header })
+    .then((res) => {
+      if (normalized) {
+        logger.log(res.normalized)
+        return res.normalized
+      }
+      logger.log(res.array)
+      return res.array
+    })
+    .catch((err) => {
+      logger.log(err)
+      return err
+    })
 }
 
 export const handler = service(parseCSV)

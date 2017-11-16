@@ -35,7 +35,7 @@ function parseCSV(inputData, { configParams }, logger) {
   logger.log('Header:', header)
   logger.log('Normalized:', normalized)
 
-  return parse(inputData, { delimiter, noheader: header })
+  return parse(inputData, { delimiter, noheader: header, flatKeys: true })
     .then((res) => {
       if (normalized) {
         logger.log(res.normalized)

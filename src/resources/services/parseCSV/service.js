@@ -27,6 +27,14 @@ module.exports = arn => ({
       type: 'checkbox',
       defaultValue: false,
       required: true
+    },
+    {
+      fieldId: 'normalized',
+      position: 2,
+      label: 'Normalized',
+      type: 'checkbox',
+      defaultValue: true,
+      required: true
     }
   ],
   samplePayload: 'Year,Make,Model\n1997,Ford,E350\n2000,Mercury,Cougar',

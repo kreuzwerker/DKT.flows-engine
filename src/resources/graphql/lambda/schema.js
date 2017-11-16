@@ -8,12 +8,14 @@ import {
   GraphQLObjectType,
   GraphQLNonNull
 } from 'graphql'
+import { AboutType } from './types/about'
 import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
 import { TaskType, TaskItemType } from './types/task'
 import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
+import { about } from './resolvers/about'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -28,6 +30,10 @@ import * as Steps from './resolvers/steps'
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
+    about: {
+      type: AboutType,
+      resolve: about
+    },
     allFlows: {
       type: new GraphQLList(FlowType),
       resolve: (_, variables, { userId }) => Flows.allFlows(userId)

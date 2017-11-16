@@ -21,7 +21,9 @@ const {
  * AWS SAM Resource Template
  * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
  */
-module.exports = ({ stage, key, swaggerKey }) => ({
+module.exports = ({
+  stage, key, swaggerKey, git
+}) => ({
   [GRAPHQL_API_GATEWAY]: {
     Type: 'AWS::Serverless::Api',
     Properties: {
@@ -55,7 +57,10 @@ module.exports = ({ stage, key, swaggerKey }) => ({
           TASK_INITIALIZER_FUNCTION: { Ref: TASK_INITIALIZER_FUNCTION },
           TASK_OUTPUT_HANDLER_FUNCTION: { Ref: TASK_OUTPUT_HANDLER_FUNCTION },
           URL_CONFIG_TRIGGER_SERVICE_FUNCTION: { Ref: URL_CONFIG_TRIGGER_SERVICE_FUNCTION },
-          S3_BUCKET: { Ref: S3_BUCKET }
+          S3_BUCKET: { Ref: S3_BUCKET },
+          GIT_BRANCH: git.branch,
+          GIT_COMMIT_HASH: git.commit.hash,
+          GIT_COMMIT_MESSAGE: git.commit.message
         }
       }
     },

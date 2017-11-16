@@ -20,7 +20,7 @@
     "colors": "^1.1.2",
     "commander": "^2.11.0",
     "csv": "^2.0.0",
-    "csv-parse": "^2.0.0",
+    "csvtojson": "^1.1.9",
     "del": "^3.0.0",
     "feedparser-promised": "^1.4.2",
     "graphql": "^0.11.7",

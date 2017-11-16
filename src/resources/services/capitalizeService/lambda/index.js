@@ -1,7 +1,7 @@
 import _isString from 'lodash/isString'
 import service from '../../../../utils/service'
 
-function capitalize(inputData, logger) {
+function capitalize(inputData, data, logger) {
   return new Promise((resolve, reject) => {
     if (!_isString(inputData)) {
       reject(new Error('Input data is not a String'))

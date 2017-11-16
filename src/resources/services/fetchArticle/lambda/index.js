@@ -4,7 +4,7 @@ import service from '../../../../utils/service'
 /*
  * Fetch an Article from given URL
  */
-async function fetchArticle(inputData, logger) {
+async function fetchArticle(inputData, data, logger) {
   let result = {},
       articleHTML = {}
 

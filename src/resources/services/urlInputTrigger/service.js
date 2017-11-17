@@ -4,7 +4,7 @@ module.exports = arn => ({
   description: 'Triggers a flow run with a given url',
   icon: 'mail',
   id: 'ciy0jeruzbb5m01790ymkz7xl',
-  name: 'URL Config',
+  name: 'Manual URL Trigger',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   logicalResourceId: URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   arn: arn,

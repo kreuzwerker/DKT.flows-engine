@@ -2,11 +2,11 @@ import fetch from 'node-fetch'
 import service from '../../../../utils/service'
 
 /*
- * Fetch an Article from given URL
+ * Fetch Text from given URL
  */
-async function fetchArticle(inputData, logger) {
+async function fetchText(inputData, data, logger) {
   let result = {},
-      articleHTML = {}
+      text = {}
 
   try {
     logger.log(`Try to fetch data from ${inputData}`)
@@ -17,21 +17,21 @@ async function fetchArticle(inputData, logger) {
       throw new Error(`Failed fetching ${inputData} - ${result.status} ${result.statusText}`)
     }
   } catch (err) {
-    logger.log('Error while fetching article', err)
+    logger.log('Error while fetching', err)
     return Promise.reject(err)
   }
 
   try {
-    logger.log('Extract HTML')
-    articleHTML = await result.text()
+    logger.log('Extract Text')
+    text = await result.text()
   } catch (err) {
-    logger.log('Error while getting article html', err)
+    logger.log('Error while getting text', err)
     return Promise.reject(err)
   }
 
-  articleHTML = articleHTML.replace(/(\r\n|\n|\r|\t)/gm, '')
+  text = text.replace(/(\r\n|\n|\r|\t)/gm, '')
 
-  return articleHTML
+  return text
 }
 
-export const handler = service(fetchArticle)
+export const handler = service(fetchText)

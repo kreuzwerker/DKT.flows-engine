@@ -4,7 +4,7 @@ import service from '../../../../utils/service'
 /*
  * Extract article text with node unfluff
  */
-function extractArticle(inputData, logger) {
+function extractArticle(inputData, data, logger) {
   return new Promise((resolve, reject) => {
     let article = '',
         text = ''

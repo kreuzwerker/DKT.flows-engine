@@ -6,7 +6,7 @@ module.exports = arn => ({
   id: 'ciy0jfkvuahth0133z9r38yui',
   logicalResourceId: PARSE_JSON_FUNCTION,
   name: 'Parse JSON',
-  provider: 'ciy0ivuazabar0133xu1vlvyj',
+  provider: 'xOMFBmrwQmul4MB8FnEH3Z1b',
   type: 'ACTION',
   inputType: 'json',
   outputType: 'json',

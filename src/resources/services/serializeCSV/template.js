@@ -1,12 +1,8 @@
 const settings = require('../../../../settings')
-const { FETCH_ARTICLE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
+const { SERIALIZE_CSV_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
-/*
- * AWS SAM Resource Template
- * docs https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
- */
 module.exports = ({ key }) => ({
-  [FETCH_ARTICLE_FUNCTION]: {
+  [SERIALIZE_CSV_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

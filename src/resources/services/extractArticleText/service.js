@@ -6,7 +6,7 @@ module.exports = arn => ({
   id: 'ciy2jfkvufdsef0864z9r38opw',
   logicalResourceId: EXTRACT_ARTICLE_TEXT_FUNCTION,
   name: 'Extract Article',
-  provider: 'ciy0ivuazabar0133xu1vlvyj',
+  provider: 'xOMFBmrwQmul4MB8FnEH3Z1b',
   type: 'ACTION',
   inputType: 'html',
   outputType: 'string',

@@ -11,7 +11,24 @@ module.exports = arn => ({
   inputType: 'json',
   outputType: 'csv',
   scheduled: null,
-  configSchema: [],
+  configSchema: [
+    {
+      fieldId: 'separator',
+      position: 0,
+      label: 'Separator',
+      defaultValue: ',',
+      type: 'input',
+      required: true
+    },
+    {
+      fieldId: 'header',
+      position: 1,
+      label: 'Prepend Header',
+      type: 'checkbox',
+      defaultValue: false,
+      required: true
+    }
+  ],
   samplePayload:
     '[{ "Year": "1997", "Make": "Ford", "Model": "E350" },\n{ "Year": "2000", "Make": "Mercury", "Model": "Cougar" }]',
   arn: arn

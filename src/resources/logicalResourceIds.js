@@ -35,7 +35,7 @@ module.exports = {
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION: 'UrlConfigTriggerServiceFunction',
   // steps
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
-  FETCH_ARTICLE_FUNCTION: 'FetchArticleFunction',
+  FETCH_TEXT_FUNCTION: 'FetchTextFunction',
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
   PARSE_CSV_FUNCTION: 'ParseCSVFunction',
   PARSE_JSON_FUNCTION: 'ParseJsonFunction',

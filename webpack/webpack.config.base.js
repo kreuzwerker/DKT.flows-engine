@@ -1,5 +1,5 @@
 const webpack = require('webpack')
-const MinifyPlugin = require('babel-minify-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   devtool: 'none',
@@ -25,6 +25,8 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.LoaderOptionsPlugin({ minimize: true }),
-    new MinifyPlugin()
+    new UglifyJsPlugin({
+      parallel: true
+    })
   ]
 }

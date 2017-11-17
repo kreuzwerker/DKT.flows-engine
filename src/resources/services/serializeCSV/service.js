@@ -13,6 +13,6 @@ module.exports = arn => ({
   scheduled: null,
   configSchema: [],
   samplePayload:
-    '[{ "Year": "1997", "Make": "Ford", "Model": "E350" }, { "Year": "2000", "Make": "Mercury", "Model": "Cougar" }]',
+    '[{ "Year": "1997", "Make": "Ford", "Model": "E350" },\n{ "Year": "2000", "Make": "Mercury", "Model": "Cougar" }]',
   arn: arn
 })

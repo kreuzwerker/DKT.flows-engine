@@ -5,7 +5,7 @@ module.exports = arn => ({
   icon: 'insert_drive_file',
   id: 'wycad4oKuXv6lOdtIoaNuc2b',
   logicalResourceId: SERIALIZE_CSV_FUNCTION,
-  name: 'Parse CSV',
+  name: 'Serialize CSV',
   provider: 'xOMFBmrwQmul4MB8FnEH3Z1b',
   type: 'ACTION',
   inputType: 'json',

@@ -46,7 +46,7 @@ function parseCSV(inputData, { configParams }, logger) {
     })
     .catch((err) => {
       logger.log(err)
-      return err
+      return Promise.reject(err)
     })
 }
 

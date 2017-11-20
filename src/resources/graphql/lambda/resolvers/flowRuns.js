@@ -272,12 +272,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({ flowRun, payload })
     })
 
-    flowRun.flow.active = true
-    flowRun.active = true
-    flowRun.status = 'running'
-
+    const updatedFlowRun = {
+      id: flowRun.id,
+      flow: { ...flowRun.flow, active: true },
+      active: true,
+      status: 'running'
+    }
     return Promise.all([
-      updateFlowRun(flowRun),
+      updateFlowRun(updatedFlowRun),
       updateFlow({ id: flowRun.flow.id, active: true }, false)
     ]).then(() => getFlowRunById(id))
   } catch (err) {

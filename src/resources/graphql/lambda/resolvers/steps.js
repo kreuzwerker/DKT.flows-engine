@@ -113,15 +113,19 @@ export async function testStep(stepId, payload, configParams) {
       result = { ...testedStep, service, error: output[parsedStepResult.contentKey] }
     } else {
       testedStep.tested = true
+
       let _result = output[parsedStepResult.contentKey]
       if (typeof _result === 'object') {
         // NB StepTestType.result must be a string
         _result = JSON.stringify(output[parsedStepResult.contentKey])
       }
 
-      result = { ...testedStep, service, result: _result }
+      result = {
+        ...testedStep,
+        service,
+        result: _result
+      }
     }
-
     await Promise.all([
       updateStep(testedStep),
       s3.deleteObject({ Key: testStepData.Key }),

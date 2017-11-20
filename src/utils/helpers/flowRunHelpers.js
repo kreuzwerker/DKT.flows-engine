@@ -135,7 +135,6 @@ export async function flowRunStepSuccessHandler(input, flowRunData, inputData, s
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
-  // const nextStep = getStepFromFlowRun(flowRunData.flowRun, position + 1)
   const stepOutputKey = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
   const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 

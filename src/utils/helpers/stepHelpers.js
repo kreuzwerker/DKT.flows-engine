@@ -94,7 +94,7 @@ export function testStepSuccessHandler(input, stepData, inputData, result) {
   stepData.status = 'success'
   stepData.finishedAt = timestamp()
   stepData[input.contentKey] = result
-  stepData.logs = updateLogs(stepData.logs, stepData, 'success')
+  stepData.logs = updateLogs(stepData.logs, inputData, stepData, 'success')
 
   return s3
     .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })

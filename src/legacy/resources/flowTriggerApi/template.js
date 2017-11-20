@@ -3,7 +3,7 @@ const {
   FLOW_TRIGGER_API_FUNCTION,
   FLOW_TRIGGER_API_GATEWAY,
   FLOW_TRIGGER_API_PERMISSIONS
-} = require('../locicalResourceIds')
+} = require('../logicalResourceIds')
 
 
 module.exports = ({ stage, key, swaggerKey }) => ({
@@ -23,7 +23,7 @@ module.exports = ({ stage, key, swaggerKey }) => ({
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
-      Runtime: 'nodejs4.3',
+      Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,

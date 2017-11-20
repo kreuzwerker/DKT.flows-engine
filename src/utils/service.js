@@ -3,6 +3,10 @@ import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
 
+/*
+ * This function is a wrapper for service lambda function. It takes a service function as a parameter
+ * and returns a function lambda function handler which can be used in flow runs and as a step test
+ */
 export default function service(serviceFn) {
   return async (event, context, callback) => {
     const logger = Logger(event.verbose)
@@ -18,7 +22,7 @@ export default function service(serviceFn) {
       if (input.testStep) {
         testStepErrorHandler(input, stepData, err).then(errorOutput => callback(null, errorOutput))
       } else {
-        output = Object.assign({}, input, { error: err })
+        output = { ...input, error: err }
         callback(null, output)
       }
     }
@@ -34,7 +38,7 @@ export default function service(serviceFn) {
 
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(inputData, logger, { event, context })
+      serviceResult = await serviceFn(inputData, logger, { event, context, stepData })
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)

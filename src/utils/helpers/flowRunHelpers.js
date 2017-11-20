@@ -79,15 +79,18 @@ export function triggerFlowRun(flowRun, payload) {
   const flowRunData = createFlowRunDataParams(flowRun, runId, payload, 'running')
   const invokeParams = createFlowRunTriggerParams(flowRun, runId)
 
-  return s3.putObject(flowRunData).then(() => Lambda.invoke(invokeParams)).then(() =>
-    dbFlowRun.updateFlowRun({
-      id: flowRun.id,
-      status: 'running',
-      message: null,
-      runs: flowRun.runs,
-      runsCount: flowRun.runs.length
-    })
-  )
+  return s3
+    .putObject(flowRunData)
+    .then(() => Lambda.invoke(invokeParams))
+    .then(() =>
+      dbFlowRun.updateFlowRun({
+        id: flowRun.id,
+        status: 'running',
+        message: null,
+        runs: flowRun.runs,
+        runsCount: flowRun.runs.length
+      })
+    )
 }
 
 /*
@@ -96,7 +99,7 @@ export function triggerFlowRun(flowRun, payload) {
  */
 function getStepFromFlowRun(flowRun, currentStep) {
   const steps = flowRun.flow.steps || []
-  return steps.filter(s => s.position === currentStep)[0]
+  return steps.find(s => parseInt(s.position, 10) === parseInt(currentStep, 10))
 }
 
 function updateLogs(logs, step, status, message = '') {
@@ -118,6 +121,7 @@ export async function flowRunStepSuccessHandler(input, flowRunData, serviceResul
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
+  // const nextStep = getStepFromFlowRun(flowRunData.flowRun, position + 1)
   const stepOutputKey = getStepOutputKey(flowRunData.flowRun, input.runId, step.id, position)
   const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 

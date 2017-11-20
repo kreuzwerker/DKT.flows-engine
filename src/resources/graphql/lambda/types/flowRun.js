@@ -6,8 +6,9 @@ import {
   GraphQLNonNull,
   GraphQLList
 } from 'graphql'
-import { FlowMirrorType } from './flow'
+import { FlowType } from './flow'
 import { getRuns } from '../resolvers/flowRuns'
+import { getFlowById } from '../resolvers/flows'
 
 const StepLogType = new GraphQLObjectType({
   name: 'StepLogType',
@@ -47,7 +48,10 @@ export const FlowRunType = new GraphQLObjectType({
     stateMachineArn: { type: GraphQLString },
     status: { type: GraphQLString },
     message: { type: GraphQLString },
-    flow: { type: FlowMirrorType },
+    flow: {
+      type: FlowType,
+      resolve: flowRun => getFlowById(flowRun.flow.id)
+    },
     runs: {
       type: new GraphQLList(RunsType),
       args: {

@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import { getFlowById } from './flows'
+import { getFlowById, setFlowDraftState } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
 import S3 from '../../../../utils/s3'
@@ -24,6 +24,14 @@ export function allFlowRuns() {
 
 export function getFlowRunById(id) {
   return dbFlowRuns.getFlowRunById(id)
+}
+
+export function getFlowRunsByFlowId(flowId) {
+  return dbFlowRuns.getFlowRunsByFlowId(flowId)
+}
+
+export async function getLastFlowRunByFlowId(flowId) {
+  return dbFlowRuns.getLastFlowRunByFlowId(flowId)
 }
 
 export async function getRuns(flowRun, args) {
@@ -92,9 +100,19 @@ export async function createFlowRun(params) {
   }
 
   function mergeServicesInSteps(steps, services) {
-    return steps.map(step =>
-      Object.assign({}, step, {
-        service: services.filter(service => service.id === step.service)[0] || {}
+    return steps.map(step => ({
+      ...step,
+      service: services.filter(service => service.id === step.service)[0] || {}
+    }))
+  }
+
+  function extendTasksWithActivities(services) {
+    return Promise.all(
+      services.map((service) => {
+        if (!service.task) return Promise.resolve(service)
+        return StepFunctions.createActivity({
+          name: `${service.id}-activity-${uuid.v4()}`
+        }).then(({ activityArn }) => ({ ...service, activityArn }))
       })
     )
   }
@@ -103,11 +121,12 @@ export async function createFlowRun(params) {
     let flow = await getFlowById(params.flow)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
-    const services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
+    services = await extendTasksWithActivities(services, flow.id)
 
-    flow = Object.assign({}, flow, { steps: mergeServicesInSteps(steps, services) })
+    flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
 
-    const stateMachineName = `${flow.name.replace(' ', '')}_${uuid.v4()}`
+    const stateMachineName = `${flow.name.replace(/\s/g, '')}_${uuid.v4()}`
     const newFlowRun = {
       id: uuid.v4(),
       status: 'pending',
@@ -118,6 +137,7 @@ export async function createFlowRun(params) {
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
+
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
       stateMachineDefinition
@@ -125,7 +145,12 @@ export async function createFlowRun(params) {
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
 
-    return dbFlowRuns.createFlowRun(newFlowRun)
+    const flowRun = await dbFlowRuns.createFlowRun(newFlowRun)
+
+    // Take flow out of draft state
+    flowRun.flow = await setFlowDraftState(flow, false)
+
+    return flowRun
   } catch (err) {
     return Promise.reject(err)
   }
@@ -172,11 +197,15 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then(flowRun =>
-      Promise.all([
+    .then((flowRun) => {
+      const { steps } = flowRun.flow
+      const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
+
+      return Promise.all([
         StepFunctions.deleteStateMachine(flowRun.stateMachineArn),
+        StepFunctions.deleteActivities(tasks),
         dbFlowRuns.deleteFlowRun(id)
       ])
-    )
+    })
     .then(() => ({ id }))
 }

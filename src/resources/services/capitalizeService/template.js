@@ -1,12 +1,12 @@
 const settings = require('../../../../settings')
-const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [CAPITALIZE_SERVICE_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
-      Runtime: 'nodejs4.3',
+      Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,

@@ -11,11 +11,13 @@ import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
+import { TaskType, TaskItemType } from './types/task'
 import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'
+import * as Tasks from './resolvers/tasks'
 import * as Steps from './resolvers/steps'
 
 /**
@@ -69,6 +71,16 @@ const QueryType = new GraphQLObjectType({
       resolve: (_, { id }) => Services.getServiceById(id)
     },
 
+    allTasks: {
+      type: new GraphQLList(TaskType),
+      resolve: Tasks.allTasks
+    },
+    TaskItem: {
+      type: TaskItemType,
+      args: { id: { type: GraphQLID } },
+      resolve: (_, { id }) => Tasks.getTaskItemById(id)
+    },
+
     allSteps: {
       type: new GraphQLList(StepType),
       resolve: Steps.allSteps
@@ -108,6 +120,11 @@ const MutationType = new GraphQLObjectType({
       },
       resolve: (_, flow) => Flows.updateFlow(flow)
     },
+    restoreFlow: {
+      type: FlowType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Flows.restoreFlow(id)
+    },
     deleteFlow: {
       type: FlowType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
@@ -117,9 +134,8 @@ const MutationType = new GraphQLObjectType({
     createFlowRun: {
       type: FlowRunType,
       args: {
-        id: { type: GraphQLID },
-        userId: { type: new GraphQLNonNull(GraphQLID) },
-        flow: { type: new GraphQLNonNull(GraphQLID) }
+        flow: { type: new GraphQLNonNull(GraphQLID) },
+        userId: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve: (_, flowRun) => FlowRuns.createFlowRun(flowRun)
     },
@@ -214,14 +230,29 @@ const MutationType = new GraphQLObjectType({
       type: StepTestType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
-        payload: { type: new GraphQLNonNull(GraphQLString) }
+        payload: { type: new GraphQLNonNull(GraphQLString) },
+        configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
-      resolve: (_, { id, payload }) => Steps.testStep(id, payload)
+      resolve: (_, { id, payload, configParams }) => Steps.testStep(id, payload, configParams)
     },
     deleteStep: {
       type: StepType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
       resolve: (_, { id }) => Steps.deleteStep(id)
+    },
+
+    updateTask: {
+      type: TaskType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        state: { type: GraphQLString }
+      },
+      resolve: (_, task) => Tasks.updateTask(task)
+    },
+    deleteTask: {
+      type: TaskType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }) => Tasks.deleteTask(id)
     }
   })
 })

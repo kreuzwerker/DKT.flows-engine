@@ -6,9 +6,11 @@ import settings from '../../settings'
 
 function StepFunctions() {
   AWS.config.apiVersions = { stepfunctions: settings.aws.stepFunctions.apiVersion }
-  const stepFunctions = new AWS.StepFunctions()
+  const stepFunctions = new AWS.StepFunctions(settings.aws.stepFunctions)
 
   return {
+    listStateMachines: () => stepFunctions.listStateMachines().promise(),
+
     startExecution: (stateMachineArn, data) => {
       return stepFunctions
         .startExecution({
@@ -30,6 +32,40 @@ function StepFunctions() {
 
     deleteStateMachine: (stateMachineArn) => {
       return stepFunctions.deleteStateMachine({ stateMachineArn }).promise()
+    },
+
+    createActivity: (params) => {
+      return stepFunctions.createActivity(params).promise()
+    },
+
+    deleteActivities: (activities) => {
+      return Promise.all(
+        activities.map((activity) => {
+          const { activityArn } = activity
+          return stepFunctions.deleteActivity({ activityArn }).promise()
+        })
+      )
+    },
+
+    getActivityTask: (params) => {
+      return stepFunctions
+        .getActivityTask(params)
+        .promise()
+        .then((res) => {
+          return res
+        })
+    },
+
+    sendTaskFailure: (params) => {
+      return stepFunctions.sendTaskFailure(params).promise()
+    },
+
+    sendTaskSuccess: (params) => {
+      return stepFunctions.sendTaskSuccess(params).promise()
+    },
+
+    deleteActivity: (params) => {
+      return stepFunctions.deleteActivity(params).promise()
     }
   }
 }

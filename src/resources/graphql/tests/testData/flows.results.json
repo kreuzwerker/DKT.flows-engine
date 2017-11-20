@@ -4,6 +4,7 @@
       "id": "dontDeleteMe20133m8gu0lju",
       "name": "first flow",
       "description": "This is a mocked flow object.",
+      "draft": true,
       "steps": [
         {
           "id": "dontDeleteMe101795ez58bzs",

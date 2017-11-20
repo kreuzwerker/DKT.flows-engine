@@ -1,5 +1,5 @@
 const settings = require('../../../settings')
-const { EXTRACT_ARTICLE_DATE_FUNCTION, S3_BUCKET } = require('../locicalResourceIds')
+const { EXTRACT_ARTICLE_DATE_FUNCTION, S3_BUCKET } = require('../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template
@@ -10,7 +10,7 @@ module.exports = ({ key }) => ({
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
-      Runtime: 'nodejs4.3',
+      Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,

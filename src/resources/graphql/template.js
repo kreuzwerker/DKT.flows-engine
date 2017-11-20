@@ -7,12 +7,15 @@ const {
   DYN_DB_FLOW_RUNS,
   DYN_DB_PROVIDERS,
   DYN_DB_SERVICES,
+  DYN_DB_TASKS,
   DYN_DB_STEPS,
+  TASK_INITIALIZER_FUNCTION,
+  TASK_OUTPUT_HANDLER_FUNCTION,
   STATE_MACHINE_TRIGGER_FUNCTION,
   STATE_MACHINE_OUTPUT_FUNCTION,
   URL_CONFIG_TRIGGER_SERVICE_FUNCTION,
   S3_BUCKET
-} = require('../locicalResourceIds')
+} = require('../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template
@@ -35,7 +38,7 @@ module.exports = ({ stage, key, swaggerKey }) => ({
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',
-      Runtime: 'nodejs4.3',
+      Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
       Timeout: 20,
@@ -45,9 +48,12 @@ module.exports = ({ stage, key, swaggerKey }) => ({
           DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
           DYNAMO_PROVIDERS: { Ref: DYN_DB_PROVIDERS },
           DYNAMO_SERVICES: { Ref: DYN_DB_SERVICES },
+          DYNAMO_TASKS: { Ref: DYN_DB_TASKS },
           DYNAMO_STEPS: { Ref: DYN_DB_STEPS },
           STATE_MACHINE_TRIGGER_FUNCTION: { Ref: STATE_MACHINE_TRIGGER_FUNCTION },
           STATE_MACHINE_OUTPUT_FUNCTION: { Ref: STATE_MACHINE_OUTPUT_FUNCTION },
+          TASK_INITIALIZER_FUNCTION: { Ref: TASK_INITIALIZER_FUNCTION },
+          TASK_OUTPUT_HANDLER_FUNCTION: { Ref: TASK_OUTPUT_HANDLER_FUNCTION },
           URL_CONFIG_TRIGGER_SERVICE_FUNCTION: { Ref: URL_CONFIG_TRIGGER_SERVICE_FUNCTION },
           S3_BUCKET: { Ref: S3_BUCKET }
         }
@@ -63,7 +69,17 @@ module.exports = ({ stage, key, swaggerKey }) => ({
         }
       }
     },
-    DependsOn: [DYN_DB_FLOWS, DYN_DB_FLOW_RUNS, DYN_DB_PROVIDERS, DYN_DB_SERVICES, DYN_DB_STEPS]
+    DependsOn: [
+      DYN_DB_FLOWS,
+      DYN_DB_FLOW_RUNS,
+      DYN_DB_PROVIDERS,
+      DYN_DB_SERVICES,
+      DYN_DB_STEPS,
+      TASK_INITIALIZER_FUNCTION,
+      STATE_MACHINE_TRIGGER_FUNCTION,
+      STATE_MACHINE_OUTPUT_FUNCTION,
+      URL_CONFIG_TRIGGER_SERVICE_FUNCTION
+    ]
   },
   [GRAPHQL_PERMISSIONS]: {
     Type: 'AWS::Lambda::Permission',

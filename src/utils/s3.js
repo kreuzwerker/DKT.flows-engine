@@ -9,8 +9,7 @@ function S3(bucket) {
     throw new Error('Missing bucket parameter')
   }
 
-  const { apiVersion } = settings.aws.s3
-  const s3 = new AWS.S3({ apiVersion })
+  const s3 = new AWS.S3(settings.aws.s3)
 
   function merge(params) {
     return Object.assign({}, { Bucket: bucket }, params)

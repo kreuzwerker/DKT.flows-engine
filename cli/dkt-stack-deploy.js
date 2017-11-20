@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-const { marshalItem } = require('dynamodb-marshaler')
 const program = require('commander')
 const Logger = require('./logger')
 const fsUtil = require('../lib/fsUtil')
@@ -44,19 +43,20 @@ logger.log('Build Lambdas')
 const lambdaResources = fsUtil.getAllResourcesWithLambda()
 
 function putItem(table, item) {
-  const { apiVersion } = settings.aws.dynamoDB
-  const dynamoDB = new AWS.DynamoDB({ apiVersion })
+  const dynamoDB = new AWS.DynamoDB(settings.aws.dynamoDB)
+  const documentClient = new AWS.DynamoDB.DocumentClient({ service: dynamoDB })
+
   const currentDate = new Date().toISOString()
   const newItem = Object.assign({}, item, {
     createdAt: currentDate, // TODO
     updatedAt: currentDate
   })
   const params = {
-    Item: marshalItem(newItem),
+    Item: newItem,
     ReturnConsumedCapacity: 'TOTAL'
   }
 
-  return dynamoDB.putItem(Object.assign({}, params, { TableName: table })).promise()
+  return documentClient.put(Object.assign({}, params, { TableName: table })).promise()
 }
 
 return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
@@ -65,13 +65,17 @@ return Promise.all(lambdaResources.map(resourceFn => Lambda.build(resourceFn)))
   .then(deployedBundles => createCloudFormationTmpl(deployedBundles, stage))
   .then(resourceTmplPath => deployCloudFormationTmpl(resourceTmplPath, stage))
   .then(() => CloudFormation.listStackResources(stage))
-  .then(stack => getServicesResources(stack.StackResourceSummaries))
-  .then(services =>
-    Promise.all(
-      services.map(service =>
-        putItem('DKT-flow-engine-Test-DynamoDBServices-1KTZPGPZJI9W2', service)
-      )
-    )
+  .then(stack =>
+    getServicesResources(stack.StackResourceSummaries).then(services => [services, stack])
   )
+  .then(([services, stack]) => {
+    const serviceTableResource = stack.StackResourceSummaries.find(
+      resource => resource.LogicalResourceId === 'DynamoDBServices'
+    )
+
+    return Promise.all(
+      services.map(service => putItem(serviceTableResource.PhysicalResourceId, service))
+    )
+  })
   .then(res => logger.log('Successfully deployed and updated Services'))
   .catch(err => logger.error(err))

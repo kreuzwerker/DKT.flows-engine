@@ -1,10 +1,10 @@
-const { SPACY_NER_FUNCTION } = require('../../locicalResourceIds')
+const { SPACY_NER_FUNCTION } = require('../../logicalResourceIds')
 
 module.exports = arn => ({
   description: 'Named Entity Recognition with spacy',
   icon: 'rss_feed',
   id: 'DTFARUqXHqbLasX3qnee',
-  locicalResourceId: SPACY_NER_FUNCTION,
+  logicalResourceId: SPACY_NER_FUNCTION,
   name: 'Spacy NER Service',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',

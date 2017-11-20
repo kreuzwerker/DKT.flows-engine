@@ -1,5 +1,5 @@
 const settings = require('../../../../settings')
-const { SPACY_NER_FUNCTION, S3_BUCKET } = require('../../locicalResourceIds')
+const { SPACY_NER_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 /*
  * AWS SAM Resource Template

@@ -38,12 +38,17 @@
     "tested": false
   },
   {
-    "description": "Capitalizes a given Text",
+    "description": "Manipulate a given string",
     "flow": "ciy0ie2q1aoul0179imlh0a73",
     "id": "ciy0jgybhai7v01dsda887ahw",
     "position": 3,
-    "service": "ciy4poibcrqth0133z4r56alz",
-    "configParams": [],
+    "service": "QvTv9lsZcWpo425eQfiHYnPN",
+    "configParams": [
+      {
+        "fieldId": "capitalize",
+        "value": "true"
+      }
+    ],
     "tested": false
   },
   {

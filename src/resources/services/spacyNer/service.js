@@ -8,6 +8,8 @@ module.exports = arn => ({
   name: 'Spacy NER Service',
   provider: 'ciy0ivuazabar0133xu1vlvyj',
   type: 'ACTION',
+  inputType: 'string',
+  outputType: 'annotations',
   configSchema: null,
   samplePayload: 'Apple is looking at buying U.K. startup for $1 billion',
   arn: arn

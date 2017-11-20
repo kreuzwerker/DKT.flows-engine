@@ -17,7 +17,7 @@ module.exports = ({ key }) => ({
       Environment: {
         Variables: {
           S3_BUCKET: { Ref: S3_BUCKET },
-          SPACY_SERVICE_URL: 'http://52.19.179.224/ent'
+          SPACY_SERVICE_URL: 'http://34.240.40.83:8080/ent'
         }
       }
     },

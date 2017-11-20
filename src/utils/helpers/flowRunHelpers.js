@@ -104,11 +104,12 @@ function getStepFromFlowRun(flowRun, currentStep) {
   return steps.find(s => parseInt(s.position, 10) === parseInt(currentStep, 10))
 }
 
-export function updateLogs(logs, step, status, message = '') {
+export function updateLogs(logs, inputData, step, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
     [step.id]: {
       status,
       message,
+      inputData,
       position: step.position,
       finishedAt: timestamp()
     }
@@ -130,7 +131,7 @@ function setCurrentRunStatus(runs, runId, status) {
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export async function flowRunStepSuccessHandler(input, flowRunData, serviceResult) {
+export async function flowRunStepSuccessHandler(input, flowRunData, inputData, serviceResult) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
@@ -141,7 +142,7 @@ export async function flowRunStepSuccessHandler(input, flowRunData, serviceResul
   const updatedFlowRunData = Object.assign({}, flowRunData, {
     [input.contentKey]: serviceResult,
     currentStep: position,
-    logs: updateLogs(flowRunData.logs, step, 'success')
+    logs: updateLogs(flowRunData.logs, inputData, step, 'success')
   })
 
   try {
@@ -187,7 +188,7 @@ export async function flowRunSuccessHandler(input, flowRunData, status = 'succes
 /*
  * ---- Error Handler ----------------------------------------------------------
  */
-export async function flowRunErrorHandler(err, input) {
+export async function flowRunErrorHandler(err, input, inputData) {
   const s3 = S3(process.env.S3_BUCKET)
 
   const position = input.currentStep
@@ -196,7 +197,7 @@ export async function flowRunErrorHandler(err, input) {
     const updatedData = Object.assign({}, currentData, {
       status: 'error',
       currentStep: position,
-      logs: updateLogs(currentData.logs, step, 'error', err.message)
+      logs: updateLogs(currentData.logs, inputData, step, 'error', err.message)
     })
     return s3.putObject({
       Key: getFlowRunOutputKey(currentData.flowRun, input.runId),

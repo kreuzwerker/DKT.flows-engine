@@ -19,6 +19,7 @@ const StepLogType = new GraphQLObjectType({
     position: { type: GraphQLInt },
     status: { type: GraphQLString },
     message: { type: GraphQLString },
+    inputData: { type: GraphQLString },
     timestamp: { type: GraphQLString }
   })
 })

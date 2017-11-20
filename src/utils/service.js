@@ -33,9 +33,10 @@ export default function service(serviceFn) {
 
     function errorHandler(err) {
       if (input.testStep) {
-        testStepErrorHandler(input, stepData, err).then(errorOutput => callback(null, errorOutput))
+        testStepErrorHandler(input, inputData, stepData, err).then(errorOutput =>
+          callback(null, errorOutput))
       } else {
-        output = { ...input, error: err }
+        output = { ...input, inputData, error: err }
         callback(null, output)
       }
     }
@@ -82,9 +83,9 @@ export default function service(serviceFn) {
     // handle the service lambda output
     try {
       if (input.testStep) {
-        output = await testStepSuccessHandler(input, stepData, serviceResult)
+        output = await testStepSuccessHandler(input, stepData, inputData, serviceResult)
       } else {
-        output = await flowRunStepSuccessHandler(input, stepData, serviceResult)
+        output = await flowRunStepSuccessHandler(input, stepData, inputData, serviceResult)
       }
     } catch (err) {
       logger.log('Error while handling service result', err)

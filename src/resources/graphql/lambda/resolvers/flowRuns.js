@@ -57,6 +57,7 @@ function getRunsFromFlowRunsData(flowRunsData) {
       message: logs.steps[id].message,
       finishedAt: logs.steps[id].finishedAt,
       position: logs.steps[id].position,
+      inputData: logs.steps[id].inputData,
       id: id
     }))
 

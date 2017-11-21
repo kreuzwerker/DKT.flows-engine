@@ -1,6 +1,6 @@
 import { CloudWatchEvents, Lambda } from './aws'
 
-export function createScheduledEvent(ruleName, interval, service, payload = {}) {
+export function createScheduledEvent(ruleName, { interval }, service, payload) {
   return CloudWatchEvents.putRule({
     Name: ruleName,
     ScheduleExpression: `rate(${interval.value} minutes)`

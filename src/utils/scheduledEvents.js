@@ -3,7 +3,7 @@ import { CloudWatchEvents, Lambda } from './aws'
 export function createScheduledEvent(ruleName, { interval }, service, payload) {
   return CloudWatchEvents.putRule({
     Name: ruleName,
-    ScheduleExpression: `rate(${interval.value} minutes)`
+    ScheduleExpression: `rate(${interval} minutes)`
   }).then(({ RuleArn }) =>
     Promise.all([
       Lambda.addPermission({

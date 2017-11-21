@@ -1,5 +1,6 @@
 import _isString from 'lodash/isString'
 import Logger from '../../../../utils/logger'
+import { getFlowRunById } from '../../../dbFlowRuns/resolvers'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 
 export async function handler(event, context, callback) {
@@ -11,7 +12,8 @@ export async function handler(event, context, callback) {
   logger.log(`Trigger FlowRun '${input.flowRun.id}' with url: ${url}`)
 
   try {
-    const result = await triggerFlowRun(input.flowRun, url)
+    const flowRun = await getFlowRunById(input.flowRun.id)
+    const result = await triggerFlowRun(flowRun, url)
     logger.log('Triggered FlowRun')
     callback(null, result)
   } catch (err) {

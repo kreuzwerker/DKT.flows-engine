@@ -34,7 +34,7 @@ export const SchedulingType = new GraphQLObjectType({
   name: 'SchedulingType',
   fields: () => ({
     startDatetime: { type: GraphQLString },
-    position: { type: GraphQLInt },
+    interval: { type: GraphQLInt },
     intervalType: { type: GraphQLString }
   })
 })

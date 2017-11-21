@@ -5,6 +5,7 @@
     "name": "first flow",
     "draft": true,
     "active": false,
+    "triggerType": "SCHEDULED",
     "steps": [
       "ciy0jidbmaivt0133sqdy35e6",
       "ciy0jgybhai7v013373puyuvy",

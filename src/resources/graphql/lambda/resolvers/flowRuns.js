@@ -264,13 +264,11 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     //   }
     // }
 
-    const triggerStep = flowRun.flow.steps.reduce((a, step) => {
-      return step.service.type === 'TRIGGER' ? step : a
-    }, {})
+    const triggerStep = flowRun.flow.steps.find(step => step.service.type === 'TRIGGER')
 
     await Lambda.invoke({
       FunctionName: triggerStep.service.arn,
-      Payload: JSON.stringify({ flowRun, payload })
+      Payload: JSON.stringify({ flowRun, payload, configParams: triggerStep.configParams })
     })
 
     const updatedFlowRun = {

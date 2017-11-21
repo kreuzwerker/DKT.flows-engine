@@ -2,20 +2,11 @@ import _isString from 'lodash/isString'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 
-function triggerStepReducer(a, step) {
-  return step.service.type === 'TRIGGER' ? step : a
-}
-
-function urlValueReducer(a, param) {
-  return param.fieldId === 'url-input' ? param.value : a
-}
-
 export async function handler(event, context, callback) {
+  event.verbose = true
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
-  const steps = input.flowRun.flow.steps || []
-  const currentStep = steps.reduce(triggerStepReducer, {})
-  const url = currentStep.configParams.reduce(urlValueReducer, '')
+  const url = input.configParams.find(param => param.fieldId === 'url-input').value
 
   logger.log(`Trigger FlowRun '${input.flowRun.id}' with url: ${url}`)
 

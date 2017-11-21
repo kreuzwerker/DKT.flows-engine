@@ -72,11 +72,12 @@ export function createTestStepTriggerParams(stepId, serviceArn, runId) {
  * ---- Success / Error Handler ------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-function updateLogs(logs, stepData, status, message = '') {
+function updateLogs(logs, inputData, stepData, status, message = '') {
   const steps = Object.assign({}, logs.steps, {
     [stepData.stepId]: {
       status,
       message,
+      inputData,
       finishedAt: timestamp()
     }
   })
@@ -86,14 +87,14 @@ function updateLogs(logs, stepData, status, message = '') {
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export function testStepSuccessHandler(input, stepData, result) {
+export function testStepSuccessHandler(input, stepData, inputData, result) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getTestStepOutputKey(stepData.stepId, stepData.runId)
 
   stepData.status = 'success'
   stepData.finishedAt = timestamp()
   stepData[input.contentKey] = result
-  stepData.logs = updateLogs(stepData.logs, stepData, 'success')
+  stepData.logs = updateLogs(stepData.logs, inputData, stepData, 'success')
 
   return s3
     .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
@@ -103,14 +104,14 @@ export function testStepSuccessHandler(input, stepData, result) {
 /*
  * ---- Error Handler ----------------------------------------------------------
  */
-export function testStepErrorHandler(input, stepData, error) {
+export function testStepErrorHandler(input, inputData, stepData, error) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getTestStepOutputKey(stepData.stepId, stepData.runId)
 
   stepData.status = 'error'
   stepData.finishedAt = timestamp()
   stepData.error = error.message
-  stepData.logs = updateLogs(stepData.logs, stepData, 'error')
+  stepData.logs = updateLogs(stepData.logs, inputData, stepData, 'error')
 
   return s3
     .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })

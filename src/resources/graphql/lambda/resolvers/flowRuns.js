@@ -57,6 +57,7 @@ function getRunsFromFlowRunsData(flowRunsData) {
       message: logs.steps[id].message,
       finishedAt: logs.steps[id].finishedAt,
       position: logs.steps[id].position,
+      inputData: logs.steps[id].inputData,
       id: id
     }))
 
@@ -254,13 +255,14 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       flowRun = await getFlowRunById(id)
     }
 
-    if (!flowRun.active) {
-      return {
-        ...flowRun,
-        status: 'error',
-        message: 'FlowRun is not active'
-      }
-    }
+    // TODO remove this for the moment since we clarified how to deal with multiple flowRun instances
+    // if (!flowRun.active) {
+    //   return {
+    //     ...flowRun,
+    //     status: 'error',
+    //     message: 'FlowRun is not active'
+    //   }
+    // }
 
     const triggerStep = flowRun.flow.steps.reduce((a, step) => {
       return step.service.type === 'TRIGGER' ? step : a
@@ -271,10 +273,16 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       Payload: JSON.stringify({ flowRun, payload })
     })
 
+    const updatedFlowRun = {
+      id: flowRun.id,
+      flow: { ...flowRun.flow, active: true },
+      active: true,
+      status: 'running'
+    }
     return Promise.all([
-      getFlowRunById(id),
+      updateFlowRun(updatedFlowRun),
       updateFlow({ id: flowRun.flow.id, active: true }, false)
-    ]).then(res => res[0])
+    ]).then(() => getFlowRunById(id))
   } catch (err) {
     return updateFlowRun({
       id,

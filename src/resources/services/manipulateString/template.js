@@ -1,8 +1,8 @@
 const settings = require('../../../../settings')
-const { CAPITALIZE_SERVICE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
+const { MANIPULATE_STRING_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
-  [CAPITALIZE_SERVICE_FUNCTION]: {
+  [MANIPULATE_STRING_FUNCTION]: {
     Type: 'AWS::Serverless::Function',
     Properties: {
       Handler: 'index.handler',

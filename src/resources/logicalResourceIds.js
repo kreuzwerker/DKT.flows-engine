@@ -37,6 +37,7 @@ module.exports = {
   CAPITALIZE_SERVICE_FUNCTION: 'CapitalizeServiceFunction',
   FETCH_TEXT_FUNCTION: 'FetchTextFunction',
   NLP_REQUEST_FUNCTION: 'NLPRequestFunction',
+  MANIPULATE_STRING_FUNCTION: 'ManipulateStringFunction',
   PARSE_CSV_FUNCTION: 'ParseCSVFunction',
   PARSE_JSON_FUNCTION: 'ParseJsonFunction',
   S3_OUTPUT_SERVICE_FUNCTION: 'S3OutputServiceFunction',
@@ -50,5 +51,7 @@ module.exports = {
 
   FLOW_RUNNER_FUNCTION: 'FlowRunnerFunction',
 
-  MERGE_JSONS_FUNCTION: 'MergeJSONsFunction'
+  MERGE_JSONS_FUNCTION: 'MergeJSONsFunction',
+
+  SPACY_NER_FUNCTION: 'SpacyNerFunction'
 }

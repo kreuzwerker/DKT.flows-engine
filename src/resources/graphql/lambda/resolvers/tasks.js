@@ -17,9 +17,9 @@ export function getTaskById(taskId, userId) {
 export async function queryTaskItem(taskId, userId) {
   const task = await getTaskById(taskId)
   if (!task.id) {
-    throw new Error('E404_TASK_NOT_FOUND');
+    throw new Error('E404_TASK_NOT_FOUND')
   } else if (task.userId !== userId) {
-    throw new Error('E401_TASK_ACCESS_DENIED');
+    throw new Error('E401_TASK_ACCESS_DENIED')
   }
 
   const runs = await getRuns(task.flowRun, { offset: 0 })
@@ -38,7 +38,7 @@ export async function queryTaskItem(taskId, userId) {
 
   return Promise.resolve({
     id: taskId,
-    data: lastRun.result,
+    data: JSON.stringify(lastRun.result, null, 2),
     prevStep: prevStep
   })
 }

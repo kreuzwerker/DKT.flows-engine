@@ -21,6 +21,7 @@ export const FlowType = new GraphQLObjectType({
     description: { type: GraphQLString },
     draft: { type: GraphQLBoolean },
     active: { type: GraphQLBoolean },
+    triggerType: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     stateMachineArn: { type: GraphQLString }, // depricated

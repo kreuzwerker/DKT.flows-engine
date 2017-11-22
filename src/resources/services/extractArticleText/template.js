@@ -13,7 +13,7 @@ module.exports = ({ key }) => ({
       Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
-      Timeout: 20,
+      Timeout: 60,
       Environment: {
         Variables: {
           S3_BUCKET: { Ref: S3_BUCKET }

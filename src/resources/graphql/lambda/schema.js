@@ -125,6 +125,7 @@ const MutationType = new GraphQLObjectType({
         name: { type: GraphQLString },
         active: { type: GraphQLBoolean },
         description: { type: GraphQLString },
+        triggerType: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) },
         userId: { type: GraphQLID }
       },

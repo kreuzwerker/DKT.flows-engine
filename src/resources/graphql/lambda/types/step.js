@@ -39,6 +39,15 @@ export const SchedulingType = new GraphQLObjectType({
   })
 })
 
+export const SchedulingInputType = new GraphQLInputObjectType({
+  name: 'SchedulingInputType',
+  fields: () => ({
+    startDatetime: { type: GraphQLString },
+    interval: { type: GraphQLInt },
+    intervalType: { type: GraphQLString }
+  })
+})
+
 export const StepType = new GraphQLObjectType({
   name: 'Step',
   fields: () => ({

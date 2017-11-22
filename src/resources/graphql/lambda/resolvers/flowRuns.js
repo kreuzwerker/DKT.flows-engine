@@ -202,6 +202,7 @@ export async function createFlowRun(params, userId) {
         const ruleName = `${newFlowRun.id}-scheduledTrigger`
         const payload = {
           configParams: triggerStep.configParams,
+          scheduled: triggerStep.scheduled,
           flowRun: { id: newFlowRun.id }
         }
         const ruleArn = await createScheduledEvent(

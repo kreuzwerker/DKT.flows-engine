@@ -55,8 +55,10 @@ export async function updateTask(task, userId) {
   const oldTask = await getTaskById(task.id, userId)
 
   if (oldTask.state !== task.state) {
-    const taskToken = oldTask.taskToken
+    const { taskToken } = oldTask
     switch (task.state) {
+      case 'MODIFIED':
+      case 'REVIEWED':
       case 'APPROVED': {
         await StepFunctions.sendTaskSuccess({
           taskToken,

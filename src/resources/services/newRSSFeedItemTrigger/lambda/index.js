@@ -1,5 +1,6 @@
 import feedparser from 'feedparser-promised'
 import _isString from 'lodash/isString'
+import timestamp from '../../../../utils/timestamp'
 import Logger from '../../../../utils/logger'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
 import * as dbServiceFeeds from '../../../dbServiceFeeds/resolvers'
@@ -47,6 +48,14 @@ export function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   const url = input.configParams.find(param => param.fieldId === 'url').value
+  const { startDatetime } = new Date(input.scheduled).getTime()
+  const currentDatetime = timestamp()
+
+  if (startDatetime > currentDatetime) {
+    const msg = `startDatetime ${startDatetime} is not reached yet.`
+    logger.log(msg)
+    return Promise.resolve(msg)
+  }
 
   Promise.all([
     dbFlowRuns.getFlowRunById(input.flowRun.id),

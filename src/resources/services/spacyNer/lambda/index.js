@@ -4,8 +4,9 @@ import service from '../../../../utils/service'
 /*
  * Named Entity Recognition with spacy
  */
-async function spacyNer(inputData, context, logger) {
+async function spacyNer(inputData, { configParams }, logger) {
   const { SPACY_SERVICE_URL } = process.env
+  const model = configParams.get('model') || 'en_core_web_sm'
 
   let nerResult = {},
       nerJSON = {}
@@ -15,7 +16,7 @@ async function spacyNer(inputData, context, logger) {
       method: 'POST',
       body: JSON.stringify({
         text: inputData,
-        model: 'en_core_web_sm',
+        model: model,
         o: 'json'
       })
     })

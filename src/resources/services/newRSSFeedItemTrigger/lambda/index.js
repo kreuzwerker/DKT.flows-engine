@@ -48,13 +48,14 @@ export function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   const url = input.configParams.find(param => param.fieldId === 'url').value
-  const { startDatetime } = new Date(input.scheduled).getTime()
+  const startDatetime = new Date(input.scheduling.startDatetime).getTime()
   const currentDatetime = timestamp()
 
   if (startDatetime > currentDatetime) {
     const msg = `startDatetime ${startDatetime} is not reached yet.`
     logger.log(msg)
-    return Promise.resolve(msg)
+    callback(null, msg)
+    return
   }
 
   Promise.all([

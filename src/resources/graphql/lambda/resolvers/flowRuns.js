@@ -202,9 +202,10 @@ export async function createFlowRun(params, userId) {
         const ruleName = `${newFlowRun.id}-scheduledTrigger`
         const payload = {
           configParams: triggerStep.configParams,
-          scheduled: triggerStep.scheduled,
+          scheduling: triggerStep.scheduling,
           flowRun: { id: newFlowRun.id }
         }
+
         const ruleArn = await createScheduledEvent(
           ruleName,
           triggerStep.scheduling,
@@ -270,7 +271,12 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
 
     await Lambda.invoke({
       FunctionName: triggerStep.service.arn,
-      Payload: JSON.stringify({ flowRun, payload, configParams: triggerStep.configParams })
+      Payload: JSON.stringify({
+        flowRun,
+        payload,
+        configParams: triggerStep.configParams,
+        scheduling: triggerStep.scheduling
+      })
     })
 
     const updatedFlowRun = {

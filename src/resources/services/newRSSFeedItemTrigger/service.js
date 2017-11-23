@@ -19,14 +19,14 @@ module.exports = arn => ({
       defaultValue: '',
       type: 'input',
       required: true
-    },
-    {
-      fieldId: 'interval',
-      position: 2,
-      label: 'Polling interval (in minutes)',
-      defaultValue: '15',
-      type: 'input'
     }
+    // {
+    //   fieldId: 'interval',
+    //   position: 2,
+    //   label: 'Polling interval (in minutes)',
+    //   defaultValue: '15',
+    //   type: 'input'
+    // }
   ],
   samplePayload: 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
   arn: arn

@@ -42,6 +42,8 @@ export async function createFlow(flow, userId) {
       name: null,
       description: null,
       draft: true,
+      active: false,
+      triggerType: 'MANUAL',
       steps: []
     },
     flow

@@ -196,23 +196,26 @@ export async function createFlowRun(params, userId) {
       flow
     }
 
-    const scheduledTriggerStep = flow.steps.find(step => step.service.scheduled)
-    if (scheduledTriggerStep) {
-      const interval = scheduledTriggerStep.configParams.find(param => param.fieldId === 'interval')
-      const ruleName = `${newFlowRun.id}-scheduledTrigger`
-      const payload = {
-        configParams: scheduledTriggerStep.configParams,
-        flowRun: { id: newFlowRun.id }
-      }
-      const ruleArn = await createScheduledEvent(
-        ruleName,
-        interval,
-        scheduledTriggerStep.service,
-        payload
-      )
+    if (flow.triggerType === 'SCHEDULED') {
+      const triggerStep = flow.steps.find(step => step.service.type === 'TRIGGER')
+      if (triggerStep) {
+        const ruleName = `${newFlowRun.id}-scheduledTrigger`
+        const payload = {
+          configParams: triggerStep.configParams,
+          scheduling: triggerStep.scheduling,
+          flowRun: { id: newFlowRun.id }
+        }
 
-      newFlowRun.scheduledTriggerArn = ruleArn
-      newFlowRun.scheduledTriggerName = ruleName
+        const ruleArn = await createScheduledEvent(
+          ruleName,
+          triggerStep.scheduling,
+          triggerStep.service,
+          payload
+        )
+
+        newFlowRun.scheduledTriggerArn = ruleArn
+        newFlowRun.scheduledTriggerName = ruleName
+      }
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
@@ -264,13 +267,16 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     //   }
     // }
 
-    const triggerStep = flowRun.flow.steps.reduce((a, step) => {
-      return step.service.type === 'TRIGGER' ? step : a
-    }, {})
+    const triggerStep = flowRun.flow.steps.find(step => step.service.type === 'TRIGGER')
 
     await Lambda.invoke({
       FunctionName: triggerStep.service.arn,
-      Payload: JSON.stringify({ flowRun, payload })
+      Payload: JSON.stringify({
+        flowRun,
+        payload,
+        configParams: triggerStep.configParams,
+        scheduling: triggerStep.scheduling
+      })
     })
 
     const updatedFlowRun = {

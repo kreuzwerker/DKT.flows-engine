@@ -14,7 +14,12 @@ import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
 import { TaskType, TaskItemType } from './types/task'
-import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
+import {
+  StepType,
+  StepConfigParamsInputType,
+  StepTestType,
+  SchedulingInputType
+} from './types/step'
 import { about } from './resolvers/about'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
@@ -125,6 +130,7 @@ const MutationType = new GraphQLObjectType({
         name: { type: GraphQLString },
         active: { type: GraphQLBoolean },
         description: { type: GraphQLString },
+        triggerType: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) },
         userId: { type: GraphQLID }
       },
@@ -237,6 +243,7 @@ const MutationType = new GraphQLObjectType({
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
         service: { type: GraphQLID },
+        scheduling: { type: SchedulingInputType },
         configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
       resolve: (_, step, { userId }) => Steps.updateStep(step, userId)

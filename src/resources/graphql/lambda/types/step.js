@@ -30,6 +30,24 @@ export const StepConfigParamsInputType = new GraphQLInputObjectType({
   })
 })
 
+export const SchedulingType = new GraphQLObjectType({
+  name: 'SchedulingType',
+  fields: () => ({
+    startDatetime: { type: GraphQLString },
+    interval: { type: GraphQLInt },
+    intervalType: { type: GraphQLString }
+  })
+})
+
+export const SchedulingInputType = new GraphQLInputObjectType({
+  name: 'SchedulingInputType',
+  fields: () => ({
+    startDatetime: { type: GraphQLString },
+    interval: { type: GraphQLInt },
+    intervalType: { type: GraphQLString }
+  })
+})
+
 export const StepType = new GraphQLObjectType({
   name: 'Step',
   fields: () => ({
@@ -56,6 +74,7 @@ export const StepType = new GraphQLObjectType({
       }
     },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
+    scheduling: { type: SchedulingType },
     tested: { type: GraphQLBoolean }
   })
 })

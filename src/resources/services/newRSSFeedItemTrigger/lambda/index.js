@@ -48,10 +48,10 @@ export function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   const url = input.configParams.find(param => param.fieldId === 'url').value
-  const startDatetime = new Date(input.scheduling.startDatetime).getTime()
-  const currentDatetime = timestamp()
+  const { startDatetime } = input.scheduling
+  const currentDatetime = new Date().toISOString
 
-  if (startDatetime > currentDatetime) {
+  if (new Date(startDatetime) > new Date(currentDatetime)) {
     const msg = `startDatetime ${startDatetime} is not reached yet.`
     logger.log(msg)
     callback(null, msg)

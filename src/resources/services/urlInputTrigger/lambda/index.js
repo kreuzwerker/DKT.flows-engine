@@ -1,5 +1,4 @@
 import _isString from 'lodash/isString'
-import timestamp from '../../../../utils/timestamp'
 import Logger from '../../../../utils/logger'
 import { getFlowRunById } from '../../../dbFlowRuns/resolvers'
 import { triggerFlowRun } from '../../../../utils/helpers/flowRunHelpers'
@@ -9,13 +8,10 @@ export async function handler(event, context, callback) {
   const logger = Logger(event.verbose)
   const input = _isString(event) ? JSON.parse(event) : event
   const url = input.configParams.find(param => param.fieldId === 'url-input').value
-  const startDatetime = new Date(input.scheduling.startDatetime).getTime()
-  const currentDatetime = timestamp()
-  console.log(input)
-  console.log('startDatetime', startDatetime)
-  console.log('currentDatetime', currentDatetime)
+  const { startDatetime } = input.scheduling
+  const currentDatetime = new Date().toISOString
 
-  if (startDatetime > currentDatetime) {
+  if (new Date(startDatetime) > new Date(currentDatetime)) {
     const msg = `startDatetime ${startDatetime} is not reached yet.`
     logger.log(msg)
     callback(null, msg)

@@ -1,7 +1,12 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import { createStep, deleteStep, batchGetStepByIds } from './steps'
-import { getFlowRunsByFlowId, getLastFlowRunByFlowId, updateFlowRun } from './flowRuns'
+import {
+  getFlowRunsByFlowId,
+  getLastFlowRunByFlowId,
+  updateFlowRun,
+  deleteFlowRun
+} from './flowRuns'
 import * as dbFlows from '../../../dbFlows/resolvers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 import * as dbSteps from '../../../dbSteps/resolvers'
@@ -70,13 +75,18 @@ export async function setFlowDraftState(flow, state) {
 }
 
 export async function updateFlow(flow, draft = true) {
+  const flowId = typeof flow === 'string' ? flow : flow.id
   if (typeof flow.active === 'boolean') {
     if (flow.active) {
-      const flowRun = await getLastFlowRunByFlowId(flow.id)
-      await updateFlowRun({ id: flowRun.id, active: flow.active })
+      const flowRun = await getLastFlowRunByFlowId(flowId)
+      if (flowRun) {
+        await updateFlowRun({ id: flowRun.id, active: flow.active })
+      }
     } else if (!flow.active) {
-      const flowRuns = await getFlowRunsByFlowId(flow.id)
-      await Promise.all(flowRuns.map(flowRun => updateFlowRun({ id: flowRun.id, active: flow.active })))
+      const flowRuns = await getFlowRunsByFlowId(flowId)
+      if (flowRuns && flowRuns.length > 0) {
+        await Promise.all(flowRuns.map(flowRun => updateFlowRun({ id: flowRun.id, active: flow.active })))
+      }
     }
   }
 
@@ -111,11 +121,20 @@ export async function restoreFlow(id, userId) {
 }
 
 export function deleteFlow(id, userId) {
-  return getFlowById(id, userId)
+  // NOTE The flowRun deletion will be removed in the future. But for now we don't have a UI for cleaning up flowRuns and its stateMachines
+  return getFlowRunsByFlowId(id)
+    .then((flowRuns) => {
+      if (flowRuns && flowRuns.length > 0) {
+        return Promise.all(flowRuns.map(flowRun => deleteFlowRun(flowRun.id)))
+      }
+      return Promise.resolve()
+    })
+    .then(() => getFlowById(id, userId))
     .then(flow =>
       Promise.all(flow.steps.map((stepId) => {
-        console.log(`DELETE STEP: ${stepId}`)
-        return deleteStep(stepId, userId)
+        return deleteStep(stepId, userId).catch((err) => {
+          return Promise.reject(err)
+        })
       })))
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))

@@ -287,7 +287,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
         flowRun,
         payload,
         configParams: triggerStep.configParams,
-        scheduling: triggerStep.scheduling
+        scheduling: triggerStep.scheduling || null
       })
     })
 

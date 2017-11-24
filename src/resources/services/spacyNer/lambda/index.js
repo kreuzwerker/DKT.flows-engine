@@ -6,7 +6,7 @@ import service from '../../../../utils/service'
  */
 async function spacyNer(inputData, { configParams }, logger) {
   const { SPACY_SERVICE_URL } = process.env
-  const model = configParams.get('model') || 'en_core_web_sm'
+  const model = configParams.get('mode') || 'en_core_web_sm'
 
   let nerResult = {},
       nerJSON = {}
@@ -21,9 +21,7 @@ async function spacyNer(inputData, { configParams }, logger) {
       })
     })
     if (!nerResult.ok) {
-      return Promise.reject(
-        `Failed fetching ${SPACY_SERVICE_URL} - ${nerResult.status} ${nerResult.statusText}`
-      )
+      return Promise.reject(`Failed fetching ${SPACY_SERVICE_URL} - ${nerResult.status} ${nerResult.statusText}`)
     }
   } catch (error) {
     logger.log('Error while requesting result from spacy-ner', error)

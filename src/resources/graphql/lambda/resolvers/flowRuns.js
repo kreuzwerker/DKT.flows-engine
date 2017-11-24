@@ -270,7 +270,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       flowRun = await getFlowRunById(id)
     }
 
-    // TODO remove this for the moment since we clarified how to deal with multiple flowRun instances
+    // TODO remove this for the moment until we clarified how to deal with multiple flowRun instances
     // if (!flowRun.active) {
     //   return {
     //     ...flowRun,

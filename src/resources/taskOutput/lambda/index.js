@@ -39,8 +39,6 @@ export async function handler(event, context, callback) {
     }
   }
 
-  console.log(JSON.stringify(updatedStepData))
-
   try {
     await Promise.all([
       s3.putObject({ Key: input.key, Body: JSON.stringify(updatedStepData, null, 2) }),

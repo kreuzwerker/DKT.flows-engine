@@ -180,7 +180,7 @@ export async function createFlowRun(params, userId) {
     let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
     services = await extendTasksWithActivities(services, flow.id)
 
-    flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
+    flow = { ...flow, steps: mergeServicesInSteps(steps, services), active: true }
 
     const stateMachineName = `${flow.name.replace(/\s/g, '')}_${uuid.v4()}`
     const newFlowRun = {
@@ -226,6 +226,18 @@ export async function createFlowRun(params, userId) {
     )
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
+
+    const oldFlowRuns = await getFlowRunsByFlowId(flow.id)
+    if (oldFlowRuns.length > 0) {
+      // NOTE this is just a temporary fix to prevent that there are "ghost"-FlowRuns that are not visible with the Frontend
+      // there will be a UI for this in the future and then we don't want to disable flowRuns anymore
+
+      /* eslint-disable */
+      await Promise.all(
+        oldFlowRuns.map(oldFlowRun => updateFlowRun({ ...oldFlowRun, active: false }))
+      )
+      /* estlint-enable */
+    }
 
     const flowRun = await dbFlowRuns.createFlowRun(newFlowRun)
 
@@ -309,7 +321,7 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then((flowRun) => {
+    .then(flowRun => {
       const { steps } = flowRun.flow
       const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
       const scheduledTrigger = steps.find(step => step.service.scheduled)

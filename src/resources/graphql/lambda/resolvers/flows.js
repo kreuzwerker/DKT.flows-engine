@@ -1,7 +1,7 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import { createStep, deleteStep, batchGetStepByIds } from './steps'
-import { getFlowRunsByFlowId, updateFlowRun } from './flowRuns'
+import { getFlowRunsByFlowId, getLastFlowRunByFlowId, updateFlowRun } from './flowRuns'
 import * as dbFlows from '../../../dbFlows/resolvers'
 import * as dbFlowRuns from '../../../dbFlowRuns/resolvers'
 import * as dbSteps from '../../../dbSteps/resolvers'
@@ -64,14 +64,20 @@ export async function createFlow(flow, userId) {
 export async function setFlowDraftState(flow, state) {
   return dbFlows.updateFlow({
     id: flow.id,
-    draft: state
+    draft: state,
+    active: flow.active
   })
 }
 
 export async function updateFlow(flow, draft = true) {
   if (typeof flow.active === 'boolean') {
-    const flowRuns = await getFlowRunsByFlowId(flow.id)
-    await Promise.all(flowRuns.map(flowRun => updateFlowRun({ id: flowRun.id, active: flow.active })))
+    if (flow.active) {
+      const flowRun = await getLastFlowRunByFlowId(flow.id)
+      await updateFlowRun({ id: flowRun.id, active: flow.active })
+    } else if (!flow.active) {
+      const flowRuns = await getFlowRunsByFlowId(flow.id)
+      await Promise.all(flowRuns.map(flowRun => updateFlowRun({ id: flowRun.id, active: flow.active })))
+    }
   }
 
   return dbFlows.updateFlow(flow).then(updatedFlow => setFlowDraftState(updatedFlow, draft))

@@ -33,7 +33,7 @@ export async function queryTaskItem(taskId, userId) {
     })
     .then(({ data, task, taskInput }) => {
       const taskData = JSON.parse(data.Body)
-      const prevStepPosition = parseInt(taskInput.currentStep, 10)
+      const prevStepPosition = parseInt(task.currentStep, 10) - 1
       const prevStep = task.flowRun.flow.steps.find(step => parseInt(step.position, 10) === prevStepPosition)
 
       return Promise.resolve({

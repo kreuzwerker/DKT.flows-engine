@@ -94,7 +94,7 @@ async function taskInitializer(event, context, callback) {
     userId: stepData.flowRun.flow.userId,
     flowRun: stepData.flowRun,
     currentStep: input.currentStep,
-    input: JSON.stringify(activityData.input),
+    input: activityData.input,
     comments: []
   }
   const flowRunOutputKey = getFlowRunOutputKey(stepData.flowRun, input.runId)

@@ -57,6 +57,7 @@ async function taskInitializer(event, context, callback) {
       activityArn: currentStep.service.activityArn
     })
   } catch (err) {
+    console.log(err)
     logger.log(
       'Unable to enhance ActivityTasks from start StateMachine: ',
       input.stateMachineArn,
@@ -97,6 +98,7 @@ async function taskInitializer(event, context, callback) {
     input: activityData.input,
     comments: []
   }
+
   const flowRunOutputKey = getFlowRunOutputKey(stepData.flowRun, input.runId)
   const stepOutputKey = getStepOutputKey(
     stepData.flowRun,
@@ -110,7 +112,7 @@ async function taskInitializer(event, context, callback) {
     const updatedStepData = {
       ...stepData,
       currentStep: input.currentStep,
-      logs: updateLogs(stepData.logs, currentStep, 'pending')
+      logs: updateLogs(stepData.logs, stepData[input.contentKey], currentStep, 'pending')
     }
 
     await Promise.all([
@@ -118,11 +120,17 @@ async function taskInitializer(event, context, callback) {
       s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedStepData, null, 2) })
     ])
   } catch (err) {
-    logger.log('unable to create task', task, err)
+    console.log('unable to create task', task, err)
     const updatedStepData = {
       ...stepData,
       currentStep: input.currentStep,
-      logs: updateLogs(stepData.logs, currentStep, 'error', 'unable to create task')
+      logs: updateLogs(
+        stepData.logs,
+        stepData[input.contentKey],
+        currentStep,
+        'error',
+        'unable to create task'
+      )
     }
     await Promise.all([
       s3.putObject({ Key: stepOutputKey, Body: JSON.stringify(updatedStepData, null, 2) }),

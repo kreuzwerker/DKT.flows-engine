@@ -28,7 +28,9 @@ export function getTaskById(taskId, userId) {
 
   return DynamoDB.getItem(table, query).then((r) => {
     const item = r.Item || {}
-    return typeof userId === 'undefined' || item.userId === userId || item.userId === null ? item : null
+    return typeof userId === 'undefined' || item.userId === userId || item.userId === null
+      ? item
+      : null
   })
 }
 

@@ -4,7 +4,7 @@ import { Lambda } from './aws'
 const outputResourceName = 'StatesMachineOutput'
 
 function stepName(step) {
-  return step.service.name.replace(' ', '')
+  return step.service.name.replace(' ', '') + step.id
 }
 
 function nextStepName(sortedSteps, currentIndex) {
@@ -51,7 +51,7 @@ function createStates(sortedSteps, outputArn, taskInitArn, taskOutputArn) {
                 }
               }
             ],
-            Next: 'TaskOutputHandler',
+            Next: `${[stepName(step)]}OutputHandler`,
             Catch: [
               {
                 ErrorEquals: ['States.All'],
@@ -59,7 +59,7 @@ function createStates(sortedSteps, outputArn, taskInitArn, taskOutputArn) {
               }
             ]
           },
-          TaskOutputHandler: {
+          [`${[stepName(step)]}OutputHandler`]: {
             Type: 'Task',
             Resource: taskOutputArn,
             Next: nextStepName(actions, i),

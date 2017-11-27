@@ -1,6 +1,8 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import _flatten from 'lodash/flatten'
+import _uniq from 'lodash/uniq'
+import shortId from 'shortid'
 import { getFlowById, setFlowDraftState, updateFlow } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
@@ -164,12 +166,12 @@ export async function createFlowRun(params, userId) {
     }))
   }
 
-  function extendTasksWithActivities(services) {
-    return Promise.all(services.map((service) => {
-      if (!service.task) return Promise.resolve(service)
+  function extendTasksWithActivities(steps) {
+    return Promise.all(steps.map((step) => {
+      if (!step.service.task) return Promise.resolve(step)
       return StepFunctions.createActivity({
-        name: `${service.id}-activity-${uuid.v4()}`
-      }).then(({ activityArn }) => ({ ...service, activityArn }))
+        name: `${step.id}-activity-${shortId.generate()}`
+      }).then(({ activityArn }) => ({ ...step, service: { ...step.service, activityArn } }))
     }))
   }
 
@@ -177,10 +179,12 @@ export async function createFlowRun(params, userId) {
     let flow = await getFlowById(params.flow, userId)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
-    let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
-    services = await extendTasksWithActivities(services, flow.id)
+    const services = servicesIds.length > 0 ? await batchGetServicesByIds(_uniq(servicesIds)) : []
+    let extendedSteps = mergeServicesInSteps(steps, services)
 
-    flow = { ...flow, steps: mergeServicesInSteps(steps, services), active: true }
+    extendedSteps = await extendTasksWithActivities(extendedSteps, flow.id)
+
+    flow = { ...flow, steps: extendedSteps, active: true }
 
     const stateMachineName = `${flow.name.replace(/\s/g, '')}_${uuid.v4()}`
     const newFlowRun = {
@@ -220,6 +224,8 @@ export async function createFlowRun(params, userId) {
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
 
+    console.log(stateMachineDefinition)
+
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
       stateMachineDefinition
@@ -246,6 +252,7 @@ export async function createFlowRun(params, userId) {
 
     return flowRun
   } catch (err) {
+    console.log('createFlowRun Error', err)
     return Promise.reject(err)
   }
 }

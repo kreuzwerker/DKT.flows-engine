@@ -1,6 +1,6 @@
 {
   "name": "dkt.flow-engine",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "./cli/dkt",
   "scripts": {

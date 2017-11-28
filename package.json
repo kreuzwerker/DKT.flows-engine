@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "./cli/dkt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kreuzwerker/DKT.flows-engine"
+  },
   "scripts": {
     "test": "cli/dkt test all",
     "build": "cli/dkt stack build -v",

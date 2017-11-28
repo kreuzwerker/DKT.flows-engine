@@ -6,7 +6,7 @@
   "scripts": {
     "test": "cli/dkt test all",
     "build": "cli/dkt stack build -v",
-    "deploy": "cli/dkt stack deploy -v",
+    "deploy": "cli/dkt stack deploy -s Dev -v",
     "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/node-modules/' .",
     "babel-node": "babel-node"
   },

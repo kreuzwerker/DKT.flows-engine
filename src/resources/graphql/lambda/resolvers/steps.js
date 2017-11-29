@@ -7,7 +7,7 @@ import {
   regenerateFlowStepsPositions
 } from './flows'
 import { getServiceById } from './services'
-import { S3, Lambda } from '../../../../utils/aws'
+import { S3, Lambda, SSM } from '../../../../utils/aws'
 import timestamp from '../../../../utils/timestamp'
 import {
   createTestStepDataParams,
@@ -80,8 +80,37 @@ async function updateFlowDraftState(step, userId) {
   return Promise.resolve()
 }
 
-export function updateStep(step, userId) {
-  return updateFlowDraftState(step, userId).then(() => dbSteps.updateStep(step))
+function updateSecretParameters(step) {
+  const { configParams } = step
+
+  return Promise.all(configParams.map((param) => {
+    if (!param.secret) {
+      return Promise.resolve({ ...param, secret: false })
+    }
+
+    const secretName = SSM.createParameterName(step.id, param.fieldId)
+    const parameterParams = {
+      Name: secretName,
+      Value: param.value,
+      Overwrite: true
+    }
+
+    return SSM.putParameter(parameterParams)
+      .then(() => SSM.getParameter({ Name: secretName }, false))
+      .then(({ Parameter }) => {
+        return {
+          ...param,
+          value: Parameter.Value,
+          secret: true
+        }
+      })
+  })).then(updatedConfigParams => ({ ...step, configParams: updatedConfigParams }))
+}
+
+export async function updateStep(step, userId) {
+  return updateFlowDraftState(step, userId)
+    .then(() => updateSecretParameters(step))
+    .then(updatedStep => dbSteps.updateStep(updatedStep))
 }
 
 export async function testStep(stepId, payload) {

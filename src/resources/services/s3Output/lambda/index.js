@@ -1,7 +1,14 @@
 import service from '../../../../utils/service'
-import { S3 } from '../../../../utils/aws'
+import { S3, SSM } from '../../../../utils/aws'
 
-function s3Output(inputData, { configParams }, logger) {
+function getParameter(name) {
+  return SSM.getParameter({ Name: name }, true).then((res) => {
+    console.log(res)
+    return res.Parameter.Value
+  })
+}
+
+async function s3Output(inputData, { configParams, currentStep }, logger) {
   const bucket = configParams.get('bucket')
   const path = configParams.get('path')
   const filename = configParams.get('filename')

@@ -84,13 +84,13 @@ export function updateStep(step, userId) {
   return updateFlowDraftState(step, userId).then(() => dbSteps.updateStep(step))
 }
 
-export async function testStep(stepId, payload, configParams) {
+export async function testStep(stepId, payload) {
   const s3 = S3(process.env.S3_BUCKET)
   try {
     const step = await getStepById(stepId)
     const service = await getServiceById(step.service)
     const runId = `${timestamp()}_${uuid.v4()}`
-    const testStepData = createTestStepDataParams(step, runId, payload, configParams)
+    const testStepData = createTestStepDataParams(step, runId, payload)
     const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
 
     if (service.type === 'TRIGGER') {

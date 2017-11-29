@@ -49,6 +49,9 @@ module.exports = {
       apiVersion: '2016-11-23',
       arn: `arn:aws:iam::${ACCOUNT}:role/service-role/StatesExecutionRole-eu-west-1`,
       region: 'eu-west-1'
+    },
+    ssm: {
+      apiVersion: '2014-11-06'
     }
   },
   fs: {

@@ -18,7 +18,8 @@ export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
   fields: () => ({
     fieldId: { type: GraphQLID },
-    value: { type: GraphQLString }
+    value: { type: GraphQLString },
+    secret: { type: GraphQLBoolean }
   })
 })
 
@@ -26,7 +27,8 @@ export const StepConfigParamsInputType = new GraphQLInputObjectType({
   name: 'StepConfigParamsInput',
   fields: () => ({
     fieldId: { type: GraphQLID },
-    value: { type: GraphQLString }
+    value: { type: GraphQLString },
+    secret: { type: GraphQLBoolean }
   })
 })
 

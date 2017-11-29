@@ -8,8 +8,11 @@ function SSM() {
   const ssm = new AWS.SSM(settings.aws.ssm)
 
   return {
-    getParameter: params => ssm.getParameter(params).promise(),
-    putParameter: params => ssm.putParameter({ ...params, Type: 'SecureString' }).promise()
+    createParameterName: (stepId, fieldId) => `${stepId}_${fieldId}`,
+    getParameter: (params, decrypt = false) =>
+      ssm.getParameter({ ...params, WithDecryption: decrypt }).promise(),
+    putParameter: params => ssm.putParameter({ ...params, Type: 'SecureString' }).promise(),
+    deleteParameter: params => ssm.deleteParameter(params).promise()
   }
 }
 

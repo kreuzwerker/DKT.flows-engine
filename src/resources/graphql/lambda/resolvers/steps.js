@@ -23,6 +23,24 @@ export function allSteps() {
   return dbSteps.allSteps()
 }
 
+function decryptConfigParams(step) {
+  const { configParams } = step
+  if (!configParams || configParams.length === 0) {
+    return Promise.resolve(step)
+  }
+
+  return Promise.all(configParams.map((param) => {
+    if (param.secret) {
+      const secretName = SSM.createParameterName(step.id, param.fieldId)
+      return SSM.getParameter({ Name: secretName }, true)
+        .then(res => ({ ...param, value: res.Parameter.Value }))
+        .catch(() => param)
+    }
+
+    return Promise.resolve(param)
+  })).then(decryptedConfigParams => ({ ...step, configParams: decryptedConfigParams }))
+}
+
 export function getStepById(stepId) {
   return dbSteps.getStepById(stepId)
 }

@@ -38,7 +38,7 @@ export function createAccount(account, userId) {
 export async function updateAccount(account, userId) {
   return getAccountById(account.id, userId).then((oldAccount) => {
     if (!oldAccount) {
-      return Promise.reject(new Error('E401_NOT_ALLOWED'))
+      return Promise.reject(new Error('E401_ACCOUNT_NOT_ALLOWED'))
     }
 
     const credentials = account.credentials || null
@@ -61,7 +61,7 @@ export async function updateAccount(account, userId) {
 export function deleteAccount(id, userId) {
   return getAccountById(id, userId).then((oldAccount) => {
     if (!oldAccount) {
-      return Promise.reject(new Error('E401_NOT_ALLOWED'))
+      return Promise.reject(new Error('E401_ACCOUNT_NOT_ALLOWED'));
     }
 
     return SSM.deleteParameter({

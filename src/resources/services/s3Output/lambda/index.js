@@ -11,17 +11,19 @@ async function s3Output(inputData, { configParams, currentStep }, logger) {
   const path = configParams.get('path')
   const filename = configParams.get('filename')
 
-  // aws credentials
-  const accessKey = configParams.get('accessKey')
-  const secretParamName = SSM.createParameterName(currentStep.id, 'accessSecretKey')
+  // TODO aws credentials
+  // const accessKey = configParams.get('accessKey')
+  // const secretParamName = SSM.createParameterName(currentStep.id, 'accessSecretKey')
+  //
+  // const accessSecretKey = await getParameter(secretParamName)
+  // const credentials = {
+  //   accessKeyId: accessKey,
+  //   secretAccessKey: accessSecretKey
+  // }
 
-  const accessSecretKey = await getParameter(secretParamName)
-  const credentials = {
-    accessKeyId: accessKey,
-    secretAccessKey: accessSecretKey
-  }
+  console.log(JSON.stringify(currentStep, null, 2))
 
-  const s3 = S3(bucket, credentials)
+  const s3 = S3(bucket)
 
   return s3
     .putObject({

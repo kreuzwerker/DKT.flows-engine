@@ -47,5 +47,5 @@ export function deleteAccount(id) {
   const table = process.env.DYNAMO_ACCOUNTS
   const deleteQuery = { Key: { id } }
 
-  DynamoDB.deleteItem(table, deleteQuery)
+  return DynamoDB.deleteItem(table, deleteQuery)
 }

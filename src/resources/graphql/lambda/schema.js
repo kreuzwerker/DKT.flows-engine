@@ -265,6 +265,7 @@ const MutationType = new GraphQLObjectType({
       type: StepType,
       args: {
         id: { type: GraphQLID },
+        account: { type: GraphQLID },
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
@@ -277,6 +278,7 @@ const MutationType = new GraphQLObjectType({
       type: StepType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
+        account: { type: GraphQLID },
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },

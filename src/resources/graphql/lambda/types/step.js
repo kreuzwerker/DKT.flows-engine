@@ -14,6 +14,7 @@ import { FlowType } from './flow'
 import { ServiceType } from './service'
 import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
+import * as Accounts from '../resolvers/accounts'
 
 export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
@@ -76,7 +77,13 @@ export const StepType = new GraphQLObjectType({
         return step.service
       }
     },
-    account: { type: AccountType },
+    account: {
+      type: AccountType,
+      resolve: (step, _, { userId }) => {
+        if (!step.account) return null
+        return Accounts.getAccountById(step.account, userId)
+      }
+    },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     scheduling: { type: SchedulingType },
     tested: { type: GraphQLBoolean }

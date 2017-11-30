@@ -9,6 +9,7 @@ import {
   GraphQLNonNull
 } from 'graphql'
 import { AboutType } from './types/about'
+import { AccountType } from './types/account'
 import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
@@ -21,6 +22,7 @@ import {
   SchedulingInputType
 } from './types/step'
 import { about } from './resolvers/about'
+import * as Accounts from './resolvers/accounts'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -39,6 +41,17 @@ const QueryType = new GraphQLObjectType({
       type: AboutType,
       resolve: about
     },
+
+    allAccounts: {
+      type: new GraphQLList(AccountType),
+      resolve: (_, args, { userId }) => Accounts.allAccounts(userId)
+    },
+    Account: {
+      type: AccountType,
+      args: { id: { type: GraphQLID } },
+      resolve: (_, { id }, { userId }) => Accounts.getAccountById(id, userId)
+    },
+
     allFlows: {
       type: new GraphQLList(FlowType),
       resolve: (_, variables, { userId }) => Flows.allFlows(userId)

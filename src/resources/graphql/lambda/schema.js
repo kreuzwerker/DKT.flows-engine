@@ -27,15 +27,6 @@ import * as Providers from './resolvers/providers'
 import * as Services from './resolvers/services'
 import * as Tasks from './resolvers/tasks'
 import * as Steps from './resolvers/steps'
-import { SSM } from '../../../utils/aws'
-
-const ParameterType = new GraphQLObjectType({
-  name: 'Parameter',
-  fields: () => ({
-    name: { type: GraphQLString },
-    value: { type: GraphQLString }
-  })
-})
 
 /**
  * ---- Queries ----------------------------------------------------------------
@@ -44,25 +35,6 @@ const ParameterType = new GraphQLObjectType({
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    parameter: {
-      type: ParameterType,
-      args: {
-        name: { type: GraphQLString },
-        withDecryption: { type: GraphQLBoolean }
-      },
-      resolve: (_, args, { userId }) => {
-        return SSM.getParameter({
-          Name: args.name,
-          WithDecryption: args.withDecryption
-        }).then((res) => {
-          console.log(res.Parameter)
-          return {
-            name: res.Parameter.Name,
-            value: res.Parameter.Value
-          }
-        })
-      }
-    },
     about: {
       type: AboutType,
       resolve: about
@@ -140,28 +112,6 @@ const QueryType = new GraphQLObjectType({
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    putParameter: {
-      type: ParameterType,
-      args: {
-        name: { type: GraphQLString },
-        value: { type: GraphQLString }
-      },
-      resolve: (_, args, { userId }) => {
-        return SSM.putParameter({
-          Name: args.name,
-          Value: args.value
-        })
-          .then((res) => {
-            console.log(res)
-            return args
-          })
-          .catch((err) => {
-            console.log(err)
-            return err
-          })
-      }
-    },
-
     createFlow: {
       type: FlowType,
       args: {

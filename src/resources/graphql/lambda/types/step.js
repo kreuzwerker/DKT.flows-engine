@@ -9,6 +9,7 @@ import {
   GraphQLInputObjectType
 } from 'graphql'
 import _isString from 'lodash/isString'
+import { AccountType } from './account'
 import { FlowType } from './flow'
 import { ServiceType } from './service'
 import * as Flows from '../resolvers/flows'
@@ -75,6 +76,7 @@ export const StepType = new GraphQLObjectType({
         return step.service
       }
     },
+    account: { type: AccountType },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     scheduling: { type: SchedulingType },
     tested: { type: GraphQLBoolean }
@@ -93,6 +95,7 @@ export const StepTestType = new GraphQLObjectType({
     service: {
       type: ServiceType
     },
+    account: { type: AccountType },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     result: { type: GraphQLString },
     error: { type: GraphQLString },

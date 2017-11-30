@@ -1,18 +1,27 @@
+import AWS from 'aws-sdk'
 import service from '../../../../utils/service'
 import { S3, SSM } from '../../../../utils/aws'
 
 function getParameter(name) {
-  return SSM.getParameter({ Name: name }, true).then((res) => {
-    console.log(res)
-    return res.Parameter.Value
-  })
+  return SSM.getParameter({ Name: name }, true).then(res => res.Parameter.Value)
 }
 
 async function s3Output(inputData, { configParams, currentStep }, logger) {
   const bucket = configParams.get('bucket')
   const path = configParams.get('path')
   const filename = configParams.get('filename')
-  const s3 = S3(bucket)
+
+  // aws credentials
+  const accessKey = configParams.get('accessKey')
+  const secretParamName = SSM.createParameterName(currentStep.id, 'accessSecretKey')
+
+  const accessSecretKey = await getParameter(secretParamName)
+  const credentials = {
+    accessKeyId: accessKey,
+    secretAccessKey: accessSecretKey
+  }
+
+  const s3 = S3(bucket, credentials)
 
   return s3
     .putObject({

@@ -103,6 +103,20 @@ async function updateFlowDraftState(step, userId) {
 function updateSecretParameters(step) {
   const { configParams } = step
 
+  function getDecryptedValueIfPossible(secretName) {
+    return SSM.getParameter({ Name: secretName }, true)
+      .then((res) => {
+        if (res.Parameter && res.Parameter.Value) {
+          return res.Parameter.Value
+        }
+        return null
+      })
+      .catch((err) => {
+        console.log(err)
+        return null
+      })
+  }
+
   return Promise.all(configParams.map((param) => {
     if (!param.secret) {
       return Promise.resolve({ ...param, secret: false })
@@ -115,7 +129,14 @@ function updateSecretParameters(step) {
       Overwrite: true
     }
 
-    return SSM.putParameter(parameterParams)
+    return getDecryptedValueIfPossible(secretName)
+      .then((value) => {
+        if (value) {
+          parameterParams.Value = value
+        }
+
+        return SSM.putParameter(parameterParams)
+      })
       .then(() => SSM.getParameter({ Name: secretName }, false))
       .then(({ Parameter }) => {
         return {

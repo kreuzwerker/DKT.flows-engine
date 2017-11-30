@@ -125,6 +125,31 @@ const QueryType = new GraphQLObjectType({
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
+    createAccount: {
+      type: AccountType,
+      args: {
+        name: { type: GraphQLString },
+        accountType: { type: GraphQLString },
+        credentials: { type: GraphQLString }
+      },
+      resolve: (_, account, { userId }) => Accounts.createAccount(account, userId)
+    },
+    updateAccount: {
+      type: AccountType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        accountType: { type: GraphQLString },
+        credentials: { type: GraphQLString }
+      },
+      resolve: (_, account, { userId }) => Accounts.updateAccount(account, userId)
+    },
+    deleteAccount: {
+      type: AccountType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }, { userId }) => Accounts.deleteAccount(id, userId)
+    },
+
     createFlow: {
       type: FlowType,
       args: {

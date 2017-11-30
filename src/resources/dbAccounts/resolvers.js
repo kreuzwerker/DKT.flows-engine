@@ -29,3 +29,23 @@ export function getAccountById(id, userId) {
   })
 }
 
+export function createAccount(account) {
+  const table = process.env.DYNAMO_ACCOUNTS
+  return DynamoDB.putItem(table, account)
+}
+
+export function updateAccount(account) {
+  const table = process.env.DYNAMO_ACCOUNTS
+  const query = {
+    Key: { id: account.id }
+  }
+
+  return DynamoDB.updateItem(table, query, account)
+}
+
+export function deleteAccount(id) {
+  const table = process.env.DYNAMO_ACCOUNTS
+  const deleteQuery = { Key: { id } }
+
+  DynamoDB.deleteItem(table, deleteQuery)
+}

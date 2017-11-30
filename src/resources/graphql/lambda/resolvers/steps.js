@@ -46,7 +46,9 @@ export function getStepById(stepId) {
 }
 
 export function batchGetStepByIds(stepsIds) {
-  return dbSteps.batchGetStepByIds(stepsIds)
+  return dbSteps
+    .batchGetStepByIds(stepsIds)
+    .then(steps => Promise.all(steps.map(step => decryptConfigParams(step))))
 }
 
 /**

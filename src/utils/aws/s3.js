@@ -4,12 +4,14 @@
 import AWS from 'aws-sdk'
 import settings from '../../../settings'
 
-function S3(bucket, credentials) {
+function S3(bucket, credentials = null) {
   if (!bucket) {
     throw new Error('Missing bucket parameter')
   }
 
-  const opts = credentials ? { ...settings.aws.s3, credentials } : settings.aws.s3
+  const opts = credentials ? { ...settings.aws.s3, ...credentials } : settings.aws.s3
+
+  console.log(opts)
 
   const s3 = new AWS.S3(opts)
 

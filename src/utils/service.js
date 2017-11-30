@@ -58,6 +58,7 @@ export default function service(serviceFn) {
 
     const currentStep = getCurrentStep(stepData, input)
     const configParams = currentStep.configParams || []
+    const { userId } = stepData.flowRun.flow // owner
 
     // add getter to configParams
     configParams.get = (selector) => {
@@ -74,7 +75,8 @@ export default function service(serviceFn) {
           context,
           stepData,
           currentStep,
-          configParams
+          configParams,
+          userId
         },
         logger
       )

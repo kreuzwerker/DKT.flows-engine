@@ -1,7 +1,7 @@
 import { DynamoDB } from '../../utils/aws'
 
 export function allAccounts(userId) {
-  const table = process.env.DYN_DB_ACCOUNTS
+  const table = process.env.DYNAMO_ACCOUNTS
   const params = {
     FilterExpression: '#userId = :userId',
     ExpressionAttributeNames: {
@@ -16,7 +16,7 @@ export function allAccounts(userId) {
 }
 
 export function getAccountById(id, userId) {
-  const table = process.env.DYN_DB_ACCOUNTS
+  const table = process.env.DYNAMO_ACCOUNTS
   const query = {
     Key: { id }
   }

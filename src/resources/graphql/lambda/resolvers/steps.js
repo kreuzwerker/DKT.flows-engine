@@ -42,7 +42,7 @@ function decryptConfigParams(step) {
 }
 
 export function getStepById(stepId) {
-  return dbSteps.getStepById(stepId)
+  return dbSteps.getStepById(stepId).then(step => decryptConfigParams(step))
 }
 
 export function batchGetStepByIds(stepsIds) {

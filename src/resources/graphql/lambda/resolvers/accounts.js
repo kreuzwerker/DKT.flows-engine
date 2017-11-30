@@ -22,7 +22,7 @@ export function createAccount(account, userId) {
   const id = uuid.v4()
 
   return SSM.putParameter({
-    Name: id,
+    Name: `${id}_parameter`,
     Value: JSON.stringify(account.credentials)
   }).then(() => {
     delete account.credentials
@@ -50,7 +50,7 @@ export async function updateAccount(account, userId) {
       }
 
       return SSM.putParameter({
-        Name: account.id,
+        Name: `${account.id}_parameter`,
         Value: JSON.stringify(credentials),
         Overwrite: true
       }).then(() => res)

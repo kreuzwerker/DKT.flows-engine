@@ -20,21 +20,6 @@ module.exports = arn => ({
       required: true
     },
     {
-      fieldId: 'accessKey',
-      label: 'Access Key',
-      defaultValue: '',
-      type: 'input',
-      required: true
-    },
-    {
-      fieldId: 'accessSecretKey',
-      label: 'Secret Key',
-      defaultValue: '',
-      type: 'input',
-      required: true,
-      secret: true
-    },
-    {
       fieldId: 'path',
       label: 'Path',
       defaultValue: '',

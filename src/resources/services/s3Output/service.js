@@ -11,6 +11,7 @@ module.exports = arn => ({
   inputType: 'json',
   outputType: 'json',
   scheduled: null,
+  requiredAccountType: 'AWS',
   configSchema: [
     {
       fieldId: 'bucket',

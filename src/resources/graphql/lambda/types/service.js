@@ -40,6 +40,7 @@ export const ServiceType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     type: { type: GraphQLString },
+    requiredAccountType: { type: GraphQLString },
     inputType: { type: GraphQLString },
     outputType: { type: GraphQLString },
     scheduled: { type: GraphQLBoolean },

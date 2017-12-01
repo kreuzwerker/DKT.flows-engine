@@ -103,6 +103,10 @@ async function updateFlowDraftState(step, userId) {
 function updateSecretParameters(step) {
   const { configParams } = step
 
+  if (!configParams || configParams.length === 0) {
+    return Promise.resolve(step)
+  }
+
   function getDecryptedValueIfPossible(secretName) {
     return SSM.getParameter({ Name: secretName }, true)
       .then((res) => {

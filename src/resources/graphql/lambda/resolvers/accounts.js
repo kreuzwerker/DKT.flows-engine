@@ -61,11 +61,11 @@ export async function updateAccount(account, userId) {
 export function deleteAccount(id, userId) {
   return getAccountById(id, userId).then((oldAccount) => {
     if (!oldAccount) {
-      return Promise.reject(new Error('E401_ACCOUNT_NOT_ALLOWED'));
+      return Promise.reject(new Error('E401_ACCOUNT_NOT_ALLOWED'))
     }
 
     return SSM.deleteParameter({
-      Name: id
+      Name: oldAccount.key
     }).then(() => dbAccounts.deleteAccount(id).then(() => ({ id })))
   })
 }

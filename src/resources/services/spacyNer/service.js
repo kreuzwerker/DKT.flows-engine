@@ -10,6 +10,7 @@ module.exports = arn => ({
   type: 'ACTION',
   inputType: 'string',
   outputType: 'annotations',
+  requiredAccountType: null,
   configSchema: [
     {
       fieldId: 'mode',
@@ -25,4 +26,4 @@ module.exports = arn => ({
   ],
   samplePayload: 'Apple is looking at buying U.K. startup for $1 billion',
   arn: arn
-});
+})

@@ -11,6 +11,7 @@ module.exports = arn => ({
   inputType: 'html',
   outputType: 'string',
   scheduled: null,
+  requiredAccountType: null,
   task: false,
   configSchema: [
     {

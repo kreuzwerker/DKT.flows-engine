@@ -11,6 +11,7 @@ module.exports = arn => ({
   inputType: null,
   outputType: null,
   scheduled: null,
+  requiredAccountType: null,
   task: true,
   taskType: 'REVIEW',
   configSchema: [

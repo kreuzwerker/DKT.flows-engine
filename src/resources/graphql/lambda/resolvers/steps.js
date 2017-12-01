@@ -7,7 +7,7 @@ import {
   regenerateFlowStepsPositions
 } from './flows'
 import { getServiceById } from './services'
-import { S3, Lambda } from '../../../../utils/aws'
+import { S3, Lambda, SSM } from '../../../../utils/aws'
 import timestamp from '../../../../utils/timestamp'
 import {
   createTestStepDataParams,
@@ -23,12 +23,32 @@ export function allSteps() {
   return dbSteps.allSteps()
 }
 
+function decryptConfigParams(step) {
+  const { configParams } = step
+  if (!configParams || configParams.length === 0) {
+    return Promise.resolve(step)
+  }
+
+  return Promise.all(configParams.map((param) => {
+    if (param.secret) {
+      const secretName = SSM.createParameterName(step.id, param.fieldId)
+      return SSM.getParameter({ Name: secretName }, true)
+        .then(res => ({ ...param, value: res.Parameter.Value }))
+        .catch(() => param)
+    }
+
+    return Promise.resolve(param)
+  })).then(decryptedConfigParams => ({ ...step, configParams: decryptedConfigParams }))
+}
+
 export function getStepById(stepId) {
-  return dbSteps.getStepById(stepId)
+  return dbSteps.getStepById(stepId).then(step => decryptConfigParams(step))
 }
 
 export function batchGetStepByIds(stepsIds) {
-  return dbSteps.batchGetStepByIds(stepsIds)
+  return dbSteps
+    .batchGetStepByIds(stepsIds)
+    .then(steps => Promise.all(steps.map(step => decryptConfigParams(step))))
 }
 
 /**
@@ -80,17 +100,71 @@ async function updateFlowDraftState(step, userId) {
   return Promise.resolve()
 }
 
-export function updateStep(step, userId) {
-  return updateFlowDraftState(step, userId).then(() => dbSteps.updateStep(step))
+function updateSecretParameters(step) {
+  const { configParams } = step
+
+  if (!configParams || configParams.length === 0) {
+    return Promise.resolve(step)
+  }
+
+  function getDecryptedValueIfPossible(secretName) {
+    return SSM.getParameter({ Name: secretName }, true)
+      .then((res) => {
+        if (res.Parameter && res.Parameter.Value) {
+          return res.Parameter.Value
+        }
+        return null
+      })
+      .catch((err) => {
+        console.log(err)
+        return null
+      })
+  }
+
+  return Promise.all(configParams.map((param) => {
+    if (!param.secret) {
+      return Promise.resolve({ ...param, secret: false })
+    }
+
+    const secretName = SSM.createParameterName(step.id, param.fieldId)
+    const parameterParams = {
+      Name: secretName,
+      Value: param.value,
+      Overwrite: true
+    }
+
+    return getDecryptedValueIfPossible(secretName)
+      .then((value) => {
+        if (value) {
+          parameterParams.Value = value
+        }
+
+        return SSM.putParameter(parameterParams)
+      })
+      .then(() => SSM.getParameter({ Name: secretName }, false))
+      .then(({ Parameter }) => {
+        return {
+          ...param,
+          value: Parameter.Value,
+          secret: true
+        }
+      })
+  })).then(updatedConfigParams => ({ ...step, configParams: updatedConfigParams }))
 }
 
-export async function testStep(stepId, payload, configParams) {
+export async function updateStep(step, userId) {
+  return updateFlowDraftState(step, userId)
+    .then(() => updateSecretParameters(step))
+    .then(updatedStep => dbSteps.updateStep(updatedStep))
+}
+
+export async function testStep(stepId, payload) {
   const s3 = S3(process.env.S3_BUCKET)
   try {
     const step = await getStepById(stepId)
     const service = await getServiceById(step.service)
     const runId = `${timestamp()}_${uuid.v4()}`
-    const testStepData = createTestStepDataParams(step, runId, payload, configParams)
+    const testStepData = createTestStepDataParams(step, runId, payload)
     const invokeParams = createTestStepTriggerParams(stepId, service.arn, runId)
 
     if (service.type === 'TRIGGER') {

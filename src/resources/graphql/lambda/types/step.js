@@ -9,16 +9,19 @@ import {
   GraphQLInputObjectType
 } from 'graphql'
 import _isString from 'lodash/isString'
+import { AccountType } from './account'
 import { FlowType } from './flow'
 import { ServiceType } from './service'
 import * as Flows from '../resolvers/flows'
 import * as Services from '../resolvers/services'
+import * as Accounts from '../resolvers/accounts'
 
 export const StepConfigParamsType = new GraphQLObjectType({
   name: 'StepConfigParams',
   fields: () => ({
     fieldId: { type: GraphQLID },
-    value: { type: GraphQLString }
+    value: { type: GraphQLString },
+    secret: { type: GraphQLBoolean }
   })
 })
 
@@ -26,7 +29,8 @@ export const StepConfigParamsInputType = new GraphQLInputObjectType({
   name: 'StepConfigParamsInput',
   fields: () => ({
     fieldId: { type: GraphQLID },
-    value: { type: GraphQLString }
+    value: { type: GraphQLString },
+    secret: { type: GraphQLBoolean }
   })
 })
 
@@ -73,6 +77,13 @@ export const StepType = new GraphQLObjectType({
         return step.service
       }
     },
+    account: {
+      type: AccountType,
+      resolve: (step, _, { userId }) => {
+        if (!step.account) return null
+        return Accounts.getAccountById(step.account, userId)
+      }
+    },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     scheduling: { type: SchedulingType },
     tested: { type: GraphQLBoolean }
@@ -91,6 +102,7 @@ export const StepTestType = new GraphQLObjectType({
     service: {
       type: ServiceType
     },
+    account: { type: AccountType },
     configParams: { type: new GraphQLList(StepConfigParamsType) },
     result: { type: GraphQLString },
     error: { type: GraphQLString },

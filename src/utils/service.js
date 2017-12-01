@@ -3,19 +3,17 @@ import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
 
-function getConfigParams(stepData, input) {
+function getCurrentStep(stepData, input) {
   const { steps } = stepData.flowRun.flow
 
   // check if there is more then one step. if theres only one then it is a step test
   if (steps.length === 1) {
-    return steps[0].configParams || []
+    return steps[0]
   }
 
-  const currentStep = stepData.flowRun.flow.steps.find((s) => {
+  return stepData.flowRun.flow.steps.find((s) => {
     return parseInt(s.position, 10) === parseInt(input.currentStep, 10)
   })
-
-  return currentStep.configParams || []
 }
 
 /*
@@ -58,7 +56,10 @@ export default function service(serviceFn) {
       return
     }
 
-    const configParams = getConfigParams(stepData, input)
+    const currentStep = getCurrentStep(stepData, input)
+    const configParams = currentStep.configParams || []
+    const { userId } = stepData.flowRun.flow // owner
+
     // add getter to configParams
     configParams.get = (selector) => {
       const configParam = configParams.find(p => p.fieldId === selector) || {}
@@ -73,7 +74,9 @@ export default function service(serviceFn) {
           input,
           context,
           stepData,
-          configParams
+          currentStep,
+          configParams,
+          userId
         },
         logger
       )

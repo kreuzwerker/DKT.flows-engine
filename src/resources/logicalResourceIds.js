@@ -9,6 +9,7 @@ module.exports = {
   GRAPHQL_FUNCTION: 'GraphQlFunction',
   GRAPHQL_PERMISSIONS: 'GraphQLPermissions',
 
+  DYN_DB_ACCOUNTS: 'DynamoDBAccounts',
   DYN_DB_FLOW_RUNS: 'DynamoDBFlowRuns',
   DYN_DB_FLOWS: 'DynamoDBFlows',
   DYN_DB_PROVIDERS: 'DynamoDBProviders',

@@ -3,6 +3,7 @@ const {
   GRAPHQL_FUNCTION,
   GRAPHQL_API_GATEWAY,
   GRAPHQL_PERMISSIONS,
+  DYN_DB_ACCOUNTS,
   DYN_DB_FLOWS,
   DYN_DB_FLOW_RUNS,
   DYN_DB_PROVIDERS,
@@ -46,6 +47,7 @@ module.exports = ({
       Timeout: 20,
       Environment: {
         Variables: {
+          DYNAMO_ACCOUNTS: { Ref: DYN_DB_ACCOUNTS },
           DYNAMO_FLOWS: { Ref: DYN_DB_FLOWS },
           DYNAMO_FLOW_RUNS: { Ref: DYN_DB_FLOW_RUNS },
           DYNAMO_PROVIDERS: { Ref: DYN_DB_PROVIDERS },
@@ -75,6 +77,7 @@ module.exports = ({
       }
     },
     DependsOn: [
+      DYN_DB_ACCOUNTS,
       DYN_DB_FLOWS,
       DYN_DB_FLOW_RUNS,
       DYN_DB_PROVIDERS,

@@ -12,6 +12,7 @@ module.exports = arn => ({
   inputType: 'url',
   outputType: 'url',
   scheduled: false,
+  requiredAccountType: null,
   configSchema: [
     {
       position: 0,

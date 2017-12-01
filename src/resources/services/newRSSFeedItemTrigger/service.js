@@ -10,6 +10,7 @@ module.exports = arn => ({
   type: 'TRIGGER',
   inputType: 'url',
   outputType: 'html',
+  requiredAccountType: null,
   scheduled: true,
   configSchema: [
     {

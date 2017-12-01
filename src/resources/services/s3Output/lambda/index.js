@@ -1,16 +1,36 @@
+import { getAccountById } from '../../../dbAccounts/resolvers'
 import service from '../../../../utils/service'
-import { S3 } from '../../../../utils/aws'
+import { S3, SSM } from '../../../../utils/aws'
 
-function s3Output(inputData, { configParams }, logger) {
+function getAccountCredentials(accountId, userId) {
+  return getAccountById(accountId, userId)
+    .then((account) => {
+      if (!account || !account.key) {
+        return Promise.reject(new Error('No Account attached'))
+      }
+      return SSM.getParameter({ Name: account.key }, true)
+    })
+    .then(res => JSON.parse(res.Parameter.Value))
+}
+
+function s3Output(inputData, { configParams, currentStep, userId }, logger) {
   const bucket = configParams.get('bucket')
   const path = configParams.get('path')
   const filename = configParams.get('filename')
-  const s3 = S3(bucket)
 
-  return s3
-    .putObject({
-      Key: `${filename}.json`,
-      Body: JSON.stringify({ data: inputData }, null, 2)
+  return getAccountCredentials(currentStep.account, userId)
+    .then((credentialsParam) => {
+      let credentials = credentialsParam
+
+      if (typeof credentialsParam === 'string') {
+        credentials = JSON.parse(credentials)
+      }
+
+      const s3 = S3(bucket, credentials)
+      return s3.putObject({
+        Key: `${filename}.json`,
+        Body: JSON.stringify({ data: inputData }, null, 2)
+      })
     })
     .then((res) => {
       logger.log(JSON.stringify(

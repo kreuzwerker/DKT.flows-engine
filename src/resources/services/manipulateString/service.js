@@ -8,6 +8,7 @@ module.exports = arn => ({
   name: 'Manipulate String',
   provider: 'xOMFBmrwQmul4MB8FnEH3Z1b',
   type: 'ACTION',
+  requiredAccountType: null,
   inputType: 'string',
   outputType: 'string',
   scheduled: null,

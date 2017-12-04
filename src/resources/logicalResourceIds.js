@@ -43,6 +43,7 @@ module.exports = {
   PARSE_JSON_FUNCTION: 'ParseJsonFunction',
   S3_OUTPUT_SERVICE_FUNCTION: 'S3OutputServiceFunction',
   SERIALIZE_CSV_FUNCTION: 'SerializeCSVFunction',
+  ONLY_CONTINUE_IF_FUNCTION: 'OnlyContinueIfFunction',
 
   // ** legacy **
   EXTRACT_ARTICLE_DATE_FUNCTION: 'ExtractArticleDateFunction',

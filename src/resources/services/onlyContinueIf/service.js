@@ -15,7 +15,7 @@ module.exports = arn => ({
   configSchema: [
     {
       fieldId: 'conditionType',
-      label: 'Type',
+      label: 'Condition',
       defaultValue: 'if',
       type: 'select',
       options: [{ value: 'if', label: 'Is' }, { value: 'unless', label: 'Is not' }],
@@ -23,7 +23,7 @@ module.exports = arn => ({
     },
     {
       fieldId: 'conditionDefinition',
-      label: 'Definition',
+      label: 'Type',
       defaultValue: '',
       type: 'select',
       options: [

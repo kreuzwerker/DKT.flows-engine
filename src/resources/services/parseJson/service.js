@@ -10,6 +10,7 @@ module.exports = arn => ({
   type: 'ACTION',
   inputType: 'json',
   outputType: 'json',
+  requiredAccountType: null,
   scheduled: null,
   configSchema: [
     {

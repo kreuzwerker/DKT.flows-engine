@@ -1,5 +1,6 @@
 import { DynamoDB } from '../../utils/aws'
 
+// TODO we should paginate this!
 export function allTasks(userId) {
   // Retrieves all unfinished tasks
   const table = process.env.DYNAMO_TASKS
@@ -17,7 +18,21 @@ export function allTasks(userId) {
     }
   }
 
-  return DynamoDB.scan(table, params).then(r => r.Items)
+  const tasks = []
+
+  function scan(args) {
+    return DynamoDB.scan(table, args).then(({ Items, LastEvaluatedKey }) => {
+      Items.forEach(item => tasks.push(item))
+      if (LastEvaluatedKey) {
+        // scan the next set
+        return scan({ ...params, ExclusiveStartKey: LastEvaluatedKey })
+      }
+
+      return Promise.resolve()
+    })
+  }
+
+  return scan(params).then(() => tasks)
 }
 
 export function getTaskById(taskId, userId) {
@@ -28,7 +43,9 @@ export function getTaskById(taskId, userId) {
 
   return DynamoDB.getItem(table, query).then((r) => {
     const item = r.Item || {}
-    return typeof userId === 'undefined' || item.userId === userId || item.userId === null ? item : null
+    return typeof userId === 'undefined' || item.userId === userId || item.userId === null
+      ? item
+      : null
   })
 }
 

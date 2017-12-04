@@ -1,5 +1,9 @@
 const settings = require('../../../../settings')
-const { S3_OUTPUT_SERVICE_FUNCTION, S3_BUCKET } = require('../../logicalResourceIds')
+const {
+  S3_OUTPUT_SERVICE_FUNCTION,
+  S3_BUCKET,
+  DYN_DB_ACCOUNTS
+} = require('../../logicalResourceIds')
 
 module.exports = ({ key }) => ({
   [S3_OUTPUT_SERVICE_FUNCTION]: {
@@ -12,7 +16,8 @@ module.exports = ({ key }) => ({
       Timeout: 20,
       Environment: {
         Variables: {
-          S3_BUCKET: { Ref: S3_BUCKET }
+          S3_BUCKET: { Ref: S3_BUCKET },
+          DYNAMO_ACCOUNTS: { Ref: DYN_DB_ACCOUNTS }
         }
       }
     },

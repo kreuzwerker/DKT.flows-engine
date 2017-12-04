@@ -29,17 +29,20 @@ export async function handler(event, context, callback) {
     updatedStepData = {
       ...stepData,
       status: 'error',
-      logs: updateLogs(stepData.logs, currentStep, 'error', input.error.message)
+      logs: updateLogs(
+        stepData.logs,
+        stepData[input.contentKey],
+        currentStep,
+        'error',
+        input.error.message
+      )
     }
   } else {
     updatedStepData = {
       ...stepData,
-      status: taskOutput,
-      logs: updateLogs(stepData.logs, currentStep, taskOutput)
+      logs: updateLogs(stepData.logs, stepData[input.contentKey], currentStep, taskOutput)
     }
   }
-
-  console.log(JSON.stringify(updatedStepData))
 
   try {
     await Promise.all([

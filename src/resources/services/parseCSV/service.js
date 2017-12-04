@@ -11,6 +11,7 @@ module.exports = arn => ({
   inputType: 'csv',
   outputType: 'json',
   scheduled: null,
+  requiredAccountType: null,
   configSchema: [
     {
       fieldId: 'separator',

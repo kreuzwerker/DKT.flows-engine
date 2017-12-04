@@ -30,7 +30,7 @@ export function getStepData(input) {
  * ---- Payload generators -----------------------------------------------------
  * -----------------------------------------------------------------------------
  */
-export function createTestStepDataParams(step, runId, payload, configParams) {
+export function createTestStepDataParams(step, runId, payload) {
   return {
     Key: getTestStepInputKey(step.id, runId),
     Body: JSON.stringify(
@@ -41,7 +41,7 @@ export function createTestStepDataParams(step, runId, payload, configParams) {
         stepId: step.id,
         flowRun: {
           flow: {
-            steps: [{ ...step, configParams }]
+            steps: [step]
           }
         },
         runId

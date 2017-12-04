@@ -4,8 +4,9 @@ import service from '../../../../utils/service'
 /*
  * Named Entity Recognition with spacy
  */
-async function spacyNer(inputData, context, logger) {
+async function spacyNer(inputData, { configParams }, logger) {
   const { SPACY_SERVICE_URL } = process.env
+  const model = configParams.get('mode') || 'en_core_web_sm'
 
   let nerResult = {},
       nerJSON = {}
@@ -15,14 +16,12 @@ async function spacyNer(inputData, context, logger) {
       method: 'POST',
       body: JSON.stringify({
         text: inputData,
-        model: 'en_core_web_sm',
+        model: model,
         o: 'json'
       })
     })
     if (!nerResult.ok) {
-      return Promise.reject(
-        `Failed fetching ${SPACY_SERVICE_URL} - ${nerResult.status} ${nerResult.statusText}`
-      )
+      return Promise.reject(`Failed fetching ${SPACY_SERVICE_URL} - ${nerResult.status} ${nerResult.statusText}`)
     }
   } catch (error) {
     logger.log('Error while requesting result from spacy-ner', error)

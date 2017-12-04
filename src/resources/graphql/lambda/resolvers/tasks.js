@@ -1,5 +1,5 @@
 import * as dbTasks from '../../../dbTasks/resolvers'
-import { StepFunctions } from '../../../../utils/aws'
+import { S3, StepFunctions } from '../../../../utils/aws'
 import { getRuns } from './flowRuns'
 
 /**
@@ -15,32 +15,33 @@ export function getTaskById(taskId, userId) {
 }
 
 export async function queryTaskItem(taskId, userId) {
-  const task = await getTaskById(taskId)
-  if (!task.id) {
-    throw new Error('E404_TASK_NOT_FOUND')
-  } else if (task.userId !== userId) {
-    throw new Error('E401_TASK_ACCESS_DENIED')
-  }
+  const bucket = process.env.S3_BUCKET
+  const s3 = S3(bucket)
 
-  const runs = await getRuns(task.flowRun, { offset: 0 })
-  if (!runs) {
-    return Promise.reject('No flow runs available for this task.')
-  }
+  return getTaskById(taskId)
+    .then((task) => {
+      if (!task.id) {
+        return Promise.reject(new Error('E404_TASK_NOT_FOUND'))
+      } else if (task.userId !== userId) {
+        return Promise.reject(new Error('E401_TASK_ACCESS_DENIED'))
+      }
 
-  // Retrieve the preceding step to this task so the client can determine the
-  // task item's content type via prevStep.service
-  let lastRun = runs[0],
-      prevStep = null
-  if (parseInt(lastRun.currentStep.position, 10) > 0) {
-    const prevStepPos = parseInt(lastRun.currentStep.position, 10) - 1
-    prevStep = task.flowRun.flow.steps.find(step => parseInt(step.position, 10) === prevStepPos)
-  }
+      const taskInput = JSON.parse(task.input)
+      const dataKey = taskInput.key
 
-  return Promise.resolve({
-    id: taskId,
-    data: JSON.stringify(lastRun.result, null, 2),
-    prevStep: prevStep
-  })
+      return s3.getObject({ Key: dataKey }).then(data => ({ data, task, taskInput }))
+    })
+    .then(({ data, task, taskInput }) => {
+      const taskData = JSON.parse(data.Body)
+      const prevStepPosition = parseInt(task.currentStep, 10) - 1
+      const prevStep = task.flowRun.flow.steps.find(step => parseInt(step.position, 10) === prevStepPosition)
+
+      return Promise.resolve({
+        id: taskId,
+        data: JSON.stringify(taskData[taskInput.contentKey]),
+        prevStep
+      })
+    })
 }
 
 export function batchGetTasksByIds(tasksIds) {
@@ -55,8 +56,10 @@ export async function updateTask(task, userId) {
   const oldTask = await getTaskById(task.id, userId)
 
   if (oldTask.state !== task.state) {
-    const taskToken = oldTask.taskToken
+    const { taskToken } = oldTask
     switch (task.state) {
+      case 'MODIFIED':
+      case 'REVIEWED':
       case 'APPROVED': {
         await StepFunctions.sendTaskSuccess({
           taskToken,

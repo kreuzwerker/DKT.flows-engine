@@ -9,9 +9,14 @@
       {
         "fieldId": "url-input",
         "value":
-          "http://www.sueddeutsche.de/politik/vor-den-wahlen-die-niederlande-koennen-ein-signal-nach-europa-senden-1.3414161"
+          "http://www.spiegel.de/international/germany/commentary-german-coalition-collapse-the-end-of-merkel-a-1179542.html"
       }
     ],
+    "scheduling": {
+      "startDatetime": "2017-12-15T14:29:35.465Z",
+      "interval": 5,
+      "intervalType": "MINUTES"
+    },
     "tested": false
   },
   {

@@ -10,7 +10,20 @@ module.exports = arn => ({
   type: 'ACTION',
   inputType: 'string',
   outputType: 'annotations',
-  configSchema: null,
+  requiredAccountType: null,
+  configSchema: [
+    {
+      fieldId: 'mode',
+      position: 0,
+      label: 'Language',
+      defaultValue: 'en_core_web_sm',
+      options: [
+        { value: 'en_core_web_sm', label: 'english' },
+        { value: 'de_core_news_md', label: 'german' }
+      ],
+      type: 'select'
+    }
+  ],
   samplePayload: 'Apple is looking at buying U.K. startup for $1 billion',
   arn: arn
 })

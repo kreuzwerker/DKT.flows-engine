@@ -1,6 +1,8 @@
 import uuid from 'uuid'
 import _sortBy from 'lodash/sortBy'
 import _flatten from 'lodash/flatten'
+import _uniq from 'lodash/uniq'
+import shortId from 'shortid'
 import { getFlowById, setFlowDraftState, updateFlow } from './flows'
 import { batchGetStepByIds } from './steps'
 import { batchGetServicesByIds } from './services'
@@ -164,12 +166,12 @@ export async function createFlowRun(params, userId) {
     }))
   }
 
-  function extendTasksWithActivities(services) {
-    return Promise.all(services.map((service) => {
-      if (!service.task) return Promise.resolve(service)
+  function extendTasksWithActivities(steps) {
+    return Promise.all(steps.map((step) => {
+      if (!step.service.task) return Promise.resolve(step)
       return StepFunctions.createActivity({
-        name: `${service.id}-activity-${uuid.v4()}`
-      }).then(({ activityArn }) => ({ ...service, activityArn }))
+        name: `${step.id}-activity-${shortId.generate()}`
+      }).then(({ activityArn }) => ({ ...step, service: { ...step.service, activityArn } }))
     }))
   }
 
@@ -177,10 +179,12 @@ export async function createFlowRun(params, userId) {
     let flow = await getFlowById(params.flow, userId)
     const steps = await batchGetStepByIds(flow.steps)
     const servicesIds = getServicesIdsFromSteps(steps)
-    let services = servicesIds.length > 0 ? await batchGetServicesByIds(servicesIds) : []
-    services = await extendTasksWithActivities(services, flow.id)
+    const services = servicesIds.length > 0 ? await batchGetServicesByIds(_uniq(servicesIds)) : []
+    let extendedSteps = mergeServicesInSteps(steps, services)
 
-    flow = { ...flow, steps: mergeServicesInSteps(steps, services) }
+    extendedSteps = await extendTasksWithActivities(extendedSteps, flow.id)
+
+    flow = { ...flow, steps: extendedSteps, active: true }
 
     const stateMachineName = `${flow.name.replace(/\s/g, '')}_${uuid.v4()}`
     const newFlowRun = {
@@ -196,26 +200,31 @@ export async function createFlowRun(params, userId) {
       flow
     }
 
-    const scheduledTriggerStep = flow.steps.find(step => step.service.scheduled)
-    if (scheduledTriggerStep) {
-      const interval = scheduledTriggerStep.configParams.find(param => param.fieldId === 'interval')
-      const ruleName = `${newFlowRun.id}-scheduledTrigger`
-      const payload = {
-        configParams: scheduledTriggerStep.configParams,
-        flowRun: { id: newFlowRun.id }
-      }
-      const ruleArn = await createScheduledEvent(
-        ruleName,
-        interval,
-        scheduledTriggerStep.service,
-        payload
-      )
+    if (flow.triggerType === 'SCHEDULED') {
+      const triggerStep = flow.steps.find(step => step.service.type === 'TRIGGER')
+      if (triggerStep) {
+        const ruleName = `${newFlowRun.id}-scheduledTrigger`
+        const payload = {
+          configParams: triggerStep.configParams,
+          scheduling: triggerStep.scheduling,
+          flowRun: { id: newFlowRun.id }
+        }
 
-      newFlowRun.scheduledTriggerArn = ruleArn
-      newFlowRun.scheduledTriggerName = ruleName
+        const ruleArn = await createScheduledEvent(
+          ruleName,
+          triggerStep.scheduling,
+          triggerStep.service,
+          payload
+        )
+
+        newFlowRun.scheduledTriggerArn = ruleArn
+        newFlowRun.scheduledTriggerName = ruleName
+      }
     }
 
     const stateMachineDefinition = await ASLGenerator(newFlowRun)
+
+    console.log(stateMachineDefinition)
 
     const stateMachine = await StepFunctions.createStateMachine(
       stateMachineName,
@@ -224,6 +233,18 @@ export async function createFlowRun(params, userId) {
 
     newFlowRun.stateMachineArn = stateMachine.stateMachineArn
 
+    const oldFlowRuns = await getFlowRunsByFlowId(flow.id)
+    if (oldFlowRuns.length > 0) {
+      // NOTE this is just a temporary fix to prevent that there are "ghost"-FlowRuns that are not visible with the Frontend
+      // there will be a UI for this in the future and then we don't want to disable flowRuns anymore
+
+      /* eslint-disable */
+      await Promise.all(
+        oldFlowRuns.map(oldFlowRun => updateFlowRun({ ...oldFlowRun, active: false }))
+      )
+      /* estlint-enable */
+    }
+
     const flowRun = await dbFlowRuns.createFlowRun(newFlowRun)
 
     // Take flow out of draft state
@@ -231,6 +252,7 @@ export async function createFlowRun(params, userId) {
 
     return flowRun
   } catch (err) {
+    console.log('createFlowRun Error', err)
     return Promise.reject(err)
   }
 }
@@ -255,7 +277,7 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
       flowRun = await getFlowRunById(id)
     }
 
-    // TODO remove this for the moment since we clarified how to deal with multiple flowRun instances
+    // TODO remove this for the moment until we clarified how to deal with multiple flowRun instances
     // if (!flowRun.active) {
     //   return {
     //     ...flowRun,
@@ -264,13 +286,16 @@ export async function startFlowRun({ id, payload }, flowRunInstance) {
     //   }
     // }
 
-    const triggerStep = flowRun.flow.steps.reduce((a, step) => {
-      return step.service.type === 'TRIGGER' ? step : a
-    }, {})
+    const triggerStep = flowRun.flow.steps.find(step => step.service.type === 'TRIGGER')
 
     await Lambda.invoke({
       FunctionName: triggerStep.service.arn,
-      Payload: JSON.stringify({ flowRun, payload })
+      Payload: JSON.stringify({
+        flowRun,
+        payload,
+        configParams: triggerStep.configParams,
+        scheduling: triggerStep.scheduling || null
+      })
     })
 
     const updatedFlowRun = {
@@ -303,7 +328,7 @@ export function createAndStartFlowRun(args) {
 
 export function deleteFlowRun(id) {
   return getFlowRunById(id)
-    .then((flowRun) => {
+    .then(flowRun => {
       const { steps } = flowRun.flow
       const tasks = steps.filter(step => !!step.service.task).map(step => step.service)
       const scheduledTrigger = steps.find(step => step.service.scheduled)

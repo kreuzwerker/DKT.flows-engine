@@ -9,13 +9,20 @@ import {
   GraphQLNonNull
 } from 'graphql'
 import { AboutType } from './types/about'
+import { AccountType } from './types/account'
 import { FlowType } from './types/flow'
 import { FlowRunType } from './types/flowRun'
 import { ProviderType } from './types/provider'
 import { ServiceType } from './types/service'
 import { TaskType, TaskItemType } from './types/task'
-import { StepType, StepConfigParamsInputType, StepTestType } from './types/step'
+import {
+  StepType,
+  StepConfigParamsInputType,
+  StepTestType,
+  SchedulingInputType
+} from './types/step'
 import { about } from './resolvers/about'
+import * as Accounts from './resolvers/accounts'
 import * as Flows from './resolvers/flows'
 import * as FlowRuns from './resolvers/flowRuns'
 import * as Providers from './resolvers/providers'
@@ -34,6 +41,17 @@ const QueryType = new GraphQLObjectType({
       type: AboutType,
       resolve: about
     },
+
+    allAccounts: {
+      type: new GraphQLList(AccountType),
+      resolve: (_, args, { userId }) => Accounts.allAccounts(userId)
+    },
+    Account: {
+      type: AccountType,
+      args: { id: { type: GraphQLID } },
+      resolve: (_, { id }, { userId }) => Accounts.getAccountById(id, userId)
+    },
+
     allFlows: {
       type: new GraphQLList(FlowType),
       resolve: (_, variables, { userId }) => Flows.allFlows(userId)
@@ -107,6 +125,31 @@ const QueryType = new GraphQLObjectType({
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
+    createAccount: {
+      type: AccountType,
+      args: {
+        name: { type: GraphQLString },
+        accountType: { type: GraphQLString },
+        credentials: { type: GraphQLString }
+      },
+      resolve: (_, account, { userId }) => Accounts.createAccount(account, userId)
+    },
+    updateAccount: {
+      type: AccountType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        accountType: { type: GraphQLString },
+        credentials: { type: GraphQLString }
+      },
+      resolve: (_, account, { userId }) => Accounts.updateAccount(account, userId)
+    },
+    deleteAccount: {
+      type: AccountType,
+      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve: (_, { id }, { userId }) => Accounts.deleteAccount(id, userId)
+    },
+
     createFlow: {
       type: FlowType,
       args: {
@@ -125,6 +168,7 @@ const MutationType = new GraphQLObjectType({
         name: { type: GraphQLString },
         active: { type: GraphQLBoolean },
         description: { type: GraphQLString },
+        triggerType: { type: GraphQLString },
         steps: { type: new GraphQLList(GraphQLID) },
         userId: { type: GraphQLID }
       },
@@ -221,6 +265,7 @@ const MutationType = new GraphQLObjectType({
       type: StepType,
       args: {
         id: { type: GraphQLID },
+        account: { type: GraphQLID },
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
@@ -233,10 +278,12 @@ const MutationType = new GraphQLObjectType({
       type: StepType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
+        account: { type: GraphQLID },
         position: { type: GraphQLInt },
         description: { type: GraphQLString },
         flow: { type: GraphQLID },
         service: { type: GraphQLID },
+        scheduling: { type: SchedulingInputType },
         configParams: { type: new GraphQLList(StepConfigParamsInputType) }
       },
       resolve: (_, step, { userId }) => Steps.updateStep(step, userId)

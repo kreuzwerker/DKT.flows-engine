@@ -52,6 +52,18 @@ export function batchGetTasksByIds(tasksIds) {
  * ---- Mutations --------------------------------------------------------------
  * -----------------------------------------------------------------------------
  */
+export function deleteTask(id, deleteActivity = true) {
+  return getTaskById(id)
+    .then(task =>
+      (deleteActivity
+        ? StepFunctions.deleteActivity({ activityArn: task.activityArn })
+        : Promise.resolve()))
+    .then(() => dbTasks.deleteTask(id))
+}
+
+// TODO the removing of a task after finishing is just a temporary functionallity.
+// At the Moment it is not possible to see finished tasks in the Frontent.
+// So there is no sense in keeping it in the Prototype
 export async function updateTask(task, userId) {
   const oldTask = await getTaskById(task.id, userId)
 
@@ -61,18 +73,20 @@ export async function updateTask(task, userId) {
       case 'MODIFIED':
       case 'REVIEWED':
       case 'APPROVED': {
-        await StepFunctions.sendTaskSuccess({
+        return StepFunctions.sendTaskSuccess({
           taskToken,
           output: JSON.stringify({ message: 'success' })
         })
-        break
+          .then(() => deleteTask(task.id, false)) // NOTE TEMPORARY
+          .then(() => ({ id: task.id }))
       }
       case 'REJECTED': {
-        await StepFunctions.sendTaskSuccess({
+        return StepFunctions.sendTaskSuccess({
           taskToken,
           output: JSON.stringify({ message: 'rejected' })
         })
-        break
+          .then(() => deleteTask(task.id, false)) // NOTE TEMPORARY
+          .then(() => ({ id: task.id }))
       }
       default:
         console.log('noting to do')
@@ -80,10 +94,4 @@ export async function updateTask(task, userId) {
   }
 
   return dbTasks.updateTask(task)
-}
-
-export function deleteTask(id) {
-  return getTaskById(id)
-    .then(task => StepFunctions.deleteActivity({ activityArn: task.activityArn }))
-    .then(() => dbTasks.deleteTask(id))
 }

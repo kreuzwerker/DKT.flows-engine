@@ -8,7 +8,7 @@ import {
   GraphQLEnumType
 } from 'graphql'
 import { FlowRunType } from './flowRun'
-import { StepType } from './step';
+import { StepType } from './step'
 
 // TODO UPDATE TASK DATA
 

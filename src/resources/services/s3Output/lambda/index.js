@@ -21,17 +21,14 @@ function countFile(bucket, filename, s3) {
       Bucket: bucket,
       Prefix: filename
     })
-    .then((res) => {
-      const count = res.Contents.length || 0
-      return count
-    })
+    .then(res => res.Contents.length || 0)
     .catch((err) => {
       console.log('listObjectsErr', err)
       return Promise.reject(err)
     })
 }
 
-function createUniqueFilename(appendixType, bucket, filename, s3) {
+function createFilename(appendixType, bucket, filename, s3) {
   if (appendixType === 'count') {
     return countFile(bucket, filename, s3).then(count => `${filename}-${count}`)
   }
@@ -60,7 +57,7 @@ async function s3Output(inputData, { configParams, currentStep, userId }, logger
   const s3 = S3(bucket, credentials)
 
   try {
-    uniqueFilename = await createUniqueFilename(appendixType, bucket, filename, s3)
+    uniqueFilename = await createFilename(appendixType, bucket, filename, s3)
   } catch (e) {
     return Promise.reject(e)
   }

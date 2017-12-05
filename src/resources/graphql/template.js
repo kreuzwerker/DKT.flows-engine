@@ -44,7 +44,7 @@ module.exports = ({
       Runtime: 'nodejs6.10',
       CodeUri: `s3://${settings.aws.s3.bucket}/${key}`,
       Policies: settings.aws.cloudFormation.policy,
-      Timeout: 20,
+      Timeout: 60,
       Environment: {
         Variables: {
           DYNAMO_ACCOUNTS: { Ref: DYN_DB_ACCOUNTS },

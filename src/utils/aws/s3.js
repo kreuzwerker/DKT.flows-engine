@@ -11,8 +11,6 @@ function S3(bucket, credentials = null) {
 
   const opts = credentials ? { ...settings.aws.s3, ...credentials } : settings.aws.s3
 
-  console.log(opts)
-
   const s3 = new AWS.S3(opts)
 
   function merge(params) {

@@ -33,6 +33,14 @@ module.exports = arn => ({
       defaultValue: 'S3Output',
       type: 'input',
       required: true
+    },
+    {
+      fieldId: 'appendix',
+      label: 'Appendix',
+      defaultValue: 'uid',
+      type: 'select',
+      options: [{ value: 'count', label: 'Count' }, { value: 'uid', label: 'Unique Id' }],
+      required: true
     }
   ],
   task: false,

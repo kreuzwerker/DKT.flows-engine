@@ -130,12 +130,17 @@ export function deleteFlow(id, userId) {
       return Promise.resolve()
     })
     .then(() => getFlowById(id, userId))
-    .then(flow =>
+    .then((flow) => {
+      if (!flow.steps || flow.steps.length === 0) {
+        return Promise.resolve()
+      }
+
       Promise.all(flow.steps.map((stepId) => {
         return deleteStep(stepId, userId).catch((err) => {
           return Promise.reject(err)
         })
-      })))
+      }))
+    })
     .then(() => dbFlows.deleteFlow(id))
     .then(() => ({ id }))
 }

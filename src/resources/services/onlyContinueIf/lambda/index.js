@@ -35,7 +35,7 @@ function conditionalContinuation(inputData, { configParams }) {
     return Promise.resolve(inputData)
   }
 
-  return Promise.reject(new Error(`Step Input ${conditionType === 'if' ? 'is not' : 'is'} a ${conditionDefinition}`))
+  return Promise.resolve([inputData, 'aborted'])
 }
 
 export const handler = service(conditionalContinuation)

@@ -1,4 +1,5 @@
 import _isString from 'lodash/isString'
+import _isArray from 'lodash/isArray'
 import Logger from './logger'
 import { flowRunStepSuccessHandler } from './helpers/flowRunHelpers'
 import { getStepData, testStepSuccessHandler, testStepErrorHandler } from './helpers/stepHelpers'
@@ -25,9 +26,12 @@ export default function service(serviceFn) {
     const logger = Logger(event.verbose)
     const input = _isString(event) ? JSON.parse(event) : event
     let stepData = {},
+        status = 'success',
         output = {},
         inputData = {},
-        serviceResult = {}
+        result = {}
+
+    input.currentStep += 1
 
     function errorHandler(err) {
       if (input.testStep) {
@@ -44,7 +48,13 @@ export default function service(serviceFn) {
       return
     }
 
-    input.currentStep += 1
+    // skip all this service if one of the previous services aborted the flow
+    if (input.status === 'aborted') {
+      console.log(input)
+      console.log(inputData)
+      output = { ...input, inputData }
+      callback(null, output)
+    }
 
     // get step data from s3
     try {
@@ -68,7 +78,7 @@ export default function service(serviceFn) {
 
     try {
       // This is the service lambda execution
-      serviceResult = await serviceFn(
+      const serviceResult = await serviceFn(
         inputData,
         {
           input,
@@ -80,6 +90,23 @@ export default function service(serviceFn) {
         },
         logger
       )
+      // check if the service returns a array.
+      // if the service returns a array then the service may changed the flow status to
+      // another status then success or error
+      if (_isArray(serviceResult)) {
+        const [serviveResultData, serviceResultStatus] = serviceResult
+        if (serviveResultData) {
+          result = serviveResultData
+        }
+
+        if (serviceResultStatus) {
+          status = serviceResultStatus
+        }
+        console.log('serviceResult')
+        console.log(JSON.stringify(serviceResult, null, 2))
+      } else {
+        result = serviceResult
+      }
     } catch (err) {
       logger.log('Error while service execution', err)
       errorHandler(err)
@@ -89,9 +116,9 @@ export default function service(serviceFn) {
     // handle the service lambda output
     try {
       if (input.testStep) {
-        output = await testStepSuccessHandler(input, stepData, inputData, serviceResult)
+        output = await testStepSuccessHandler(input, stepData, inputData, result, status)
       } else {
-        output = await flowRunStepSuccessHandler(input, stepData, inputData, serviceResult)
+        output = await flowRunStepSuccessHandler(input, stepData, inputData, result, status)
       }
     } catch (err) {
       logger.log('Error while handling service result', err)

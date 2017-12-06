@@ -33,7 +33,6 @@ function getDescription(currentStep) {
 }
 
 async function taskInitializer(event, context, callback) {
-  console.log('TASK INITIALIZER')
   const s3 = S3(process.env.S3_BUCKET)
   const logger = Logger()
   const input = _isString(event) ? JSON.parse(event) : event
@@ -80,6 +79,23 @@ async function taskInitializer(event, context, callback) {
     }
     console.log('stopped task')
     callback(null, { ...input, error: input.error })
+    return
+  }
+
+  if (input.status === 'aborted') {
+    console.log('INPUT.STATUS', input.status)
+    try {
+      await StepFunctions.sendTaskSuccess({
+        taskToken: activityData.taskToken,
+        output: JSON.stringify({ ...input.error, message: 'error' })
+      })
+    } catch (e) {
+      console.log('Unable to stop task', JSON.stringify(activityData, null, 2))
+      console.log(e)
+    }
+
+    console.log('stopped task')
+    callback(null, { ...input })
     return
   }
 

@@ -29,6 +29,8 @@ export default function service(serviceFn) {
         inputData = {},
         serviceResult = {}
 
+    input.currentStep += 1
+
     function errorHandler(err) {
       if (input.testStep) {
         testStepErrorHandler(input, inputData, stepData, err).then(errorOutput =>
@@ -44,7 +46,6 @@ export default function service(serviceFn) {
       return
     }
 
-    input.currentStep += 1
 
     // get step data from s3
     try {

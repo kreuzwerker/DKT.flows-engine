@@ -50,7 +50,7 @@ async function taskInitializer(event, context, callback) {
   }
 
   const currentStep = stepData.flowRun.flow.steps.find(step => parseInt(step.position, 10) === parseInt(input.currentStep, 10))
-  console.log(currentStep)
+
   try {
     activityData = await StepFunctions.getActivityTask({
       activityArn: currentStep.service.activityArn

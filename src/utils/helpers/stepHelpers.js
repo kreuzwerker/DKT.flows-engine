@@ -87,7 +87,7 @@ function updateLogs(logs, inputData, stepData, status, message = '') {
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export function testStepSuccessHandler(input, stepData, inputData, result) {
+export function testStepSuccessHandler(input, stepData, inputData, result, status) {
   const s3 = S3(process.env.S3_BUCKET)
   const key = getTestStepOutputKey(stepData.stepId, stepData.runId)
 
@@ -96,9 +96,12 @@ export function testStepSuccessHandler(input, stepData, inputData, result) {
   stepData[input.contentKey] = result
   stepData.logs = updateLogs(stepData.logs, inputData, stepData, 'success')
 
-  return s3
-    .putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) })
-    .then(() => Object.assign({}, input, { key, contentKey: input.contentKey }))
+  return s3.putObject({ Key: key, Body: JSON.stringify(stepData, null, 2) }).then(() => ({
+    ...input,
+    status,
+    key,
+    contentKey: input.contentKey
+  }))
 }
 
 /*

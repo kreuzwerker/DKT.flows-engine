@@ -131,7 +131,13 @@ function setCurrentRunStatus(runs, runId, status) {
 /*
  * ---- Success Handler --------------------------------------------------------
  */
-export async function flowRunStepSuccessHandler(input, flowRunData, inputData, serviceResult) {
+export async function flowRunStepSuccessHandler(
+  input,
+  flowRunData,
+  inputData,
+  serviceResult,
+  status = 'success'
+) {
   const s3 = S3(process.env.S3_BUCKET)
   const position = input.currentStep
   const step = getStepFromFlowRun(flowRunData.flowRun, position)
@@ -141,7 +147,7 @@ export async function flowRunStepSuccessHandler(input, flowRunData, inputData, s
   const updatedFlowRunData = Object.assign({}, flowRunData, {
     [input.contentKey]: serviceResult,
     currentStep: position,
-    logs: updateLogs(flowRunData.logs, inputData, step, 'success')
+    logs: updateLogs(flowRunData.logs, inputData, step, status)
   })
 
   try {
@@ -150,7 +156,12 @@ export async function flowRunStepSuccessHandler(input, flowRunData, inputData, s
       s3.putObject({ Key: flowRunOutputKey, Body: JSON.stringify(updatedFlowRunData, null, 2) })
     ])
 
-    return Object.assign({}, input, { key: stepOutputKey, contentKey: input.contentKey })
+    return {
+      ...input,
+      status,
+      key: stepOutputKey,
+      contentKey: input.contentKey
+    }
   } catch (err) {
     console.log(err)
     return err

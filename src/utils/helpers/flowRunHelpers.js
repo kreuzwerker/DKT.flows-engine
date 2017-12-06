@@ -145,6 +145,7 @@ export async function flowRunStepSuccessHandler(
   const flowRunOutputKey = getFlowRunOutputKey(flowRunData.flowRun, input.runId)
 
   const updatedFlowRunData = Object.assign({}, flowRunData, {
+    status,
     [input.contentKey]: serviceResult,
     currentStep: position,
     logs: updateLogs(flowRunData.logs, inputData, step, status)

@@ -6,15 +6,15 @@ import service from '../../../../utils/service'
 function conditionalContinuation(inputData, { configParams }) {
   const conditionType = configParams.get('conditionType')
   const conditionDefinition = configParams.get('conditionDefinition')
-  let result = false
+  let condition = false
   switch (conditionDefinition) {
     case 'string': {
-      result = conditionType === 'if' ? _isString(inputData) : !_isString(inputData)
+      condition = conditionType === 'if' ? _isString(inputData) : !_isString(inputData)
       break
     }
     case 'number': {
       const num = Number(inputData)
-      result = conditionType === 'if' ? !_isNaN(num) : _isNaN(num)
+      condition = conditionType === 'if' ? !_isNaN(num) : _isNaN(num)
       break
     }
     case 'date': {
@@ -22,16 +22,16 @@ function conditionalContinuation(inputData, { configParams }) {
       const isDate = !_isNaN(Date.parse(inputData))
 
       if (isNumber) {
-        result = conditionType === 'unless'
+        condition = conditionType === 'unless'
       } else {
-        result = conditionType === 'if' ? isDate : !isDate
+        condition = conditionType === 'if' ? isDate : !isDate
       }
       break
     }
     default:
   }
 
-  if (result) {
+  if (condition) {
     return Promise.resolve(inputData)
   }
 

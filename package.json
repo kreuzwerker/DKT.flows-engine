@@ -39,7 +39,7 @@
     "graphql-tag": "2.5.0",
     "json-2-csv": "2.1.2",
     "jsonpath-plus": "0.16.0",
-    "lodash": "4.17.4",
+    "lodash": "4.17.15",
     "mocha": "4.0.1",
     "moment-timezone": "0.5.14",
     "node-fetch": "1.7.3",
